@@ -10,8 +10,8 @@
       <el-form :model="loginForm" ref="LoginFormRef" :rules="loginFormRules" label-width="0px" class="login_form">
         <!-- 用户名 -->
         <el-form-item prop="username">
-          <!--          6*.v-model双向数据绑定，绑定需要用的数据-->
-          <el-input v-model.trim="loginForm.username" prefix-icon="iconfont icon-user"></el-input>
+<!--          6*.v-model双向数据绑定，绑定需要用的数据-->
+          <el-input v-model.trim="loginForm.username" prefix-icon="iconfont icon-user" ></el-input>
         </el-form-item>
         <!-- 密码 -->
         <el-form-item prop="password">
@@ -30,7 +30,7 @@
 <script>
 export default {
   // *4data数据源
-  data() {
+  data () {
     return {
       // 数据绑定
       loginForm: {
@@ -41,7 +41,7 @@ export default {
       // 表单验证规则
       loginFormRules: {
         username: [
-          {required: true, message: '请输入登录名', trigger: 'blur'},
+          { required: true, message: '请输入登录名', trigger: 'blur' },
           {
             min: 3,
             max: 10,
@@ -50,7 +50,7 @@ export default {
           }
         ],
         password: [
-          {required: true, message: '请输入密码', trigger: 'blur'},
+          { required: true, message: '请输入密码', trigger: 'blur' },
           {
             min: 6,
             max: 15,
@@ -64,90 +64,82 @@ export default {
   // 添加行为，
   methods: {
     // 添加表单重置方法
-    resetLoginForm() {
+    resetLoginForm () {
       // this=>当前组件对象，其中的属性$refs包含了设置的表单ref
-      //   console.log(this)
+        console.log(this)
       this.$refs.LoginFormRef.resetFields()
     },
     // 7*登录的方法
-    async login() {
-      const {data: res} = await this.$http.get('sysUser')
-      console.log(res)
+    login () {
       // 点击登录的时候先调用validate方法验证表单内容是否有误
-      // this.$refs.LoginFormRef.validate(async valid => {
-      //   console.log(this.loginFormRules)
-      //   // 如果valid参数为true则验证通过
-      //   if (!valid) {
-      //     return
-      //   }
-      //
-      //   // 发送请求进行登录
-      //   const { data: res } = await this.$http.get('sysUser/', this.loginForm)
-      //     //   console.log(res);
-      //   // if (res.meta.status !== 200) {
-      //   //   return this.$message.error('登录失败:' + res.meta.msg) // console.log("登录失败:"+res.meta.msg)
-      //   // }
-      //
-      //   this.$message.success('登录成功')
-      //   console.log(res)
-      //   // // 保存token
-      //   // window.sessionStorage.setItem('token', res.data.token)
-      //   // 导航至/home
-      //   // 8*.编程式导航的api home是后台主页的页面，还要声明路由
-      //   this.$router.push('/home')
-      // })
+      this.$refs.LoginFormRef.validate(async valid => {
+        console.log(this.loginFormRules)
+        // 如果valid参数为true则验证通过
+        if (!valid) {
+          return
+        }
+
+        // 发送请求进行登录
+        // const { data: res } = await this.$http.get('sysUser', this.loginForm)
+        //     console.log(res);
+        // if (res.meta.status !== 200) {
+        //   return this.$message.error('登录失败:' + res.meta.msg) // console.log("登录失败:"+res.meta.msg)
+        // }
+        // this.$message.success('登录成功')
+        // console.log(res)
+        // // // 保存token
+        // window.sessionStorage.setItem('token', res.data.token)
+        // 导航至/home
+        // 8*.编程式导航的api home是后台主页的页面，还要声明路由
+        this.$router.push('/Person')
+      })
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-.login_container {
-  background-color: #2b5b6b;
-  height: 100%;
-}
-
-.login_box {
-  width: 450px;
-  height: 300px;
-  background: #fff;
-  border-radius: 3px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-
-  .avatar_box {
-    height: 130px;
-    width: 130px;
-    border: 1px solid #eee;
-    border-radius: 50%;
-    padding: 10px;
-    box-shadow: 0 0 10px #ddd;
+  .login_container {
+    background-color: #2b5b6b;
+    height: 100%;
+  }
+  .login_box {
+    width: 450px;
+    height: 300px;
+    background: #fff;
+    border-radius: 3px;
     position: absolute;
     left: 50%;
+    top: 50%;
     transform: translate(-50%, -50%);
-    background-color: #fff;
-
-    img {
-      width: 100%;
-      height: 100%;
+    .avatar_box {
+      height: 130px;
+      width: 130px;
+      border: 1px solid #eee;
       border-radius: 50%;
-      background-color: #eee;
+      padding: 10px;
+      box-shadow: 0 0 10px #ddd;
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: #eee;
+      }
     }
   }
-}
-
-.login_form {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 0 20px;
-  box-sizing: border-box;
-}
-
-.btns {
-  display: flex;
-  justify-content: flex-end;
-}
+  .login_form {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+  .btns {
+    display: flex;
+    justify-content: flex-end;
+  }
 </style>
