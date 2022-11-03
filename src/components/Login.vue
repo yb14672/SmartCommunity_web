@@ -1,28 +1,72 @@
 <template>
     <div class="login_container">
+        <vue-particles
+                color="#409EFF"
+                :particleOpacity="0.7"
+                :particlesNumber="60"
+                shapeType="circle"
+                :particleSize="6"
+                linesColor="#409EFF"
+                :linesWidth="1"
+                :lineLinked="true"
+                :lineOpacity="0.4"
+                :linesDistance="150"
+                :moveSpeed="3"
+                :hoverEffect="true"
+                hoverMode="grab"
+                :clickEffect="true"
+                clickMode="push">
+        </vue-particles>
         <!-- 登录盒子  -->
         <div class="login_box">
+            <div class="text" >智  慧  社  区 </div>
             <!-- 头像 -->
             <div class="avatar_box">
-                <img src="../assets/logo.png" alt="">
+
+<!--                <img src="../assets/logo.jpg" alt="">-->
             </div>
             <!-- 登录表单 -->
             <el-form :model="loginForm" ref="LoginFormRef" :rules="loginFormRules" label-width="0px" class="login_form">
                 <!-- 用户名 -->
                 <el-form-item prop="username">
                     <!--          6*.v-model双向数据绑定，绑定需要用的数据-->
-                    <el-input v-model.trim="loginForm.username" prefix-icon="iconfont icon-user"></el-input>
+                    <el-input  v-model.trim="loginForm.username" prefix-icon="el-icon-s-custom" placeholder="输入账号"
+
+                    ></el-input>
                 </el-form-item>
                 <!-- 密码 -->
                 <el-form-item prop="password">
-                    <el-input type="password" v-model.trim="loginForm.password"
-                              prefix-icon="iconfont icon-3702mima"></el-input>
+                    <el-input
+                            type="password"
+                            prefix-icon="el-icon-lock"
+                            placeholder="请输入密码"
+                            show-password
+                            v-model="loginForm.password"
+                    ></el-input>
                 </el-form-item>
                 <!-- 按钮 -->
                 <el-form-item class="btns">
                     <el-button type="primary" @click="login">登录</el-button>
                     <el-button type="info" @click="resetLoginForm">重置</el-button>
                 </el-form-item>
+                <el-dialog :visible.sync="dialogVisible" title="滑动验证" class="slideContainer" width="350px" append-to-body style="margin-top: 300px"
+                           height="400px">
+                    <slide-verify :l="42"
+                                  :r="10"
+                                  :w="310"
+                                  :h="155"
+
+
+
+                                  slider-text="向右滑动"
+                                  @success="onSuccess"
+                                  @fail="onFail"
+                                  @refresh="onRefresh"
+                    ></slide-verify>
+                    <div>{{msg}}</div>
+                </el-dialog>
+
+
             </el-form>
         </div>
     </div>
@@ -33,12 +77,15 @@
         // *4data数据源
         data() {
             return {
+                dialogVisible: false,
+                msg: '',
                 // 数据绑定
                 loginForm: {
                     // 5*声明数据
-                    username: 'admin',
-                    password: '123456'
+                    username: '',
+                    password: ''
                 },
+
                 // 表单验证规则
                 loginFormRules: {
                     username: [
@@ -64,16 +111,8 @@
         },
         // 添加行为，
         methods: {
-            // 添加表单重置方法
-            resetLoginForm() {
-                // this=>当前组件对象，其中的属性$refs包含了设置的表单ref
-                //   console.log(this)
-                this.$refs.LoginFormRef.resetFields()
-            },
-            // 7*登录的方法
-            async login() {
-
-
+            login: function () {
+                //进行登录{
                 // 点击登录的时候先调用validate方法验证表单内容是否有误
                 this.$refs.LoginFormRef.validate(async valid => {
                     console.log(this.loginFormRules)
@@ -90,54 +129,96 @@
                     console.log(res)
                     if (res.meta.errorCode !== 200) {
                         return this.$message.error(res.meta.errorMsg)
-                    }
-                    this.$message.success('登录成功')
+                    } else {
+                        // 保存token
+                        window.sessionStorage.setItem('user_token', res.data)
+                        this.dialogVisible = true;
 
-                    // 保存token
-                    window.sessionStorage.setItem('token', res.data.token)
-                    // 导航至/home
-                    // 8*.编程式导航的api home是后台主页的页面，还要声明路由
-                    await this.$router.push('/home')
+                    }
                 })
-            }
+
+            },
+
+            // 添加表单重置方法
+            resetLoginForm() {
+                // this=>当前组件对象，其中的属性$refs包含了设置的表单ref
+                //   console.log(this)
+                this.$refs.LoginFormRef.resetFields()
+            },
+            // 7*登录的方法
+            async onSuccess() {
+                this.msg = '验证成功',
+                    this.dialogVisible = false
+
+                // 导航至/home
+                // 8*.编程式导航的api home是后台主页的页面，还要声明路由
+                this.$message.success('登录成功');
+
+                await this.$router.push('/home')
+            },
+            onFail() {
+                this.msg = ''
+            },
+            onRefresh() {
+                this.msg = ''
+            },
         }
+
     }
 </script>
 
 <style lang="less" scoped>
+    /*动态js背面*/
+    #particles-js {
+        width: 100%;
+        height: calc(100% - 100px);
+        position: absolute;
+    }
     .login_container {
-        background-color: #2b5b6b;
+        /*background-image: url("../assets/login.jpg");*/
+        background-color: white;
+        width: 100%;
         height: 100%;
+        position: fixed;
+        background-size: 100% 100%;
     }
 
     .login_box {
         width: 450px;
         height: 300px;
-        background: #fff;
-        border-radius: 3px;
+        background-color:rgba(0,0,0,0.7) ;
+        border-radius: 20px;
         position: absolute;
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
+        text-align: center;
+        .text{
+
+            font-size: 30px;
+            margin-top: 30px;
+            color: white;
+        }
+
 
         .avatar_box {
+            background-color: unset;
             height: 130px;
             width: 130px;
-            border: 1px solid #eee;
-            border-radius: 50%;
             padding: 10px;
-            box-shadow: 0 0 10px #ddd;
             position: absolute;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: #fff;
 
             img {
                 width: 100%;
                 height: 100%;
                 border-radius: 50%;
-                background-color: #eee;
             }
+        }
+
+        .iconfont icon-user {
+
         }
     }
 
@@ -152,5 +233,10 @@
     .btns {
         display: flex;
         justify-content: flex-end;
+    }
+
+    .el-dialog__wrapper {
+        position: fixed;
+        top: -200px;
     }
 </style>

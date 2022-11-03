@@ -6,7 +6,11 @@ import axios from 'axios'
 
 import "./plugins/element"
 import './plugins/element.js'
+import SlideVerify from 'vue-monoplasty-slide-verify';
 
+//动态背景
+import VueParticles from 'vue-particles'
+Vue.use(VueParticles)
 //接口前缀
 axios.defaults.baseURL = 'http://localhost:8080/'
 //请求在到达服务器之前，先会调用use中的这个回调函数来添加请求头信息
@@ -16,7 +20,7 @@ axios.interceptors.request.use(config=>{
   return config
 })
 
-
+Vue.use(SlideVerify);
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
 

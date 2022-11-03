@@ -13,36 +13,36 @@
     <!-- 页面主体区域 -->
     <el-container>
       <!-- 侧边栏 -->
-      <el-aside width="200px">
-        <!-- 侧边栏菜单 -->
-        <el-menu
-          background-color="#333744"
-          text-color="#fff"
-          active-text-color="#ffd04b" router :default-active="activePath">
-          <!-- 一级菜单 -->
-<!--          12*.是通过循环渲染上去的-->
-          <el-submenu :index="item.id+''" v-for="item in menuList" :key="item.id">
-            <!-- 一级菜单模板 -->
-            <template slot="title">
-              <!-- 图标 -->
-              <i :class="iconsObj[item.id]"></i>
-              <!-- 文本 -->
-              <span>{{item.authName}}</span>
-            </template>
-            <!-- 二级子菜单 -->
-            <el-menu-item :index="'/'+subItem.path" v-for="subItem in item.children" :key="subItem.id"
-                          @click="saveNavState('/'+subItem.path)">
-              <!-- 二级菜单模板 -->
-              <template slot="title">
-                <!-- 图标 -->
-                <i class="el-icon-menu"></i>
-                <!-- 文本 -->
-                <span>{{subItem.authName}}</span>
-              </template>
-            </el-menu-item>
-          </el-submenu>
-        </el-menu>
-      </el-aside>
+<!--      <el-aside width="200px">-->
+<!--        &lt;!&ndash; 侧边栏菜单 &ndash;&gt;-->
+<!--        <el-menu-->
+<!--          background-color="#333744"-->
+<!--          text-color="#fff"-->
+<!--          active-text-color="#ffd04b" router :default-active="activePath">-->
+<!--          &lt;!&ndash; 一级菜单 &ndash;&gt;-->
+<!--&lt;!&ndash;          12*.是通过循环渲染上去的&ndash;&gt;-->
+<!--          <el-submenu :index="item.id+''" v-for="item in menuList" :key="item.id">-->
+<!--            &lt;!&ndash; 一级菜单模板 &ndash;&gt;-->
+<!--            <template slot="title">-->
+<!--              &lt;!&ndash; 图标 &ndash;&gt;-->
+<!--              <i :class="iconsObj[item.id]"></i>-->
+<!--              &lt;!&ndash; 文本 &ndash;&gt;-->
+<!--              <span>{{item.authName}}</span>-->
+<!--            </template>-->
+<!--            &lt;!&ndash; 二级子菜单 &ndash;&gt;-->
+<!--            <el-menu-item :index="'/'+subItem.path" v-for="subItem in item.children" :key="subItem.id"-->
+<!--                          @click="saveNavState('/'+subItem.path)">-->
+<!--              &lt;!&ndash; 二级菜单模板 &ndash;&gt;-->
+<!--              <template slot="title">-->
+<!--                &lt;!&ndash; 图标 &ndash;&gt;-->
+<!--                <i class="el-icon-menu"></i>-->
+<!--                &lt;!&ndash; 文本 &ndash;&gt;-->
+<!--                <span>{{subItem.authName}}</span>-->
+<!--              </template>-->
+<!--            </el-menu-item>-->
+<!--          </el-submenu>-->
+<!--        </el-menu>-->
+<!--      </el-aside>-->
       <!-- 主体结构 -->
       <el-main>
         <router-view></router-view>
@@ -57,21 +57,13 @@ export default {
     return {
       // 左侧菜单数据
       menuList: null,
-      iconsObj: {
-        125: 'iconfont icon-user',
-        103: 'iconfont icon-tijikongjian',
-        101: 'iconfont icon-shangpin',
-        102: 'iconfont icon-danju',
-        145: 'iconfont icon-baobiao'
-      },
       // 被激活的链接地址
       activePath: ''
     }
   },
   created () {
     // 在created阶段请求左侧菜单数据
-    this.getMenuList()
-    this.activePath = window.sessionStorage.getItem('activePath')
+    console.log("token: "+window.sessionStorage.getItem("user_token"))
   },
   methods: {
     saveNavState (path) {
@@ -80,18 +72,12 @@ export default {
       this.activePath = path
     },
     logout () {
+
+
       // 移除session数据
       window.sessionStorage.clear()
       // 10*.强行跳转登录页面
       this.$router.push('/login')
-    },
-    async getMenuList () {
-      // 发送请求获取左侧菜单数据
-      const { data: res } = await this.$http.get('menus')
-      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
-
-      this.menuList = res.data
-      console.log(res)
     }
   }
 }
