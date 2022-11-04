@@ -1,150 +1,176 @@
-<template>
-  <el-container class="home-container">
-    <!-- 头部区域 -->
+<template >
+  <el-container >
     <el-header>
       <div>
         <!-- logo -->
-        <img src="../assets/logo.png" alt="" style="height: 60px;margin-left: 140px;">
+        <img src="../assets/logo.gif" alt="" style="height: 60px;margin-left: 20px;">
         <!-- 顶部标题 -->
-        <span>电商后台管理系统</span>
+        <span>智慧社区</span>
       </div>
-      <el-button type="info" @click="logout"> 退出</el-button>
+      <el-menu
+              unique-opened
+              :default-active='activeIndex2'
+               class='el-menu-demo'
+               mode='horizontal'
+               @select='handleSelect'
+               background-color='#333744'
+               text-color='#fff'
+               active-text-color='#373D41'>
+        <el-submenu index='2'>
+          <template slot='title'>
+            <el-avatar :src='avatar'></el-avatar>
+          </template>
+          <el-menu-item  type='info' @click='person' align='center'>个人中心</el-menu-item>
+          <el-menu-item type='info' @click='logout' align='center'>退出</el-menu-item>
+        </el-submenu>
+      </el-menu>
     </el-header>
-    <!-- 页面主体区域 -->
-    <el-container>
-      <!-- 侧边栏 -->
+    <el-container >
       <el-aside width="200px">
-        <!-- 侧边栏菜单 -->
+        <!-- 页面导航-->
+        <!-- el-menu：菜单栏的根组件 router: 设置路由可以跳转 -->
         <el-menu
-          background-color="#333744"
-          text-color="#fff"
-          active-text-color="#ffd04b" router :default-active="activePath">
-          <!-- 一级菜单 -->
-<!--          12*.是通过循环渲染上去的-->
-          <el-submenu :index="item.id+''" v-for="item in menuList" :key="item.id">
-            <!-- 一级菜单模板 -->
+                style="height: 100vh"
+            background-color="#333744"
+            text-color="#fff"
+            active-text-color="#ffd04b"
+            unique-opened
+            router class="el-menu-vertical-demo"
+
+        >
+          <!-- submenu：菜单栏中的一项 index: 它的标识（唯一）-->
+          <el-submenu
+              v-for="(item, index) in menuList"
+              :key="index"
+              :index="item.path"
+          >
+            <!-- 这一项的图标&文字信息 -->
             <template slot="title">
-              <!-- 图标 -->
-              <i :class="iconsObj[item.id]"></i>
-              <!-- 文本 -->
-              <span>{{item.authName}}</span>
+              <i :class="'el-icon-'+item.icon"></i>
+              <span>{{ item.menuName }}</span>
             </template>
-            <!-- 二级子菜单 -->
-            <el-menu-item :index="'/'+subItem.path" v-for="subItem in item.children" :key="subItem.id"
-                          @click="saveNavState('/'+subItem.path)">
-              <!-- 二级菜单模板 -->
-              <template slot="title">
-                <!-- 图标 -->
-                <i class="el-icon-menu"></i>
-                <!-- 文本 -->
-                <span>{{subItem.authName}}</span>
+            <!-- 判断是否最后一级子元素 -->
+            <template v-for="(item1, index1) in item.children">
+              <!-- 如果不是最后一级 -->
+              <template v-if="item1.children.length !== 0">
+                <el-submenu :key="index1" :index="item1.path">
+                  <template slot="title">
+                    <i :class="'el-icon-'+item1.icon"></i>
+                    <span>{{ item1.menuName }}</span>
+                  </template>
+                  <el-menu-item
+                      v-for="(item2, index2) in item1.children"
+                      :key="index2"
+                      :index="'/' + item2.path"
+                  >
+                    <i :class="'el-icon-'+item2.icon"></i>
+                    <span>{{ item2.menuName }}</span>
+                  </el-menu-item>
+                </el-submenu>
               </template>
-            </el-menu-item>
+              <!-- // -->
+              <!-- 如果是最后一级 -->
+              <template v-else>
+                <el-menu-item :key="index1" :index="'/' + item1.path">
+                  <i :class="'el-icon-'+item1.icon"></i>
+                  <span>{{ item1.menuName }}</span>
+                </el-menu-item>
+              </template>
+              <!-- // -->
+            </template>
           </el-submenu>
         </el-menu>
       </el-aside>
-      <!-- 主体结构 -->
+      <!-- 页面主题部分-->
       <el-main>
         <router-view></router-view>
       </el-main>
     </el-container>
   </el-container>
+
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {
-      // 左侧菜单数据
-      menuList: null,
-      iconsObj: {
-        125: 'iconfont icon-user',
-        103: 'iconfont icon-tijikongjian',
-        101: 'iconfont icon-shangpin',
-        102: 'iconfont icon-danju',
-        145: 'iconfont icon-baobiao'
-      },
-      // 被激活的链接地址
-      activePath: ''
+      avatar:'',
+      menuList: ''
     }
   },
-  created () {
-    // 在created阶段请求左侧菜单数据
-    this.getMenuList()
-    this.activePath = window.sessionStorage.getItem('activePath')
+  created() {
+    this.getMenuList();
   },
   methods: {
-    saveNavState (path) {
-      //  点击二级菜单的时候保存被点击的二级菜单信息
-      window.sessionStorage.setItem('activePath', path)
-      this.activePath = path
+    person() {
+      this.$router.push('/person')
     },
-    logout () {
-      // 移除session数据
-      window.sessionStorage.clear()
-      // 10*.强行跳转登录页面
-      this.$router.push('/login')
+    logout(){
+      window.sessionStorage.clear();
+      return this.$router.push("/login");
     },
-    async getMenuList () {
+    async getMenuList() {
       // 发送请求获取左侧菜单数据
-      const { data: res } = await this.$http.get('menus')
-      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+      const {data: res} = await this.$http.get('sysMenu/getMenus')
+      // console.log(res)
+      // if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
 
       this.menuList = res.data
-      console.log(res)
+      // console.log(res)
+    },
+    // handleOpen(key, keyPath) {
+    //   console.log(key, keyPath);
+    // },
+    // handleClose(key, keyPath) {
+    //   console.log(key, keyPath);
+    // }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.home-container {
+  height: 100%;
+}
+.el-header {
+  background-color: #373d41;
+  display: flex;
+  justify-content: space-between;
+  padding-left: 0;
+  align-items: center;
+  color: #fff;
+  font-size: 20px;
+  > div {
+    display: flex;
+    align-items: center;
+    span {
+      margin-left: 15px;
     }
   }
 }
 
-</script>
-
-<style lang="less" scoped>
-  .home-container {
-    height: 100%;
+.el-aside {
+  background-color: #333744;
+  .el-menu {
+    border-right: none;
   }
+}
 
-  .el-header {
-    background-color: #373d41;
-    display: flex;
-    justify-content: space-between;
-    padding-left: 0;
-    align-items: center;
-    color: #fff;
-    font-size: 20px;
+.el-main {
+  background-color: #eaedf1;
+}
 
-    > div {
-      display: flex;
-      align-items: center;
+.iconfont {
+  margin-right: 10px;
+}
 
-      span {
-        margin-left: 15px;
-      }
-    }
-  }
-
-  .el-aside {
-    background-color: #333744;
-
-    .el-menu {
-      border-right: none;
-    }
-  }
-
-  .el-main {
-    background-color: #eaedf1;
-  }
-
-  .iconfont {
-    margin-right: 10px;
-  }
-
-  .toggle-button {
-    background-color: #4a5064;
-    font-size: 10px;
-    line-height: 24px;
-    color: #fff;
-    text-align: center;
-    letter-spacing: 0.2em;
-    cursor: pointer;
-  }
+.toggle-button {
+  background-color: #4a5064;
+  font-size: 10px;
+  line-height: 24px;
+  color: #fff;
+  text-align: center;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+}
 </style>

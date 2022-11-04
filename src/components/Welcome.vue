@@ -1,5 +1,5 @@
 <template>
-  <div>欢迎进入智慧社区</div>
+  <div>欢迎<el-table-column prop="username"></el-table-column>进入智慧社区系统</div>
 </template>
 
 <script>
