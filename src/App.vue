@@ -7,9 +7,12 @@
 
 <script>
   export default {
-    name: 'app'
+    name: 'app',
   }
 </script>
 
 <style>
+  body::-webkit-scrollbar {
+    display: none;
+  }
 </style>

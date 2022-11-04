@@ -55,9 +55,6 @@
                                   :r="10"
                                   :w="310"
                                   :h="155"
-
-
-
                                   slider-text="向右滑动"
                                   @success="onSuccess"
                                   @fail="onFail"
@@ -109,6 +106,14 @@
                 }
             }
         },
+        created(){
+            // eslint-disable-next-line no-unused-vars
+            document.onkeydown = function (e) {
+                let key = window.event.keyCode;
+                if (key == 13) {        // do something
+                }
+            }
+        },
         // 添加行为，
         methods: {
             login: function () {
@@ -131,7 +136,7 @@
                         return this.$message.error(res.meta.errorMsg)
                     } else {
                         // 保存token
-                        window.sessionStorage.setItem('user_token', res.data)
+                        window.sessionStorage.setItem('token', res.data)
                         this.dialogVisible = true;
 
                     }
@@ -157,7 +162,7 @@
                 await this.$router.push('/home')
             },
             onFail() {
-                this.msg = ''
+                this.onRefresh()
             },
             onRefresh() {
                 this.msg = ''
