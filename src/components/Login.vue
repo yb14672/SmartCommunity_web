@@ -114,8 +114,22 @@
                 }
             }
         },
+        mounted() {
+          // 绑定监听事件
+          window.addEventListener("keydown", this.keyDown);
+        },
+        destroyed() {
+          // 销毁事件
+          window.removeEventListener("keydown", this.keyDown, false);
+        },
         // 添加行为，
         methods: {
+          keyDown(e) {
+            // 回车则执行登录方法 enter键的ASCII是13
+            if (e.keyCode == 13 || e.keyCode == 100) {
+              this.login(); // 定义的登录方法
+            }
+          },
             login: function () {
                 //进行登录{
                 // 点击登录的时候先调用validate方法验证表单内容是否有误
