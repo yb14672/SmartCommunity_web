@@ -74,8 +74,7 @@
           <el-button size="mini"
                      type="text"
                      icon="el-icon-edit"
-                     @click="handleUpdate(scope.row)"
-          >修改
+                     @click="handleUpdate(scope.row)">修改
           </el-button>
           <el-button
               size="mini"
@@ -236,7 +235,7 @@ export default {
       showSearch: true,
       // 是否显示弹出层
       open: false,
-      //显示删除列表
+      // 显示删除列表
       dialogVisibleDel: false,
       // 弹出层标题
       title: "",
@@ -428,7 +427,8 @@ export default {
               return this.$message.error(res.meta.errorMsg)
             }
             this.open = false;
-            await this.getList();
+            // await this.getList();
+            location.reload()
             return this.$message.success("修改成功！")
           } else {
             const {data: res} = await this.$http.post("sysMenu/addMenu", this.form);
@@ -438,7 +438,8 @@ export default {
             }
             this.$message.success("新增成功");
             this.open = false;
-            await this.getList();
+            // await this.getList();
+            location.reload()
           }
         }
       });
@@ -457,7 +458,8 @@ export default {
             console.log(res.data.meta.errorCode)
             if (res.data.meta.errorCode === 200) {
               // 重新获取页面
-              this.getList();
+              // this.getList();
+              location.reload()
               this.$message.success("删除成功");
             } else {
               this.$message.warning(res.data.meta.errorMsg);
@@ -486,7 +488,8 @@ export default {
                 console.log(res.data.meta.errorCode)
                 if (res.data.meta.errorCode === 200) {
                   // 重新获取页面
-                  this.getList();
+                  // this.getList();
+                  location.reload()
                   this.$message.success("删除成功");
                   this.dialogVisibleDel = false;
                 } else {

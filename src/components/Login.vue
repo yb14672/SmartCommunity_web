@@ -19,18 +19,18 @@
         </vue-particles>
         <!-- 登录盒子  -->
         <div class="login_box">
-            <div class="text" >智  慧  社  区 </div>
+            <div class="text">智 慧 社 区</div>
             <!-- 头像 -->
             <div class="avatar_box">
 
-<!--                <img src="../assets/logo.jpg" alt="">-->
+                <!--                <img src="../assets/logo.jpg" alt="">-->
             </div>
             <!-- 登录表单 -->
             <el-form :model="loginForm" ref="LoginFormRef" :rules="loginFormRules" label-width="0px" class="login_form">
                 <!-- 用户名 -->
                 <el-form-item prop="username">
                     <!--          6*.v-model双向数据绑定，绑定需要用的数据-->
-                    <el-input  v-model.trim="loginForm.username" prefix-icon="el-icon-s-custom" placeholder="输入账号"
+                    <el-input v-model.trim="loginForm.username" prefix-icon="el-icon-s-custom" placeholder="输入账号"
 
                     ></el-input>
                 </el-form-item>
@@ -49,27 +49,15 @@
                     <el-button type="primary" @click="login">登录</el-button>
                     <el-button type="info" @click="resetLoginForm">重置</el-button>
                 </el-form-item>
-                <el-dialog :visible.sync="dialogVisible" title="滑动验证" class="slideContainer" width="350px" append-to-body style="margin-top: 300px"
-                           height="400px">
-                    <slide-verify :l="42"
-                                  :r="10"
-                                  :w="310"
-                                  :h="155"
-                                  slider-text="向右滑动"
-                                  @success="onSuccess"
-                                  @fail="onFail"
-                                  @refresh="onRefresh"
-                    ></slide-verify>
-                    <div>{{msg}}</div>
-                </el-dialog>
-
-
+                <Vcode :show="dialogVisible" @success="onSuccess" @close="close"/>
             </el-form>
         </div>
     </div>
 </template>
 
 <script>
+    import Vcode from "vue-puzzle-vcode";
+
     export default {
         // *4data数据源
         data() {
@@ -106,7 +94,7 @@
                 }
             }
         },
-        created(){
+        created() {
             // eslint-disable-next-line no-unused-vars
             document.onkeydown = function (e) {
                 let key = window.event.keyCode;
@@ -115,21 +103,21 @@
             }
         },
         mounted() {
-          // 绑定监听事件
-          window.addEventListener("keydown", this.keyDown);
+            // 绑定监听事件
+            window.addEventListener("keydown", this.keyDown);
         },
         destroyed() {
-          // 销毁事件
-          window.removeEventListener("keydown", this.keyDown, false);
+            // 销毁事件
+            window.removeEventListener("keydown", this.keyDown, false);
         },
         // 添加行为，
         methods: {
-          keyDown(e) {
-            // 回车则执行登录方法 enter键的ASCII是13
-            if (e.keyCode == 13 || e.keyCode == 100) {
-              this.login(); // 定义的登录方法
-            }
-          },
+            keyDown(e) {
+                // 回车则执行登录方法 enter键的ASCII是13
+                if (e.keyCode == 13 || e.keyCode == 100) {
+                    this.login(); // 定义的登录方法
+                }
+            },
             login: function () {
                 //进行登录{
                 // 点击登录的时候先调用validate方法验证表单内容是否有误
@@ -157,7 +145,6 @@
                 })
 
             },
-
             // 添加表单重置方法
             resetLoginForm() {
                 // this=>当前组件对象，其中的属性$refs包含了设置的表单ref
@@ -166,23 +153,23 @@
             },
             // 7*登录的方法
             async onSuccess() {
-                this.msg = '验证成功',
-                    this.dialogVisible = false
-
+                this.msg = '验证成功';
+                this.dialogVisible = false
                 // 导航至/home
                 // 8*.编程式导航的api home是后台主页的页面，还要声明路由
                 this.$message.success('登录成功');
-
                 await this.$router.push('/home')
             },
-            onFail() {
-                this.onRefresh()
+            close() {
+                this.dialogVisible = false;
             },
             onRefresh() {
                 this.msg = ''
             },
+        },
+        components: {
+            Vcode,
         }
-
     }
 </script>
 
@@ -193,6 +180,7 @@
         height: calc(100% - 100px);
         position: absolute;
     }
+
     .login_container {
         /*background-image: url("../assets/login.jpg");*/
         background-color: white;
@@ -205,14 +193,15 @@
     .login_box {
         width: 450px;
         height: 300px;
-        background-color:rgba(0,0,0,0.7) ;
+        background-color: rgba(0, 0, 0, 0.7);
         border-radius: 20px;
         position: absolute;
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
         text-align: center;
-        .text{
+
+        .text {
 
             font-size: 30px;
             margin-top: 30px;
