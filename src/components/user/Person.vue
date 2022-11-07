@@ -59,7 +59,7 @@
                                :auto-upload="false"
                                :show-file-list="false"
                                :on-change='handleChangeUpload'>
-                      <el-button id="changePic" type="primary">更换图片</el-button>
+                      <el-button type="primary" id="changePic">更换图片</el-button>
                     </el-upload>
                     <el-button type="primary" @click="changeScaleHandle(1)"><i class="el-icon-zoom-in"/></el-button>
                     <el-button type="primary" @click="changeScaleHandle(-1)"><i class="el-icon-zoom-out"/></el-button>
@@ -413,7 +413,7 @@ export default {
 </script>
 <style scoped>
   #changePic{
-    margin-right: 72px;
+    margin-right: 73px;
   }
   .cropper-wrapper{
     width: 178px;

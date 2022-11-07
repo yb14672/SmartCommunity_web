@@ -1,6 +1,6 @@
 ﻿/**
  * 通用js方法封装处理
- * by yb14672
+ * by zhiyu
  */
 
 const baseURL = process.env.VUE_APP_BASE_API

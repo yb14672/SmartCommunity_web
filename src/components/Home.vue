@@ -36,32 +36,41 @@
             router class="el-menu-vertical-demo"
             :default-active="activePath"
         >
+
           <!-- submenu：菜单栏中的一项 index: 它的标识（唯一）-->
+          <el-menu-item index="/welcome">
+            <template>
+              <i class="el-icon-loading"></i>
+              <span>首页</span>
+            </template>
+          </el-menu-item>
           <el-submenu
               v-for="(item, index) in menuList"
               :key="index"
               :index="item.path"
+              :disabled="item.status == 1"
           >
             <!-- 这一项的图标&文字信息 -->
             <template slot="title">
-              <i :class="'el-icon-'+item.icon"></i>
+              <i :class="item.icon"></i>
               <span>{{ item.menuName }}</span>
             </template>
             <!-- 判断是否最后一级子元素 -->
             <template v-for="(item1, index1) in item.children">
               <!-- 如果不是最后一级 -->
               <template v-if="item1.children.length !== 0">
-                <el-submenu :key="index1" :index="'/'+item.path+'/'+item1.path">
+                <el-submenu :key="index1" :disabled="item1.status == 1" :index="'/'+item.path+'/'+item1.path">
                   <template slot="title">
-                    <i :class="'el-icon-'+item1.icon"></i>
+                    <i :class="item1.icon"></i>
                     <span>{{ item1.menuName }}</span>
                   </template>
                   <el-menu-item
                       v-for="(item2, index2) in item1.children"
                       :key="index2"
+                      :disabled="item2.status == 1"
                       :index="'/'+item.path+'/'+item1.path+'/' + item2.path"
                   >
-                    <i :class="'el-icon-'+item2.icon"></i>
+                    <i :class="item2.icon"></i>
                     <span>{{ item2.menuName }}</span>
                   </el-menu-item>
                 </el-submenu>
@@ -69,8 +78,10 @@
               <!-- // -->
               <!-- 如果是最后一级 -->
               <template v-else>
-                <el-menu-item :key="index1" :index="'/'+item.path+'/' + item1.path" @click="savePath('/'+item.path+'/' + item1.path)">
-                  <i :class="'el-icon-'+item1.icon"></i>
+                <el-menu-item :key="index1" :index="'/'+item.path+'/' + item1.path"
+                              :disabled="item1.status == 1"
+                              @click="savePath('/'+item.path+'/' + item1.path)">
+                  <i :class="item1.icon"></i>
                   <span>{{ item1.menuName }}</span>
                 </el-menu-item>
               </template>
@@ -103,9 +114,9 @@ export default {
     this.getMenuList();
   },
   methods: {
-    savePath(path){
+    savePath(path) {
       //点击最后一级菜单的时候保存url到sessionStorage中
-      window.sessionStorage.setItem('path',path);
+      window.sessionStorage.setItem('path', path);
       this.activePath = path;
     },
     person() {
