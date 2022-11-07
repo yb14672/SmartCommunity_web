@@ -112,6 +112,7 @@ export default {
     this.activePath = window.sessionStorage.getItem('path');
     // this.$router.push(this.activePath)
     this.getMenuList();
+    this.getAvatarById();
   },
   methods: {
     savePath(path) {
@@ -133,6 +134,13 @@ export default {
       // if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
 
       this.menuList = res.data
+      // console.log(res)
+    },
+    async getAvatarById() {
+      // 发送请求获取头像
+      const {data: res} = await this.$http.get('sysUser/getAvatarById')
+      if (res.meta.errorCode !== 200) return this.$message.error(res.meta.errorMsg)
+      this.avatar = res.data;
       // console.log(res)
     },
     // handleOpen(key, keyPath) {
