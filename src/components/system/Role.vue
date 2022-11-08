@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <!--查询列表-->
     <el-form :model="queryParams" ref="queryForm" v-show="showSearch" :inline="true">
       <el-form-item label="角色名称" prop="roleName">
         <el-input
@@ -54,7 +55,7 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
-
+    <!--操作列表-->
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
@@ -62,7 +63,6 @@
             icon="el-icon-plus"
             size="mini"
             @click="handleAdd"
-
         >新增
         </el-button>
       </el-col>
@@ -80,7 +80,7 @@
         <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
       </el-col>
     </el-row>
-
+    <!--数据渲染-->
     <el-table v-loading="false" :data="roleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="角色编号" prop="roleId" width="120"/>
@@ -90,6 +90,7 @@
       <el-table-column label="状态" align="center" width="100">
         <template slot-scope="scope">
           <el-switch
+              :disabled="scope.row.roleId === 1"
               v-model="scope.row.status"
               active-value="0"
               inactive-value="1"
@@ -99,11 +100,11 @@
       </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ scope.row.createTime | moment }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
+        <template slot-scope="scope" v-if="scope.row.roleId !== 1">
           <el-button
               size="mini"
               type="text"
@@ -121,7 +122,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <!--    分页-->
+    <!--分页-->
     <div class="block" align="right">
       <el-pagination
           @size-change="handleSizeChange"
@@ -156,9 +157,10 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="菜单权限">
-          <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand">展开/折叠</el-checkbox>
+          <el-checkbox v-model="menuExpand" @change="
+          handleCheckedTreeExpand">展开/折叠</el-checkbox>
           <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll">全选/全不选</el-checkbox>
-          <el-checkbox v-model="form.deptCheckStrictly" @change="handleCheckedTreeConnect($event,'menu')">父子联动
+          <el-checkbox v-model="menuParentSon" @change="handleCheckedTreeConnect">父子联动
           </el-checkbox>
           <el-tree
               class="tree-border"
@@ -166,7 +168,7 @@
               show-checkbox
               ref="menu"
               node-key="menuId"
-              :check-strictly="!form.deptCheckStrictly"
+              :check-strictly="!menuParentSon"
               empty-text="加载中，请稍后"
               :props="defaultProps"
           ></el-tree>
@@ -218,6 +220,8 @@ export default {
       menuNodeAll: false,
       deptExpand: true,
       deptNodeAll: false,
+      //父子级联动
+      menuParentSon: true,
       // 日期范围
       dateRange: [],
       // 状态数据字典
@@ -257,9 +261,6 @@ export default {
   created() {
     this.getList();
     this.getDicts("sys_normal_disable");
-    // this.getDicts("sys_normal_disable").then(response => {
-    //   this.statusOptions = response.data;
-    // });
   },
   methods: {
     // 分页每页多少条数据
@@ -307,14 +308,11 @@ export default {
     },
     /** 查询菜单树结构 */
     async getMenuTreeselect() {
-      const {data: res} = await this.$http.get('sysMenu/queryMenus');
+      const {data: res} = await this.$http.get('sysMenu/getMenuTree');
       if (res.meta.errorCode !== 200) {
         return this.$message.error("获取菜单树失败！")
       }
       this.menuOptions = res.data;
-      // menuTreeselect().then(response => {
-      //   this.menuOptions = response.data;
-      // });
     },
     // 所有菜单节点数据
     getMenuAllCheckedKeys() {
@@ -327,6 +325,7 @@ export default {
     },
     // 角色状态修改
     handleStatusChange(row) {
+      console.log(row)
       let text = row.status === "0" ? "启用" : "停用";
       this.$confirm('确认要"' + text + '""' + row.roleName + '"角色吗?', "警告", {
         confirmButtonText: "确定",
@@ -339,18 +338,13 @@ export default {
         }
         this.$message(text + "成功");
         await this.getList();
-      }).catch(function() {
+      }).catch(function () {
         row.status = row.status === "0" ? "1" : "0";
       });
     },
     // 取消按钮
     cancel() {
       this.open = false;
-      this.reset();
-    },
-    // 取消按钮（数据权限）
-    cancelDataScope() {
-      this.openDataScope = false;
       this.reset();
     },
     // 表单重置
@@ -370,7 +364,6 @@ export default {
             status: "0",
             menuIds: [],
             menuCheckStrictly: true,
-            deptCheckStrictly: true,
             remark: undefined
           };
       this.resetForm("form");
@@ -415,11 +408,11 @@ export default {
       }
     },
     // 树权限（父子联动）
-    handleCheckedTreeConnect(value, type) {
-      if (type == 'menu') {
-        this.form.menuCheckStrictly = value ? true : false;
-      } else if (type == 'dept') {
-        this.form.deptCheckStrictly = value ? true : false;
+    handleCheckedTreeConnect(e) {
+      if (e) {
+        this.menuParentSon = true
+      } else {
+        this.menuParentSon = false
       }
     },
     /** 新增按钮操作 */
@@ -438,9 +431,12 @@ export default {
       const roleId = row.roleId
       const {data: res} = await this.$http.get(`sysRoleMenu/getMenuIds?roleId=${roleId}`);
       if (res.meta.errorCode !== 200) {
-        return this.$message.error("获取失败！")
+        return this.$message.error("获取失败")
       }
+      console.log(res.data)
+      this.menuParentSon = false
       this.$refs.menu.setCheckedKeys(res.data);
+      /** 对数据进行深拷贝 */
       this.form = JSON.parse(JSON.stringify(row))
     },
     /** 提交按钮 */
@@ -450,6 +446,7 @@ export default {
         if (valid) {
           if (this.form.roleId != undefined) {
             this.form.menuIds = this.getMenuAllCheckedKeys();
+            console.log(this.form.menuIds)
             const {data: res} = await this.$http.put('sysRole/updateRole', this.form);
             if (res.meta.errorCode !== 200) {
               return this.$message.error("修改失败！")

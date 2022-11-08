@@ -136,8 +136,8 @@
           <el-col :span="12">
             <el-form-item v-if="form.menuType != 'F'" label="是否外链">
               <el-radio-group v-model="form.isFrame">
-                <el-radio label="0">是</el-radio>
-                <el-radio label="1">否</el-radio>
+                <el-radio :label="0">是</el-radio>
+                <el-radio :label="1">否</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -183,8 +183,8 @@
           <el-col :span="12">
             <el-form-item v-if="form.menuType == 'C'" label="是否缓存">
               <el-radio-group v-model="form.isCache">
-                <el-radio label="0">缓存</el-radio>
-                <el-radio label="1">不缓存</el-radio>
+                <el-radio :label="0">缓存</el-radio>
+                <el-radio :label="1">不缓存</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -290,18 +290,8 @@ export default {
     this.getList();
     this.visibleOptions = this.getDict('sys_show_hide')
     this.statusOptions = this.getDict('sys_normal_disable')
-    // this.getDicts("sys_show_hide").then(response => {
-    //   this.visibleOptions = response.data;
-    // });
-    // this.getDicts("sys_normal_disable").then(response => {
-    //   this.statusOptions = response.data;
-    // });
   },
   methods: {
-    // 选择图标
-    // selected(name) {
-    //   this.form.icon = name;
-    // },
     /**获取字典列表*/
     async getDict(deptType) {
       if (deptType === 'sys_show_hide') {
@@ -320,7 +310,6 @@ export default {
           visible: this.queryParams.visible
         }
       });
-      // console.log(this.queryParams.visible)
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
