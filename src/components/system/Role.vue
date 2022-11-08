@@ -88,13 +88,7 @@
         </el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-            type="warning"
-            icon="el-icon-download"
-            size="mini"
-            @click="handleExport"
-        >导出
-        </el-button>
+        <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
       </el-col>
     </el-row>
 
@@ -195,6 +189,8 @@
 // import { treeselect as menuTreeselect, roleMenuTreeselect } from "@/utils/menu";
 // import { treeselect as deptTreeselect, roleDeptTreeselect } from "@/api/system/dept";
 
+import axios from "axios";
+
 export default {
   name: "Role",
   data() {
@@ -273,8 +269,12 @@ export default {
       this.statusOptions = res.data;
     },
     /** 查询角色列表 */
-    getList() {
+    async getList() {
       this.loading = true;
+      const {data: res} = await this.$http.get(`/sysRole`);
+      console.log(res);
+      this.roleList = res.data.records;
+      this.loading = false;
       // listRole(this.addDateRange(this.queryParams, this.dateRange)).then(
       //     response => {
       //       this.roleList = response.rows;
@@ -408,7 +408,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const roleId = row.roleId || this.ids
+      // const roleId = row.roleId || this.ids
       // const roleMenu = this.getRoleMenuTreeselect(roleId);
       // getRole(roleId).then(response => {
       //   this.form = response.data;
@@ -475,17 +475,29 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      // const queryParams = this.queryParams;
-      // this.$confirm('是否确认导出所有角色数据项?', "警告", {
-      //   confirmButtonText: "确定",
-      //   cancelButtonText: "取消",
-      //   type: "warning"
-      // }).then(function() {
-      //   return exportRole(queryParams);
-      // }).then(response => {
-      //   this.download(response.msg);
-      // })
-    },
+      // window.location='http://localhost:8080/excel/get'
+      //设置全局配置信息
+      const config = {
+        method: 'post',
+        url: 'sysRole/getExcel',
+        data: this.ids,
+        responseType: 'blob'
+      };
+      //发送请求
+      // eslint-disable-next-line no-undef
+      axios(config).then(response => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', '角色管理.xls');
+            document.body.appendChild(link);
+            link.click();
+            if (response.data !== null) {
+              this.$message.success("导出成功");
+            }
+          }
+      )
+    }
   }
 };
 </script>
