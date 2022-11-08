@@ -1,18 +1,17 @@
 <template>
   <el-container>
-    <el-header>
+    <el-header  style="background-color: white">
       <div>
         <!-- logo -->
         <img src="../assets/logo.gif" alt="" style="height: 60px;margin-left: 20px;">
         <!-- 顶部标题 -->
-        <span>智慧社区</span>
+        <span style="color: dodgerblue">智慧社区</span>
       </div>
       <el-menu
           unique-opened
           class='el-menu-demo'
           mode='horizontal'
-          background-color='#333744'
-          text-color='#fff'
+          background-color='white'
           active-text-color='#373D41'>
         <el-submenu index='2'>
           <template slot='title'>
@@ -29,9 +28,8 @@
         <!-- el-menu：菜单栏的根组件 router: 设置路由可以跳转 -->
         <el-menu
             style="height: 100vh"
-            background-color="#333744"
-            text-color="#fff"
-            active-text-color="#ffd04b"
+            background-color="white"
+            active-text-color="dodgerblue"
             unique-opened
             router class="el-menu-vertical-demo"
             :default-active="activePath"
@@ -179,11 +177,11 @@ export default {
 
 .el-aside {
   background-color: #333744;
-
+}
   .el-menu {
     border-right: none;
   }
-}
+
 
 .el-main {
   background-color: #eaedf1;
