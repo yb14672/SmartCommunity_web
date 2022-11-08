@@ -136,8 +136,8 @@
           <el-col :span="12">
             <el-form-item v-if="form.menuType != 'F'" label="是否外链">
               <el-radio-group v-model="form.isFrame">
-                <el-radio label="0">是</el-radio>
-                <el-radio label="1">否</el-radio>
+                <el-radio :label="0">是</el-radio>
+                <el-radio :label="1">否</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -183,8 +183,8 @@
           <el-col :span="12">
             <el-form-item v-if="form.menuType == 'C'" label="是否缓存">
               <el-radio-group v-model="form.isCache">
-                <el-radio label="0">缓存</el-radio>
-                <el-radio label="1">不缓存</el-radio>
+                <el-radio :label="0">缓存</el-radio>
+                <el-radio :label="1">不缓存</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>

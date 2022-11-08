@@ -15,6 +15,7 @@ import iconPicker from 'vue-fontawesome-elementui-icon-picker';
 //element Ui
 import "./plugins/element"
 import './plugins/element.js'
+import moment from '../node_modules/moment/moment.js';
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
@@ -48,7 +49,10 @@ axios.interceptors.request.use(config=>{
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
 
-
+Vue.filter('moment', function (value, formatString) {
+  formatString = formatString || 'YYYY-MM-DD hh:mm:ss';
+  return moment(value).format(formatString);
+});
 new Vue({
   router,
   store,
