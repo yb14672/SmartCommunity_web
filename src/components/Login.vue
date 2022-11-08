@@ -182,7 +182,7 @@ export default {
 }
 
 .login_container {
-  /*background-image: url("../assets/login.jpg");*/
+  background-image: url("../assets/bg.png");
   background-color: white;
   width: 100%;
   height: 100%;

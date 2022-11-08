@@ -68,17 +68,6 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-            type="success"
-            icon="el-icon-edit"
-            size="mini"
-            :disabled="single"
-            @click="handleUpdate"
-
-        >修改
-        </el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
             type="danger"
             icon="el-icon-delete"
             size="mini"
@@ -120,7 +109,6 @@
               type="text"
               icon="el-icon-edit"
               @click="handleUpdate(scope.row)"
-              v-hasPermi="['system:role:edit']"
           >修改
           </el-button>
           <el-button
@@ -128,12 +116,23 @@
               type="text"
               icon="el-icon-delete"
               @click="handleDelete(scope.row)"
-              v-hasPermi="['system:role:remove']"
           >删除
           </el-button>
         </template>
       </el-table-column>
     </el-table>
+    <!--    分页-->
+    <div class="block" align="right">
+      <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="queryParams.pageNum"
+          :page-sizes="[1, 2, 5, 10]"
+          :page-size="queryParams.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total">
+      </el-pagination>
+    </div>
     <!-- 添加或修改角色配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
@@ -159,7 +158,7 @@
         <el-form-item label="菜单权限">
           <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand">展开/折叠</el-checkbox>
           <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll">全选/全不选</el-checkbox>
-          <el-checkbox v-model="form.menuCheckStrictly" @change="handleCheckedTreeConnect($event, 'menu')">父子联动
+          <el-checkbox v-model="form.deptCheckStrictly" @change="handleCheckedTreeConnect($event,'menu')">父子联动
           </el-checkbox>
           <el-tree
               class="tree-border"
@@ -167,7 +166,7 @@
               show-checkbox
               ref="menu"
               node-key="menuId"
-              expand-all
+              :check-strictly="!form.deptCheckStrictly"
               empty-text="加载中，请稍后"
               :props="defaultProps"
           ></el-tree>
@@ -263,6 +262,17 @@ export default {
     // });
   },
   methods: {
+    // 分页每页多少条数据
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.queryParams.pageSize = val;
+      this.getList();
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.queryParams.pageNum = val;
+      this.getList();
+    },
     /** 查询数据字典角色状态 */
     async getDicts(deptType) {
       const {data: res} = await this.$http.get(`sysDictData/getDict?dictType=${deptType}`);
@@ -271,17 +281,29 @@ export default {
     /** 查询角色列表 */
     async getList() {
       this.loading = true;
-      const {data: res} = await this.$http.get(`/sysRole`);
-      console.log(res);
-      this.roleList = res.data.records;
-      this.loading = false;
-      // listRole(this.addDateRange(this.queryParams, this.dateRange)).then(
-      //     response => {
-      //       this.roleList = response.rows;
-      //       this.total = response.total;
-      //       this.loading = false;
-      //     }
-      // );
+      console.log(this.queryParams)
+      console.log(this.queryParams.status)
+      // console.log(this.dateRange)
+      const {data: res} = await this.$http.get('/sysRole/selectRoleByLimit', {
+        params: {
+          pageNum: this.queryParams.pageNum,
+          pageSize: this.queryParams.pageSize,
+          roleName: this.queryParams.roleName,
+          roleKey: this.queryParams.roleKey,
+          status: this.queryParams.status,
+          startTime: this.queryParams.startTime,
+          endTime: this.queryParams.endTime,
+        }
+      });
+      console.log(res)
+      if (res.meta.errorCode !== 200) {
+        return this.$message.error(res.meta.errorMsg)
+      }
+      // this.menuList = res.data;
+      this.roleList = res.data.sysRole;
+      this.total = res.data.pageable.total;
+      // console.log(this.roleList)
+      this.loading = false
     },
     /** 查询菜单树结构 */
     async getMenuTreeselect() {
@@ -304,19 +326,22 @@ export default {
       return checkedKeys;
     },
     // 角色状态修改
-    handleStatusChange() {
-      // let text = row.status === "0" ? "启用" : "停用";
-      // this.$confirm('确认要"' + text + '""' + row.roleName + '"角色吗?', "警告", {
-      //   confirmButtonText: "确定",
-      //   cancelButtonText: "取消",
-      //   type: "warning"
-      // }).then(function() {
-      //   return changeRoleStatus(row.roleId, row.status);
-      // }).then(() => {
-      //   this.msgSuccess(text + "成功");
-      // }).catch(function() {
-      //   row.status = row.status === "0" ? "1" : "0";
-      // });
+    handleStatusChange(row) {
+      let text = row.status === "0" ? "启用" : "停用";
+      this.$confirm('确认要"' + text + '""' + row.roleName + '"角色吗?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(async () => {
+        const {data: res} = await this.$http.put(`/sysRole`, row);
+        if (res.meta.errorCode !== 200) {
+          return this.$message.error(res.data.meta.errorMsg);
+        }
+        this.$message(text + "成功");
+        await this.getList();
+      }).catch(function() {
+        row.status = row.status === "0" ? "1" : "0";
+      });
     },
     // 取消按钮
     cancel() {
@@ -344,7 +369,6 @@ export default {
             roleSort: 0,
             status: "0",
             menuIds: [],
-            deptIds: [],
             menuCheckStrictly: true,
             deptCheckStrictly: true,
             remark: undefined
@@ -406,53 +430,46 @@ export default {
       this.title = "添加角色";
     },
     /** 修改按钮操作 */
-    handleUpdate(row) {
+    async handleUpdate(row) {
       this.reset();
-      // const roleId = row.roleId || this.ids
-      // const roleMenu = this.getRoleMenuTreeselect(roleId);
-      // getRole(roleId).then(response => {
-      //   this.form = response.data;
-      //   this.open = true;
-      //   this.$nextTick(() => {
-      //     roleMenu.then(res => {
-      //       this.$refs.menu.setCheckedKeys(res.checkedKeys);
-      //     });
-      //   });
-      //   this.title = "修改角色";
-      // });
+      await this.getMenuTreeselect();
+      this.title = "修改角色";
+      this.open = true;
+      const roleId = row.roleId
+      const {data: res} = await this.$http.get(`sysRoleMenu/getMenuIds?roleId=${roleId}`);
+      if (res.meta.errorCode !== 200) {
+        return this.$message.error("获取失败！")
+      }
+      this.$refs.menu.setCheckedKeys(res.data);
+      this.form = JSON.parse(JSON.stringify(row))
     },
     /** 提交按钮 */
     submitForm: function () {
-      // this.$refs["form"].validate(valid => {
-      //   if (valid) {
-      //     if (this.form.roleId != undefined) {
-      //       this.form.menuIds = this.getMenuAllCheckedKeys();
-      //       updateRole(this.form).then(response => {
-      //         this.msgSuccess("修改成功");
-      //         this.open = false;
-      //         this.getList();
-      //       });
-      //     } else {
-      //       this.form.menuIds = this.getMenuAllCheckedKeys();
-      //       addRole(this.form).then(response => {
-      //         this.msgSuccess("新增成功");
-      //         this.open = false;
-      //         this.getList();
-      //       });
-      //     }
-      //   }
-      // });
-    },
-    /** 提交按钮（数据权限） */
-    submitDataScope: function () {
-      // if (this.form.roleId != undefined) {
-      //   this.form.deptIds = this.getDeptAllCheckedKeys();
-      //   dataScope(this.form).then(response => {
-      //     this.msgSuccess("修改成功");
-      //     this.openDataScope = false;
-      //     this.getList();
-      //   });
-      // }
+      console.log(this.form.menuIds)
+      this.$refs["form"].validate(async valid => {
+        if (valid) {
+          if (this.form.roleId != undefined) {
+            this.form.menuIds = this.getMenuAllCheckedKeys();
+            const {data: res} = await this.$http.put('sysRole/updateRole', this.form);
+            if (res.meta.errorCode !== 200) {
+              return this.$message.error("修改失败！")
+            }
+            this.open = false;
+            await this.getList();
+            return this.$message.success("修改成功！")
+          } else {
+            this.form.menuIds = this.getMenuAllCheckedKeys();
+            const {data: res} = await this.$http.post('sysRole/addRole', this.form)
+            console.log(res);
+            if (res.meta.errorCode !== 200) {
+              return this.$message.error("新增失败")
+            }
+            this.open = false;
+            await this.getList();
+            this.$message.success("新增成功")
+          }
+        }
+      });
     },
     /** 删除按钮操作 */
     handleDelete(row) {
@@ -475,7 +492,6 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      // window.location='http://localhost:8080/excel/get'
       //设置全局配置信息
       const config = {
         method: 'post',

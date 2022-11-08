@@ -41,11 +41,9 @@
             icon="el-icon-delete"
             size="mini"
             @click="handleDel"
-            v-hasPermi="['system:menu:remove']"
         >删除
         </el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
     <!--渲染所有菜单-->
     <el-table
@@ -94,6 +92,8 @@
         </template>
       </el-table-column>
     </el-table>
+
+
     <!-- 添加或修改菜单对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
@@ -136,8 +136,8 @@
           <el-col :span="12">
             <el-form-item v-if="form.menuType != 'F'" label="是否外链">
               <el-radio-group v-model="form.isFrame">
-                <el-radio :key="0" :label="0">是</el-radio>
-                <el-radio :key="1" :label="1">否</el-radio>
+                <el-radio label="0">是</el-radio>
+                <el-radio label="1">否</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -183,8 +183,8 @@
           <el-col :span="12">
             <el-form-item v-if="form.menuType == 'C'" label="是否缓存">
               <el-radio-group v-model="form.isCache">
-                <el-radio :key="0" :label="0">缓存</el-radio>
-                <el-radio :key="1" :label="1">不缓存</el-radio>
+                <el-radio label="0">缓存</el-radio>
+                <el-radio label="1">不缓存</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -222,8 +222,7 @@
 </template>
 
 <script>
-import Treeselect from '@riophae/vue-treeselect'
-import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import Treeselect from "@riophae/vue-treeselect";
 
 export default {
   name: "Menu",
@@ -409,7 +408,6 @@ export default {
     },
     /** 修改按钮操作 */
     async handleUpdate(row) {
-      this.title = "修改菜单";
       this.reset();
       await this.getTreeselect();
       const {data: res} = await this.$http.get(`sysMenu/${row.menuId}`);
@@ -429,19 +427,17 @@ export default {
               return this.$message.error(res.meta.errorMsg)
             }
             this.open = false;
-            location.reload();
+            await this.getList();
             return this.$message.success("修改成功！")
-            // await this.getList();
           } else {
             const {data: res} = await this.$http.post("sysMenu/addMenu", this.form);
             console.log(res);
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg);
             }
-            this.open = false;
-            location.reload();
             this.$message.success("新增成功");
-            // await this.getList();
+            this.open = false;
+            await this.getList();
           }
         }
       });
@@ -460,8 +456,7 @@ export default {
             console.log(res.data.meta.errorCode)
             if (res.data.meta.errorCode === 200) {
               // 重新获取页面
-              location.reload();
-              // this.getList();
+              this.getList();
               this.$message.success("删除成功");
             } else {
               this.$message.warning(res.data.meta.errorMsg);
@@ -490,8 +485,7 @@ export default {
                 console.log(res.data.meta.errorCode)
                 if (res.data.meta.errorCode === 200) {
                   // 重新获取页面
-                  // this.getList();
-                  location.reload();
+                  this.getList();
                   this.$message.success("删除成功");
                   this.dialogVisibleDel = false;
                 } else {
