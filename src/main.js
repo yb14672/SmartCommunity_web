@@ -12,13 +12,15 @@ import { VueCropper } from 'vue-cropper';
 import SlideVerify from 'vue-monoplasty-slide-verify';
 //图标选择器
 import iconPicker from 'vue-fontawesome-elementui-icon-picker';
+//树状选择器
+import Treeselect from '@riophae/vue-treeselect'
+//日期处理
+import moment from '../node_modules/moment/moment.js';
+
 //element Ui
 import "./plugins/element"
 import './plugins/element.js'
-import moment from '../node_modules/moment/moment.js';
-import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-
 //图标选择器
 Vue.use(iconPicker);
 //粒子效果
@@ -29,6 +31,10 @@ Vue.component('VueCropper',VueCropper);
 Vue.use(SlideVerify);
 Vue.use(Treeselect)
 
+Vue.filter('moment', function (value, formatString) {
+  formatString = formatString || 'YYYY-MM-DD hh:mm:ss';
+  return moment(value).format(formatString);
+});
 
 Vue.prototype.parseTime = parseTime
 Vue.prototype.resetForm = resetForm
@@ -49,10 +55,7 @@ axios.interceptors.request.use(config=>{
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
 
-Vue.filter('moment', function (value, formatString) {
-  formatString = formatString || 'YYYY-MM-DD hh:mm:ss';
-  return moment(value).format(formatString);
-});
+
 new Vue({
   router,
   store,

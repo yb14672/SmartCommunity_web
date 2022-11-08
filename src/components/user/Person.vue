@@ -405,6 +405,7 @@ export default {
         this.$message.success('修改成功')
         this.dialogVisible = false
         this.isPreview = true
+        location.reload();
       })
     }
   }

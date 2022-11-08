@@ -90,6 +90,7 @@
       <el-table-column label="状态" align="center" width="100">
         <template slot-scope="scope">
           <el-switch
+              :disabled="scope.row.roleId === 1"
               v-model="scope.row.status"
               active-value="0"
               inactive-value="1"
@@ -103,7 +104,7 @@
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
+        <template slot-scope="scope" v-if="scope.row.roleId !== 1">
           <el-button
               size="mini"
               type="text"
@@ -156,9 +157,10 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="菜单权限">
-          <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand">展开/折叠</el-checkbox>
+          <el-checkbox v-model="menuExpand" @change="
+          handleCheckedTreeExpand">展开/折叠</el-checkbox>
           <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll">全选/全不选</el-checkbox>
-          <el-checkbox v-model="form.deptCheckStrictly" @change="handleCheckedTreeConnect($event,'menu')">父子联动
+          <el-checkbox v-model="menuParentSon" @change="handleCheckedTreeConnect">父子联动
           </el-checkbox>
           <el-tree
               class="tree-border"
@@ -166,7 +168,7 @@
               show-checkbox
               ref="menu"
               node-key="menuId"
-              :check-strictly="!form.deptCheckStrictly"
+              :check-strictly="!menuParentSon"
               empty-text="加载中，请稍后"
               :props="defaultProps"
           ></el-tree>
@@ -214,6 +216,8 @@ export default {
       menuNodeAll: false,
       deptExpand: true,
       deptNodeAll: false,
+      //父子级联动
+      menuParentSon: true,
       // 日期范围
       dateRange: [],
       // 状态数据字典
@@ -239,7 +243,7 @@ export default {
       // 表单校验
       rules: {
         roleName: [
-          {required: true, message: "角色名称不能为空", trigger: "blur"},
+          {required: true, message: "角色名称不能为空", trigger: "blur"}
         ],
         roleKey: [
           {required: true, message: "权限字符不能为空", trigger: "blur"}
@@ -301,14 +305,11 @@ export default {
     },
     /** 查询菜单树结构 */
     async getMenuTreeselect() {
-      const {data: res} = await this.$http.get('sysMenu/queryMenus');
+      const {data: res} = await this.$http.get('sysMenu/getMenuTree');
       if (res.meta.errorCode !== 200) {
         return this.$message.error("获取菜单树失败！")
       }
       this.menuOptions = res.data;
-      // menuTreeselect().then(response => {
-      //   this.menuOptions = response.data;
-      // });
     },
     // 所有菜单节点数据
     getMenuAllCheckedKeys() {
@@ -321,6 +322,7 @@ export default {
     },
     // 角色状态修改
     handleStatusChange(row) {
+      console.log(row)
       let text = row.status === "0" ? "启用" : "停用";
       this.$confirm('确认要"' + text + '""' + row.roleName + '"角色吗?', "警告", {
         confirmButtonText: "确定",
@@ -342,11 +344,6 @@ export default {
       this.open = false;
       this.reset();
     },
-    // 取消按钮（数据权限）
-    cancelDataScope() {
-      this.openDataScope = false;
-      this.reset();
-    },
     // 表单重置
     reset() {
       if (this.$refs.menu != undefined) {
@@ -364,7 +361,6 @@ export default {
             status: "0",
             menuIds: [],
             menuCheckStrictly: true,
-            deptCheckStrictly: true,
             remark: undefined
           };
       this.resetForm("form");
@@ -409,11 +405,11 @@ export default {
       }
     },
     /** 树权限（父子联动） */
-    handleCheckedTreeConnect(value, type) {
-      if (type == 'menu') {
-        this.form.menuCheckStrictly = value ? true : false;
-      } else if (type == 'dept') {
-        this.form.deptCheckStrictly = value ? true : false;
+    handleCheckedTreeConnect(e) {
+      if (e) {
+        this.menuParentSon = true
+      } else {
+        this.menuParentSon = false
       }
     },
     /** 新增按钮操作 */
@@ -432,9 +428,12 @@ export default {
       const roleId = row.roleId
       const {data: res} = await this.$http.get(`sysRoleMenu/getMenuIds?roleId=${roleId}`);
       if (res.meta.errorCode !== 200) {
-        return this.$message.error("获取失败！")
+        return this.$message.error("获取失败")
       }
+      console.log(res.data)
+      this.menuParentSon = false
       this.$refs.menu.setCheckedKeys(res.data);
+      /** 对数据进行深拷贝 */
       this.form = JSON.parse(JSON.stringify(row))
     },
     /** 提交按钮 */
@@ -444,6 +443,7 @@ export default {
         if (valid) {
           if (this.form.roleId != undefined) {
             this.form.menuIds = this.getMenuAllCheckedKeys();
+            console.log(this.form.menuIds)
             const {data: res} = await this.$http.put('sysRole/updateRole', this.form);
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg)

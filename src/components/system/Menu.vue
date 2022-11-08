@@ -290,18 +290,8 @@ export default {
     this.getList();
     this.visibleOptions = this.getDict('sys_show_hide')
     this.statusOptions = this.getDict('sys_normal_disable')
-    // this.getDicts("sys_show_hide").then(response => {
-    //   this.visibleOptions = response.data;
-    // });
-    // this.getDicts("sys_normal_disable").then(response => {
-    //   this.statusOptions = response.data;
-    // });
   },
   methods: {
-    // 选择图标
-    // selected(name) {
-    //   this.form.icon = name;
-    // },
     /**获取字典列表*/
     async getDict(deptType) {
       if (deptType === 'sys_show_hide') {
@@ -320,7 +310,6 @@ export default {
           visible: this.queryParams.visible
         }
       });
-      // console.log(this.queryParams.visible)
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
