@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <!--查询表单-->
     <el-form :model="queryParams" ref="queryForm" v-show="showSearch" :inline="true">
       <el-form-item label="角色名称" prop="roleName">
         <el-input
@@ -54,7 +55,7 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
-
+    <!--操作列表--新增、删除-->
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
@@ -62,7 +63,6 @@
             icon="el-icon-plus"
             size="mini"
             @click="handleAdd"
-
         >新增
         </el-button>
       </el-col>
@@ -80,7 +80,7 @@
         <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
       </el-col>
     </el-row>
-
+    <!--数据渲染表格-->
     <el-table v-loading="false" :data="roleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="角色编号" prop="roleId" width="120"/>
@@ -121,7 +121,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <!--    分页-->
+    <!--分页-->
     <div class="block" align="right">
       <el-pagination
           @size-change="handleSizeChange"
@@ -184,10 +184,6 @@
 </template>
 
 <script>
-// import { listRole, getRole, delRole, addRole, updateRole, exportRole, dataScope, changeRoleStatus } from "@/api/system/role";
-// import { treeselect as menuTreeselect, roleMenuTreeselect } from "@/utils/menu";
-// import { treeselect as deptTreeselect, roleDeptTreeselect } from "@/api/system/dept";
-
 import axios from "axios";
 
 export default {
@@ -257,17 +253,15 @@ export default {
   created() {
     this.getList();
     this.getDicts("sys_normal_disable");
-    // this.getDicts("sys_normal_disable").then(response => {
-    //   this.statusOptions = response.data;
-    // });
   },
   methods: {
-    // 分页每页多少条数据
+    /**  分页每页多少条数据 */
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
       this.queryParams.pageSize = val;
       this.getList();
     },
+    /** 点击切换上下页 */
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       this.queryParams.pageNum = val;
@@ -339,7 +333,7 @@ export default {
         }
         this.$message(text + "成功");
         await this.getList();
-      }).catch(function() {
+      }).catch(function () {
         row.status = row.status === "0" ? "1" : "0";
       });
     },
@@ -386,13 +380,13 @@ export default {
       this.resetForm("queryForm");
       this.handleQuery();
     },
-    // 多选框选中数据
+    /** 多选框选中数据 */
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.roleId)
       this.single = selection.length != 1
       this.multiple = !selection.length
     },
-    // 树权限（展开/折叠）
+    /** 树权限（展开/折叠） */
     handleCheckedTreeExpand() {
       let treeList = this.menuOptions;
       if (this.menuExpand) {
@@ -405,7 +399,7 @@ export default {
         }
       }
     },
-    // 树权限（全选/全不选）
+    /** 树权限（全选/全不选） */
     handleCheckedTreeNodeAll() {
       console.log(this.menuNodeAll)
       if (this.menuNodeAll) {
@@ -414,7 +408,7 @@ export default {
         this.$refs.menu.setCheckedKeys([]);
       }
     },
-    // 树权限（父子联动）
+    /** 树权限（父子联动） */
     handleCheckedTreeConnect(value, type) {
       if (type == 'menu') {
         this.form.menuCheckStrictly = value ? true : false;
@@ -452,7 +446,7 @@ export default {
             this.form.menuIds = this.getMenuAllCheckedKeys();
             const {data: res} = await this.$http.put('sysRole/updateRole', this.form);
             if (res.meta.errorCode !== 200) {
-              return this.$message.error("修改失败！")
+              return this.$message.error(res.meta.errorMsg)
             }
             this.open = false;
             await this.getList();
@@ -460,21 +454,12 @@ export default {
           } else {
             this.form.menuIds = this.getMenuAllCheckedKeys();
             const {data: res} = await this.$http.post('sysRole/addRole', this.form)
-            console.log(res);
-            if (res.meta.errorCode === 200) {
-              this.open = false;
-              await this.getList();
-              return  this.$message.success("新增成功")
+            if (res.meta.errorCode !== 200) {
+              return this.$message.error(res.meta.errorMsg)
             }
-            if (res.meta.errorCode ===3006)
-            {
-              return this.$message.error("权限码重复")
-            }
-            if (res.meta.errorCode ===3007)
-            {
-              return this.$message.error("角色名重复")
-            }
-
+            this.open = false;
+            await this.getList();
+            return this.$message.success("添加成功！")
           }
         }
       });
