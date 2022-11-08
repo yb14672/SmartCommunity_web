@@ -243,7 +243,7 @@ export default {
       // 表单校验
       rules: {
         roleName: [
-          {required: true, message: "角色名称不能为空", trigger: "blur"}
+          {required: true, message: "角色名称不能为空", trigger: "blur"},
         ],
         roleKey: [
           {required: true, message: "权限字符不能为空", trigger: "blur"}
@@ -461,12 +461,20 @@ export default {
             this.form.menuIds = this.getMenuAllCheckedKeys();
             const {data: res} = await this.$http.post('sysRole/addRole', this.form)
             console.log(res);
-            if (res.meta.errorCode !== 200) {
-              return this.$message.error("新增失败")
+            if (res.meta.errorCode === 200) {
+              this.open = false;
+              await this.getList();
+              return  this.$message.success("新增成功")
             }
-            this.open = false;
-            await this.getList();
-            this.$message.success("新增成功")
+            if (res.meta.errorCode ===3006)
+            {
+              return this.$message.error("权限码重复")
+            }
+            if (res.meta.errorCode ===3007)
+            {
+              return this.$message.error("角色名重复")
+            }
+
           }
         }
       });
