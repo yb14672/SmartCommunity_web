@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <!--查询-->
     <el-form :model="queryParams" ref="queryForm" v-show="showSearch" :inline="true">
       <el-form-item label="角色名称" prop="roleName">
         <el-input
@@ -54,7 +55,7 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
-
+    <!--操作-->
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
@@ -62,7 +63,7 @@
             icon="el-icon-plus"
             size="mini"
             @click="handleAdd"
-
+            v-hasPermi="['system:role:add']"
         >新增
         </el-button>
       </el-col>
@@ -73,7 +74,7 @@
             size="mini"
             :disabled="single"
             @click="handleUpdate"
-
+            v-hasPermi="['system:role:edit']"
         >修改
         </el-button>
       </el-col>
@@ -84,6 +85,7 @@
             size="mini"
             :disabled="multiple"
             @click="handleDelete"
+            v-hasPermi="['system:role:remove']"
         >删除
         </el-button>
       </el-col>
@@ -93,11 +95,12 @@
             icon="el-icon-download"
             size="mini"
             @click="handleExport"
+            v-hasPermi="['system:role:export']"
         >导出
         </el-button>
       </el-col>
     </el-row>
-
+    <!--渲染数据-->
     <el-table v-loading="false" :data="roleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="角色编号" prop="roleId" width="120"/>
@@ -132,6 +135,14 @@
           <el-button
               size="mini"
               type="text"
+              icon="el-icon-circle-check"
+              @click="handleDataScope(scope.row)"
+              v-hasPermi="['system:role:edit']"
+          >数据权限
+          </el-button>
+          <el-button
+              size="mini"
+              type="text"
               icon="el-icon-delete"
               @click="handleDelete(scope.row)"
               v-hasPermi="['system:role:remove']"
@@ -140,6 +151,7 @@
         </template>
       </el-table-column>
     </el-table>
+
     <!-- 添加或修改角色配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
@@ -192,7 +204,7 @@
 
 <script>
 // import { listRole, getRole, delRole, addRole, updateRole, exportRole, dataScope, changeRoleStatus } from "@/api/system/role";
-// import { treeselect as menuTreeselect, roleMenuTreeselect } from "@/utils/menu";
+// import { treeselect as menuTreeselect, roleMenuTreeselect } from "@/api/system/menu";
 // import { treeselect as deptTreeselect, roleDeptTreeselect } from "@/api/system/dept";
 
 export default {
@@ -227,6 +239,29 @@ export default {
       dateRange: [],
       // 状态数据字典
       statusOptions: [],
+      // 数据范围选项
+      dataScopeOptions: [
+        {
+          value: "1",
+          label: "全部数据权限"
+        },
+        {
+          value: "2",
+          label: "自定数据权限"
+        },
+        {
+          value: "3",
+          label: "本部门数据权限"
+        },
+        {
+          value: "4",
+          label: "本部门及以下数据权限"
+        },
+        {
+          value: "5",
+          label: "仅本人数据权限"
+        }
+      ],
       // 菜单列表
       menuOptions: [],
       // 部门列表
@@ -262,9 +297,6 @@ export default {
   created() {
     this.getList();
     this.getDicts("sys_normal_disable");
-    // this.getDicts("sys_normal_disable").then(response => {
-    //   this.statusOptions = response.data;
-    // });
   },
   methods: {
     /** 查询数据字典角色状态 */
@@ -273,28 +305,22 @@ export default {
       this.statusOptions = res.data;
     },
     /** 查询角色列表 */
-    getList() {
+    async getList() {
       this.loading = true;
-      // listRole(this.addDateRange(this.queryParams, this.dateRange)).then(
-      //     response => {
-      //       this.roleList = response.rows;
-      //       this.total = response.total;
-      //       this.loading = false;
-      //     }
-      // );
+      const {data: res} = await this.$http.get(`/sysRole`);
+      console.log(res);
+      this.roleList = res.data.records;
+      this.loading = false;
     },
     /** 查询菜单树结构 */
     async getMenuTreeselect() {
       const {data: res} = await this.$http.get('sysMenu/queryMenus');
-      if (res.meta.errorCode !== 200) {
+      if (res.meta.errorCode !== 200){
         return this.$message.error("获取菜单树失败！")
       }
       this.menuOptions = res.data;
-      // menuTreeselect().then(response => {
-      //   this.menuOptions = response.data;
-      // });
     },
-    // 所有菜单节点数据
+    /** 所有菜单节点数据 */
     getMenuAllCheckedKeys() {
       // 目前被选中的菜单节点
       let checkedKeys = this.$refs.menu.getCheckedKeys();
@@ -303,20 +329,35 @@ export default {
       checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
       return checkedKeys;
     },
-    // 角色状态修改
-    handleStatusChange() {
-      // let text = row.status === "0" ? "启用" : "停用";
-      // this.$confirm('确认要"' + text + '""' + row.roleName + '"角色吗?', "警告", {
-      //   confirmButtonText: "确定",
-      //   cancelButtonText: "取消",
-      //   type: "warning"
-      // }).then(function() {
-      //   return changeRoleStatus(row.roleId, row.status);
-      // }).then(() => {
-      //   this.msgSuccess(text + "成功");
-      // }).catch(function() {
-      //   row.status = row.status === "0" ? "1" : "0";
+    /** 根据角色ID查询菜单树结构 */
+    getRoleMenuTreeselect(roleId) {
+      // return roleMenuTreeselect(roleId).then(response => {
+      //   this.menuOptions = response.menus;
+      //   return response;
       // });
+    },
+    /** 根据角色ID查询部门树结构 */
+    getRoleDeptTreeselect(roleId) {
+      // return roleDeptTreeselect(roleId).then(response => {
+      //   this.deptOptions = response.depts;
+      //   return response;
+      // });
+    },
+    // 角色状态修改
+    handleStatusChange(row) {
+      let text = row.status === "0" ? "启用" : "停用";
+      this.$confirm('确认要"' + text + '""' + row.roleName + '"角色吗?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(function () {
+        this.$http.put("")
+        return changeRoleStatus(row.roleId, row.status);
+      }).then(() => {
+        this.msgSuccess(text + "成功");
+      }).catch(function () {
+        row.status = row.status === "0" ? "1" : "0";
+      });
     },
     // 取消按钮
     cancel() {
@@ -362,35 +403,35 @@ export default {
       this.resetForm("queryForm");
       this.handleQuery();
     },
-    // 多选框选中数据
+    /**   多选框选中数据 */
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.roleId)
       this.single = selection.length != 1
       this.multiple = !selection.length
     },
-    // 树权限（展开/折叠）
-    handleCheckedTreeExpand() {
-      let treeList = this.menuOptions;
-      if (this.menuExpand) {
+    /**   树权限（展开/折叠） */
+    handleCheckedTreeExpand(value, type) {
+      if (type == 'menu') {
+        let treeList = this.menuOptions;
         for (let i = 0; i < treeList.length; i++) {
-          this.$refs.menu.store.nodesMap[treeList[i].menuId].expanded = true;
+          this.$refs.menu.store.nodesMap[treeList[i].id].expanded = value;
         }
-      } else {
+      } else if (type == 'dept') {
+        let treeList = this.deptOptions;
         for (let i = 0; i < treeList.length; i++) {
-          this.$refs.menu.store.nodesMap[treeList[i].menuId].expanded = false;
+          this.$refs.dept.store.nodesMap[treeList[i].id].expanded = value;
         }
       }
     },
-    // 树权限（全选/全不选）
-    handleCheckedTreeNodeAll() {
-      console.log(this.menuNodeAll)
-      if (this.menuNodeAll) {
-        this.$refs.menu.setCheckedNodes(this.menuOptions);
-      } else {
-        this.$refs.menu.setCheckedKeys([]);
+    /**   树权限（全选/全不选） */
+    handleCheckedTreeNodeAll(value, type) {
+      if (type == 'menu') {
+        this.$refs.menu.setCheckedNodes(value ? this.menuOptions : []);
+      } else if (type == 'dept') {
+        this.$refs.dept.setCheckedNodes(value ? this.deptOptions : []);
       }
     },
-    // 树权限（父子联动）
+    /**   树权限（父子联动） */
     handleCheckedTreeConnect(value, type) {
       if (type == 'menu') {
         this.form.menuCheckStrictly = value ? true : false;
@@ -408,7 +449,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const roleId = row.roleId || this.ids
+      // const roleId = row.roleId || this.ids
       // const roleMenu = this.getRoleMenuTreeselect(roleId);
       // getRole(roleId).then(response => {
       //   this.form = response.data;
@@ -419,6 +460,21 @@ export default {
       //     });
       //   });
       //   this.title = "修改角色";
+      // });
+    },
+    /** 分配数据权限操作 */
+    handleDataScope(row) {
+      this.reset();
+      const roleDeptTreeselect = this.getRoleDeptTreeselect(row.roleId);
+      // getRole(row.roleId).then(response => {
+      //   this.form = response.data;
+      //   this.openDataScope = true;
+      //   this.$nextTick(() => {
+      //     roleDeptTreeselect.then(res => {
+      //       this.$refs.dept.setCheckedKeys(res.checkedKeys);
+      //     });
+      //   });
+      //   this.title = "分配数据权限";
       // });
     },
     /** 提交按钮 */
@@ -480,10 +536,10 @@ export default {
       //   confirmButtonText: "确定",
       //   cancelButtonText: "取消",
       //   type: "warning"
-      // }).then(function() {
-      //   return exportRole(queryParams);
+      // }).then(function () {
+      //   // return exportRole(queryParams);
       // }).then(response => {
-      //   this.download(response.msg);
+      //   // this.download(response.msg);
       // })
     },
   }
