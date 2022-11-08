@@ -158,7 +158,8 @@
         </el-form-item>
         <el-form-item label="菜单权限">
           <el-checkbox v-model="menuExpand" @change="
-          handleCheckedTreeExpand">展开/折叠</el-checkbox>
+          handleCheckedTreeExpand">展开/折叠
+          </el-checkbox>
           <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll">全选/全不选</el-checkbox>
           <el-checkbox v-model="menuParentSon" @change="handleCheckedTreeConnect">父子联动
           </el-checkbox>
@@ -236,9 +237,14 @@ export default {
       },
       // 表单参数
       form: {},
+      //el-tree设置
       defaultProps: {
+        //子集叫什么
         children: "children",
-        label: "menuName"
+        //显示在页面上的应该是哪个字段
+        label: "menuName",
+        //方法判断是否应该禁用分配
+        disabled: this.menuDisable
       },
       // 表单校验
       rules: {
@@ -259,6 +265,12 @@ export default {
     this.getDicts("sys_normal_disable");
   },
   methods: {
+    /** 禁用状态的菜单不允许分配 */
+    menuDisable(data) {
+      if (data.status === "1") {
+        return true
+      }
+    },
     /**  分页每页多少条数据 */
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
@@ -306,6 +318,7 @@ export default {
     /** 查询菜单树结构 */
     async getMenuTreeselect() {
       const {data: res} = await this.$http.get('sysMenu/getMenuTree');
+      console.log(res)
       if (res.meta.errorCode !== 200) {
         return this.$message.error("获取菜单树失败！")
       }

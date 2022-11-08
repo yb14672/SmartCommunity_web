@@ -416,7 +416,7 @@ export default {
               return this.$message.error(res.meta.errorMsg)
             }
             this.open = false;
-            await this.getList();
+            location.reload();
             return this.$message.success("修改成功！")
           } else {
             const {data: res} = await this.$http.post("sysMenu/addMenu", this.form);
@@ -426,7 +426,7 @@ export default {
             }
             this.$message.success("新增成功");
             this.open = false;
-            await this.getList();
+            location.reload();
           }
         }
       });
