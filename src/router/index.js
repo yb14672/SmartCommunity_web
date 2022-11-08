@@ -6,7 +6,7 @@ import Users from '../components/user/Users'
 import Home from '../components/Home.vue'
 import Person from "../components/user/Person"
 import Menu from "../components/system/Menu"
-import Role from "../components/system/Role1"
+import Role from "../components/system/Role"
 
 Vue.use(Router)
 
