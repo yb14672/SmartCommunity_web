@@ -84,7 +84,7 @@
       </el-col>
       <el-col :span="14" push="3" :ld="24">
         <el-card class="box-card" style="width: 45em;height: 40em">
-          <!--卡片-->
+          <!--    卡片-->
           <div slot="header" class="clearfix">
             基本资料
           </div>
