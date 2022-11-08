@@ -16,6 +16,9 @@ import iconPicker from 'vue-fontawesome-elementui-icon-picker';
 import "./plugins/element"
 import './plugins/element.js'
 
+
+
+
 //图标选择器
 Vue.use(iconPicker);
 //粒子效果
