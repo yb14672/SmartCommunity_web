@@ -74,7 +74,8 @@
           <el-button size="mini"
                      type="text"
                      icon="el-icon-edit"
-                     @click="handleUpdate(scope.row)">修改
+                     @click="handleUpdate(scope.row)"
+          >修改
           </el-button>
           <el-button
               size="mini"
@@ -135,8 +136,8 @@
           <el-col :span="12">
             <el-form-item v-if="form.menuType != 'F'" label="是否外链">
               <el-radio-group v-model="form.isFrame">
-                <el-radio label="0">是</el-radio>
-                <el-radio label="1">否</el-radio>
+                <el-radio :key="0" :label="0">是</el-radio>
+                <el-radio :key="1" :label="1">否</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -182,8 +183,8 @@
           <el-col :span="12">
             <el-form-item v-if="form.menuType == 'C'" label="是否缓存">
               <el-radio-group v-model="form.isCache">
-                <el-radio label="0">缓存</el-radio>
-                <el-radio label="1">不缓存</el-radio>
+                <el-radio :key="0" :label="0">缓存</el-radio>
+                <el-radio :key="1" :label="1">不缓存</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -235,7 +236,7 @@ export default {
       showSearch: true,
       // 是否显示弹出层
       open: false,
-      // 显示删除列表
+      //显示删除列表
       dialogVisibleDel: false,
       // 弹出层标题
       title: "",
@@ -344,7 +345,7 @@ export default {
       this.menuOptions = [];
       const menu = {menuId: 0, menuName: '主类目', children: []};
       const {data: res} = await this.$http.get('sysMenu/queryMenus');
-      menu.children = this.handleTree(res.data, "menuId");
+      menu.children = res.data;
       this.menuOptions.push(menu)
     },
     /** 显示状态字典翻译*/
@@ -408,6 +409,7 @@ export default {
     },
     /** 修改按钮操作 */
     async handleUpdate(row) {
+      this.title = "修改菜单";
       this.reset();
       await this.getTreeselect();
       const {data: res} = await this.$http.get(`sysMenu/${row.menuId}`);
@@ -427,19 +429,19 @@ export default {
               return this.$message.error(res.meta.errorMsg)
             }
             this.open = false;
-            // await this.getList();
-            location.reload()
+            location.reload();
             return this.$message.success("修改成功！")
+            // await this.getList();
           } else {
             const {data: res} = await this.$http.post("sysMenu/addMenu", this.form);
             console.log(res);
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg);
             }
-            this.$message.success("新增成功");
             this.open = false;
+            location.reload();
+            this.$message.success("新增成功");
             // await this.getList();
-            location.reload()
           }
         }
       });
@@ -458,8 +460,8 @@ export default {
             console.log(res.data.meta.errorCode)
             if (res.data.meta.errorCode === 200) {
               // 重新获取页面
+              location.reload();
               // this.getList();
-              location.reload()
               this.$message.success("删除成功");
             } else {
               this.$message.warning(res.data.meta.errorMsg);
@@ -489,7 +491,7 @@ export default {
                 if (res.data.meta.errorCode === 200) {
                   // 重新获取页面
                   // this.getList();
-                  location.reload()
+                  location.reload();
                   this.$message.success("删除成功");
                   this.dialogVisibleDel = false;
                 } else {

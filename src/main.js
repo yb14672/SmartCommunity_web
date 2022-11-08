@@ -1,16 +1,15 @@
 import Vue from 'vue'
-
 import App from './App.vue'
 import router from './router'
 import store from './store'
 import axios from 'axios'
-import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree } from "@/utils/zhiyu";
+import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree } from "@/utils/util";
 //动态背景
 import VueParticles from 'vue-particles'
 //图片裁剪
 import { VueCropper } from 'vue-cropper';
 //滑块验证
-import SlideVerify from 'vue-monoplasty-slide-verify';
+// import SlideVerify from 'vue-monoplasty-slide-verify';
 //图标选择器
 import iconPicker from 'vue-fontawesome-elementui-icon-picker';
 //element Ui
@@ -24,7 +23,7 @@ Vue.use(VueParticles)
 //将图片裁剪全局挂载
 Vue.component('VueCropper',VueCropper);
 //滑块验证
-Vue.use(SlideVerify);
+// Vue.use(SlideVerify);
 
 Vue.prototype.parseTime = parseTime
 Vue.prototype.resetForm = resetForm
