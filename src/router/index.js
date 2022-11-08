@@ -22,8 +22,8 @@ const router = new Router({
         { path: '/welcome', component: Welcome },
         { path: '/system/user', component: Users },
         { path: '/system/menu', component: Menu },
+        { path: '/system/role', component: Role },
         {path: '/user/profile',component:Person},
-        {path: '/system/role',component:Role},
       ]
     }
   ]
