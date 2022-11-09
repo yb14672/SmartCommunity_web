@@ -433,7 +433,6 @@ export default {
       if (res.meta.errorCode !== 200) {
         return this.$message.error("获取失败")
       }
-      console.log(res.data)
       this.menuParentSon = false
       this.$refs.menu.setCheckedKeys(res.data);
       /** 对数据进行深拷贝 */
