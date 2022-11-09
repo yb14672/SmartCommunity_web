@@ -410,21 +410,24 @@ export default {
         if (valid) {
           if (this.form.menuId != undefined) {
             const {data: res} = await this.$http.put("sysMenu/updateMenu", this.form);
+            console.log(res)
             if (res.meta.errorCode !== 200) {
-              return this.$message.error(res.meta.errorMsg)
+              this.$message.error(res.meta.errorMsg)
+            }else{
+              this.open = false;
+              this.$message.success("修改成功！");
+              location.reload();
             }
-            this.open = false;
-            location.reload();
-            return this.$message.success("修改成功！")
           } else {
             const {data: res} = await this.$http.post("sysMenu/addMenu", this.form);
             console.log(res);
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg);
+            }else{
+              this.$message.success("新增成功");
+              this.open = false;
+              location.reload();
             }
-            this.$message.success("新增成功");
-            this.open = false;
-            location.reload();
           }
         }
       });
