@@ -11,6 +11,7 @@ import Role from "../components/system/Role"
 import Dict from "../components/system/dict/index"
 import DataType from "../components/system/dict/data"
 import Dept from '../components/system/Dept'
+import Post from '../components/system/post/Post'
 
 Vue.use(Router)
 
@@ -31,6 +32,7 @@ const router = new Router({
                 {path: '/system/dict', component: Dict},
                 {path: '/system/dept', component: Dept},
                 {path: '/dict/type/data/:dictId(\\d+)', component: DataType},
+                {path: '/system/Post', component: Post},
             ]
         }
     ]
