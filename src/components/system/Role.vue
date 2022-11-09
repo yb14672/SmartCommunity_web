@@ -233,7 +233,9 @@ export default {
         pageSize: 10,
         roleName: undefined,
         roleKey: undefined,
-        status: undefined
+        status: undefined,
+        startTime:'',
+        endTime:''
       },
       // 表单参数
       form: {},
@@ -291,9 +293,9 @@ export default {
     /** 查询角色列表 */
     async getList() {
       this.loading = true;
-      console.log(this.queryParams)
-      console.log(this.queryParams.status)
       // console.log(this.dateRange)
+      this.queryParams.startTime=this.dateRange[0];
+      this.queryParams.endTime=this.dateRange[1];
       const {data: res} = await this.$http.get('/sysRole/selectRoleByLimit', {
         params: {
           pageNum: this.queryParams.pageNum,
