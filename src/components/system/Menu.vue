@@ -442,8 +442,6 @@ export default {
         // 通过方法？带参
         this.$http.delete("/sysMenu/deleteById?id=" + row.menuId)
           .then((res) => {
-            console.log(res)
-            console.log(res.data.meta.errorCode)
             if (res.data.meta.errorCode === 200) {
               // 重新获取页面
               this.getList();

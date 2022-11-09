@@ -107,6 +107,8 @@ export default {
       }, 1000);
     },
     login() {
+      //清除定时器
+      clearInterval(this.timer);
       this.$router.push("/Login")
     }
   },

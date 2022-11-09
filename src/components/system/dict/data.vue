@@ -92,7 +92,7 @@
       <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true"/>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ scope.row.createTime }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -227,10 +227,11 @@ export default {
     //获取当前类型的详情和对应的data
     this.getType(dictId);
     //获取所有的字典类型
-    // this.getTypeList();
+    this.getTypeList();
     //查询需要使用的字典
     this.getDicts("sys_normal_disable").then(response => {
-      this.statusOptions = response.data;
+      console.log(response)
+      this.statusOptions = response.data.data;
     });
   },
   methods: {
@@ -249,33 +250,38 @@ export default {
       await this.getList();
     },
     /** 查询字典类型列表 */
-    getTypeList() {
-      listType().then(response => {
-        this.typeOptions = response.rows;
-      });
-    },
-    /** 查询字典数据列表 */
-    async getList() {
-      console.log(this.queryParams.dictType)
-      this.loading = true;
-      const {data: res} = await this.$http.get('/sysDictData/', {params:{
-          pageNum:this.queryParams.pageNum,
-          pageSize:this.queryParams.pageSize,
-          dictName:this.queryParams.dictName,
-          dictType:this.queryParams.dictType,
-          status:this.queryParams.status,
-        }});
-      console.log(res);
+    async getTypeList() {
+      //获取数据
+      const {data: res} = await this.$http.get('/sysDictType');
       //判断是否执行成功
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
-      this.dataList = res.rows;
-      this.total = res.total;
+      this.typeOptions = res.data;
+    },
+    /** 查询字典数据列表 */
+    async getList() {
+      this.loading = true;
+      const {data: res} = await this.$http.get('/sysDictData/', {
+        params: {
+          pageNum: this.queryParams.pageNum,
+          pageSize: this.queryParams.pageSize,
+          dictName: this.queryParams.dictName,
+          dictType: this.queryParams.dictType,
+          status: this.queryParams.status,
+        }
+      });
+      //判断是否执行成功
+      if (res.meta.errorCode !== 200) {
+        return this.$message.error(res.meta.errorMsg)
+      }
+      this.dataList = res.data.records;
+      this.total = res.data.total;
       this.loading = false;
     },
     /** 数据状态字典翻译 */
     statusFormat(row, column) {
+      console.log(row,column)
       return this.selectDictLabel(this.statusOptions, row.status);
     },
     /** 取消按钮 */
