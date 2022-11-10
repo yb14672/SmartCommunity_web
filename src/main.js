@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import axios from 'axios'
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree } from "@/utils/zhiyu";
+import { getDicts } from "@/utils/data";
 //动态背景
 import VueParticles from 'vue-particles'
 //图片裁剪
@@ -29,6 +30,7 @@ Vue.use(VueParticles)
 Vue.component('VueCropper',VueCropper);
 //滑块验证
 Vue.use(SlideVerify);
+//树状选择器
 Vue.use(Treeselect)
 
 Vue.filter('moment', function (value, formatString) {
@@ -36,6 +38,8 @@ Vue.filter('moment', function (value, formatString) {
   return moment(value).format(formatString);
 });
 
+// 全局方法挂载
+Vue.prototype.getDicts = getDicts
 Vue.prototype.parseTime = parseTime
 Vue.prototype.resetForm = resetForm
 Vue.prototype.addDateRange = addDateRange
