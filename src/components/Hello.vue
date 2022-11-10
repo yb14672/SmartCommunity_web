@@ -68,33 +68,36 @@ export default {
       time: 1500, //设置循环时间
       width: 0, //移动的长度
       listIndex: 0, //默认显示第几张图片
+      checkTimer:true,
     };
   },
   computed: {},
   methods: {
     // 这里是计算建站时间的脚本
     createTime() {
-      let now = new Date()
-      // 页脚建站时间计算脚本
-      let grt = new Date("02/24/2021 00:00:00");//在此处修改你的建站时间，格式：月/日/年 时:分:秒
-      now.setTime(now.getTime() + 250);
+      if(this.checkTimer){
+        let now = new Date()
+        // 页脚建站时间计算脚本
+        let grt = new Date("02/24/2021 00:00:00");//在此处修改你的建站时间，格式：月/日/年 时:分:秒
+        now.setTime(now.getTime() + 250);
 
-      let days = (now - grt) / 1000 / 60 / 60 / 24;
-      this.dnum = Math.floor(days);
-      let hours = (now - grt) / 1000 / 60 / 60 - (24 * this.dnum);
-      this.hnum = Math.floor(hours);
-      if (String(this.hnum).length == 1) {
-        this.hnum = "0" + this.hnum;
-      }
-      let minutes = (now - grt) / 1000 / 60 - (24 * 60 * this.dnum) - (60 * this.hnum);
-      this.mnum = Math.floor(minutes);
-      if (String(this.mnum).length == 1) {
-        this.mnum = "0" + this.mnum;
-      }
-      let seconds = (now - grt) / 1000 - (24 * 60 * 60 * this.dnum) - (60 * 60 * this.hnum) - (60 * this.mnum);
-      this.snum = Math.round(seconds);
-      if (String(this.snum).length == 1) {
-        this.snum = "0" + this.snum;
+        let days = (now - grt) / 1000 / 60 / 60 / 24;
+        this.dnum = Math.floor(days);
+        let hours = (now - grt) / 1000 / 60 / 60 - (24 * this.dnum);
+        this.hnum = Math.floor(hours);
+        if (String(this.hnum).length == 1) {
+          this.hnum = "0" + this.hnum;
+        }
+        let minutes = (now - grt) / 1000 / 60 - (24 * 60 * this.dnum) - (60 * this.hnum);
+        this.mnum = Math.floor(minutes);
+        if (String(this.mnum).length == 1) {
+          this.mnum = "0" + this.mnum;
+        }
+        let seconds = (now - grt) / 1000 - (24 * 60 * 60 * this.dnum) - (60 * 60 * this.hnum) - (60 * this.mnum);
+        this.snum = Math.round(seconds);
+        if (String(this.snum).length == 1) {
+          this.snum = "0" + this.snum;
+        }
       }
     },
     //1秒切图
@@ -109,6 +112,7 @@ export default {
     login() {
       //清除定时器
       clearInterval(this.timer);
+      this.checkTimer=false;
       this.$router.push("/Login")
     }
   },

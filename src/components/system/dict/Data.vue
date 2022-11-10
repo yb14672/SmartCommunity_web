@@ -76,6 +76,15 @@
         >导出
         </el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+            type="info"
+            icon="el-icon-back"
+            size="mini"
+            @click="exitData"
+        >返回
+        </el-button>
+      </el-col>
     </el-row>
     <!--渲染数据表格-->
     <el-table v-loading="loading" :data="dataList" @selection-change="handleSelectionChange">
@@ -277,6 +286,14 @@ export default {
     });
   },
   methods: {
+    /** 返回到字典列表 */
+    async exitData(){
+      //清空值
+      this.defaultDictType='';
+      this.queryParams.dictType = {};
+      this.exportList.dictType = {};
+      await this.$router.push('/system/dict')
+    },
     /**  分页每页多少条数据 */
     handleSizeChange(val) {
       this.queryParams.size = val;
@@ -319,7 +336,7 @@ export default {
         params: {
           current: this.queryParams.current,
           size: this.queryParams.size,
-          dictName: this.queryParams.dictName,
+          dictLabel: this.queryParams.dictLabel,
           dictType: this.queryParams.dictType,
           status: this.queryParams.status,
         }
@@ -357,6 +374,7 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
+      console.log(this.queryParams)
       this.getDictDataList();
     },
     /** 重置按钮操作 */
@@ -408,7 +426,8 @@ export default {
             } else {
               this.open = false;
               this.$message.success("修改成功！");
-              location.reload();
+              //查询当前字典的data
+              await this.getDictDataList();
             }
           } else {
             const {data: res} = await this.$http.post("/sysDictData", this.form);
@@ -417,7 +436,8 @@ export default {
             } else {
               this.$message.success("新增成功");
               this.open = false;
-              location.reload();
+              //查询当前字典的data
+              await this.getDictDataList();
             }
           }
         }
