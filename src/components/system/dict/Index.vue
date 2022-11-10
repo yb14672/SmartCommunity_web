@@ -180,6 +180,8 @@
 
 <script>
 
+import axios from "axios";
+
 export default {
   name: "Dict",
   data() {
@@ -390,7 +392,27 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-
+      //设置全局配置信息
+      const config = {
+        method: 'get',
+        url: 'sysDictType/getExcel',
+        data: this.ids,
+        responseType: 'blob'
+      };
+      //发送请求
+      // eslint-disable-next-line no-undef
+      axios(config).then(response => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', '字典管理.xls');
+                document.body.appendChild(link);
+                link.click();
+                if (response.data !== null) {
+                  this.$message.success("导出成功");
+                }
+              }
+      )
     },
     /** 清理缓存按钮操作 */
     handleClearCache() {
