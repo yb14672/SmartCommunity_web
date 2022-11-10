@@ -269,7 +269,9 @@ export default {
       }, {
         value: 'danger',
         label: '危险(danger)'
-      }]
+      }],
+      //用来存储修改之前的数据
+      originalForm: {},
     };
   },
   //初始化数据
@@ -287,9 +289,9 @@ export default {
   },
   methods: {
     /** 返回到字典列表 */
-    async exitData(){
+    async exitData() {
       //清空值
-      this.defaultDictType='';
+      this.defaultDictType = '';
       this.queryParams.dictType = {};
       this.exportList.dictType = {};
       await this.$router.push('/system/dict')
@@ -390,7 +392,7 @@ export default {
       this.open = true;
       this.title = "添加字典数据";
       this.form.dictType = this.queryParams.dictType;
-      this.form.listClass='default';
+      this.form.listClass = 'default';
     },
     /** 多选框选中数据 */
     handleSelectionChange(selection) {
@@ -411,6 +413,7 @@ export default {
         this.$message.error(res.meta.errorMsg)
       } else {
         this.form = res.data;
+        this.originalForm = JSON.parse(JSON.stringify(res.data));
         this.open = true;
         this.title = "修改字典数据";
       }
@@ -420,15 +423,18 @@ export default {
       this.$refs["form"].validate(async valid => {
         if (valid) {
           if (this.form.dictCode != undefined) {
-            const {data: res} = await this.$http.put("/sysDictData", this.form);
-            if (res.meta.errorCode !== 200) {
-              this.$message.error(res.meta.errorMsg)
-            } else {
-              this.open = false;
-              this.$message.success("修改成功！");
-              //查询当前字典的data
-              await this.getDictDataList();
+            if(!this.checkEquals()){
+              const {data: res} = await this.$http.put("/sysDictData", this.form);
+              if (res.meta.errorCode !== 200) {
+                this.$message.error(res.meta.errorMsg)
+              } else {
+                this.open = false;
+                this.$message.success("修改成功！");
+                //查询当前字典的data
+                await this.getDictDataList();
+              }
             }
+            this.$message.warning("修改前后数据不能完全一致");
           } else {
             const {data: res} = await this.$http.post("/sysDictData", this.form);
             if (res.meta.errorCode !== 200) {
@@ -486,6 +492,25 @@ export default {
           this.$message.success("导出成功");
         }
       })
+    },
+    /** 检查修改前后是否一致 */
+    checkEquals(){
+      if(this.originalForm.dictLabel==this.form.dictLabel){
+        if(this.originalForm.dictValue==this.form.dictValue){
+          if(this.originalForm.cssClass==this.form.cssClass){
+            if(this.originalForm.dictSort==this.form.dictSort){
+              if(this.originalForm.listClass==this.form.listClass){
+                if(this.originalForm.status==this.form.status){
+                  if(this.originalForm.remark==this.form.remark){
+                    return true;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      return false;
     }
   }
 };

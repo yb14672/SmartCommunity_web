@@ -275,7 +275,7 @@ export default {
       };
       this.resetForm("form");
     },
-    /**  分页每页多少条数据 */
+    /** 分页每页多少条数据 */
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
       this.queryParams.pageSize = val;
