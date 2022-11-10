@@ -8,8 +8,8 @@ import Home from '../components/Home.vue'
 import Person from "../components/user/Person"
 import Menu from "../components/system/Menu"
 import Role from "../components/system/Role"
-import Dict from "../components/system/dict/index"
-import DataType from "../components/system/dict/data"
+import Dict from "../components/system/dict/Index"
+import DataType from "../components/system/dict/Data"
 import Dept from '../components/system/Dept'
 import Post from '../components/system/post/Post'
 

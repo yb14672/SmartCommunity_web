@@ -30,7 +30,7 @@
         <!-- 用户名 -->
         <el-form-item prop="username">
           <!--          6*.v-model双向数据绑定，绑定需要用的数据-->
-          <el-input v-model.trim="loginForm.username" prefix-icon="el-icon-s-custom" placeholder="输入账号"
+          <el-input clearable v-model.trim="loginForm.username" prefix-icon="el-icon-s-custom" placeholder="输入账号"
 
           ></el-input>
         </el-form-item>

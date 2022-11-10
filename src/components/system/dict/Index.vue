@@ -100,7 +100,7 @@
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="dictList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="字典编号" align="center" prop="dictId" />
       <el-table-column label="字典名称" align="center" prop="dictName" :show-overflow-tooltip="true" />
@@ -136,13 +136,17 @@
       </el-table-column>
     </el-table>
 
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+    <div class="block" align="right">
+      <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="queryParams.pageNum"
+              :page-sizes="[1, 2, 5, 10]"
+              :page-size="queryParams.pageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="total">
+      </el-pagination>
+    </div>
 
     <!-- 添加或修改参数配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
@@ -176,6 +180,8 @@
 
 <script>
 
+import axios from "axios";
+
 export default {
   name: "Dict",
   data() {
@@ -193,7 +199,7 @@ export default {
       // 总条数
       total: 0,
       // 字典表格数据
-      typeList: [],
+      dictList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -206,9 +212,11 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        dictName: undefined,
-        dictType: undefined,
-        status: undefined
+        dictName: '',
+        dictType: '',
+        status: '',
+        startTime:'',
+        endTime:'',
       },
       // 表单参数
       form: {},
@@ -219,21 +227,61 @@ export default {
         ],
         dictType: [
           { required: true, message: "字典类型不能为空", trigger: "blur" }
+        ],
+        remark: [
+          {required: true, message: "备注不能为空", trigger: "blur"}
         ]
       }
     };
   },
   created() {
     this.getList();
-    this.getDicts("sys_normal_disable").then(response => {
-      this.statusOptions = response.data;
-    });
+    this.getDicts("sys_normal_disable");
   },
   methods: {
+    // 分页每页多少条数据
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.queryParams.pageSize = val;
+      this.getList();
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.queryParams.pageNum = val;
+      this.getList();
+    },
+    /** 查询数据字典角色状态 */
+    async getDicts(deptType) {
+      const {data: res} = await this.$http.get(`sysDictData/getDict?dictType=${deptType}`);
+      this.statusOptions = res.data;
+    },
     /** 查询字典类型列表 */
-    getList() {
+    async getList() {
       this.loading = true;
-
+      console.log(this.queryParams)
+      // 把值传给queryParams的开始和结束 dateRange是上面双向绑定的开始和结束时间
+      this.queryParams.startTime=this.dateRange[0];
+      this.queryParams.endTime=this.dateRange[1];
+      const {data: res} = await this.$http.get('/sysDictType/selectDictByLimit', {
+        params: {
+          pageNum: this.queryParams.pageNum,
+          pageSize: this.queryParams.pageSize,
+          dictName: this.queryParams.dictName,
+          dictType: this.queryParams.dictType,
+          status: this.queryParams.status,
+          startTime: this.queryParams.startTime,
+          endTime: this.queryParams.endTime,
+        }
+      });
+      console.log(res)
+      console.log(this.queryParams.startTime)
+      console.log(this.queryParams.endTime)
+      if (res.meta.errorCode !== 200) {
+        return this.$message.error(res.meta.errorMsg)
+      }
+      this.dictList = res.data.sysDictTypes;
+      this.total = res.data.pageable.total;
+      this.loading = false
     },
     // 字典状态字典翻译
     statusFormat(row, column) {
@@ -246,13 +294,23 @@ export default {
     },
     // 表单重置
     reset() {
-      this.form = {
-        dictId: undefined,
-        dictName: undefined,
-        dictType: undefined,
-        status: "0",
-        remark: undefined
-      };
+      if (this.$refs.menu != undefined) {
+        this.$refs.menu.setCheckedKeys([]);
+      }
+      this.menuExpand = false,
+              this.menuNodeAll = false,
+              this.deptExpand = true,
+              this.deptNodeAll = false,
+              this.form = {
+                dictId: undefined,
+                dictName: undefined,
+                dictTyte: undefined,
+                remark: undefined,
+                status: "0",
+                menuIds: [],
+                menuCheckStrictly: true,
+                deptCheckStrictly: true,
+              };
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -279,21 +337,39 @@ export default {
       this.multiple = !selection.length
     },
     /** 修改按钮操作 */
-    handleUpdate(row) {
+    async handleUpdate(row) {
+      console.log(row)
       this.reset();
-      const dictId = row.dictId || this.ids
-
+      this.title = "修改字典";
+      this.open = true;
+      /** 对数据进行深拷贝 */
+      this.form = JSON.parse(JSON.stringify(row))
     },
-    /** 提交按钮 */
+    /** 提交按钮 添加字典 */
     submitForm: function() {
-      this.$refs["form"].validate(valid => {
-        // if (valid) {
-        //   if (this.form.dictId != undefined) {
-        //
-        //   } else {
-        //
-        //   }
-        // }
+      this.$refs["form"].validate(async valid => {
+        if (valid) {
+          if (this.form.dictId != undefined) {
+            console.log(this.form.dictId)
+            const {data: res} = await this.$http.put('sysDictType/updateDict', this.form);
+            console.log(res)
+            if (res.meta.errorCode !== 200) {
+              return this.$message.error(res.meta.errorMsg)
+            }
+            this.open = false;
+            await this.getList();
+            return this.$message.success("修改成功！")
+          } else {
+            const {data: res} = await this.$http.post('sysDictType/addSysDict', this.form)
+            console.log(res)
+            if (res.meta.errorCode !== 200) {
+              return this.$message.error(res.meta.errorMsg)
+            }
+            this.open = false;
+            await this.getList();
+            return this.$message.success("添加成功！")
+          }
+        }
       });
     },
     /** 删除按钮操作 */
@@ -303,16 +379,40 @@ export default {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        }).then(function() {
-
         }).then(() => {
+          return this.$http.delete(`/sysDictType?idList=${dictIds}`);
+        }).then((res) => {
+          console.log(res)
+          if (res.data.meta.errorCode !== 200) {
+            return this.$message.error(res.data.meta.errorMsg);
+          }
           this.getList();
           this.msgSuccess("删除成功");
         })
     },
     /** 导出按钮操作 */
     handleExport() {
-
+      //设置全局配置信息
+      const config = {
+        method: 'get',
+        url: 'sysDictType/getExcel',
+        data: this.ids,
+        responseType: 'blob'
+      };
+      //发送请求
+      // eslint-disable-next-line no-undef
+      axios(config).then(response => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', '字典管理.xls');
+                document.body.appendChild(link);
+                link.click();
+                if (response.data !== null) {
+                  this.$message.success("导出成功");
+                }
+              }
+      )
     },
     /** 清理缓存按钮操作 */
     handleClearCache() {
