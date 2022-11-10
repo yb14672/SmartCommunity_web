@@ -308,6 +308,7 @@ export default {
           visible: this.queryParams.visible
         }
       });
+      console.log(res)
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }

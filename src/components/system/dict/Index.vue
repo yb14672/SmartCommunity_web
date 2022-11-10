@@ -279,12 +279,12 @@ export default {
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
-      this.dictList = res.data.sysDictTypes;
+      this.dictList = res.data.sysDictTypeList;
       this.total = res.data.pageable.total;
       this.loading = false
     },
     // 字典状态字典翻译
-    statusFormat(row, column) {
+    statusFormat(row) {
       return this.selectDictLabel(this.statusOptions, row.status);
     },
     // 取消按钮
@@ -421,3 +421,10 @@ export default {
   }
 };
 </script>
+<style>
+a{
+  text-decoration: none;
+  color: #337ab7;
+}
+
+</style>
