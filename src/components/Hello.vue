@@ -102,9 +102,9 @@
             setTimer() {
                 this.timer = setInterval(() => {
                     this.listIndex++;
-                    if (this.listIndex === this.list.length) {
-                        this.listIndex = 0;
-                    }
+                    // if (this.listIndex === this.list.length) {
+                    //     this.listIndex = 0;
+                    // }
                 }, 1000);
             },
             login() {
