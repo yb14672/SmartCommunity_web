@@ -347,7 +347,7 @@ export default {
       if (row.menuType == "F") {
         return "";
       }
-      return this.selectDictLabel(this.statusOptions, row.visible);
+      return this.selectDictLabel(this.statusOptions, row.status);
     },
     /** 取消按钮*/
     cancel() {
@@ -444,7 +444,7 @@ export default {
           .then((res) => {
             if (res.data.meta.errorCode === 200) {
               // 重新获取页面
-              this.getList();
+              location.reload();
               this.$message.success("删除成功");
             } else {
               this.$message.warning(res.data.meta.errorMsg);
@@ -470,10 +470,9 @@ export default {
           // 通过方法？带参
           this.$http.delete("/sysMenu?idList=" + this.$refs.tree.getCheckedKeys())
               .then((res) => {
-                console.log(res.data.meta.errorCode)
                 if (res.data.meta.errorCode === 200) {
                   // 重新获取页面
-                  this.getList();
+                  location.reload();
                   this.$message.success("删除成功");
                   this.dialogVisibleDel = false;
                 } else {
