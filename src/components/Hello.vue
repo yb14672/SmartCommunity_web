@@ -108,6 +108,7 @@
                 }, 1000);
             },
             login() {
+               clearInterval(this.timer)
                 this.$router.push("/Login")
             }
         },

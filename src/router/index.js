@@ -9,6 +9,7 @@ import Person from "../components/user/Person"
 import Menu from "../components/system/Menu"
 import Role from "../components/system/Role"
 import Dict from "../components/system/Dict"
+import Dept from "../components/system/Dept"
 
 Vue.use(Router)
 
@@ -27,6 +28,7 @@ const router = new Router({
         { path: '/system/menu', component: Menu },
         { path: '/system/role', component: Role },
         { path: '/system/dict', component: Dict },
+        { path: '/system/dept', component: Dept },
         {path: '/user/profile',component:Person},
       ]
     }

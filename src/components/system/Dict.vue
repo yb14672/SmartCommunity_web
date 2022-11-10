@@ -372,78 +372,78 @@ export default {
 
     /** 数组删*/
     handleDeletes(row) {
-      // const dictIds = row.dictId || this.ids;
-      // let axin = this;
-      // this.$confirm('是否确认删除字典编号为"' + dictIds + '"的数据项?', "警告", {
-      //   confirmButtonText: "确定",
-      //   cancelButtonText: "取消",
-      //   type: "warning"
-      // }).then(async () => {
-      //   const {data: res} = await axin.$http.post('system/dict/type/delDictTypeById', dictIds)
-      //   if (res.status.status !== 'success') {
-      //     this.$message.error(res.msg);
-      //   } else {
-      //     this.$message.success('删除成功！');
-      //     this.getDictList();
-      //   }
-      // }).catch(() => {
-      //   this.getDictList();
-      //   this.$message({
-      //     type: 'info',
-      //     message: '已取消删除'
-      //   });
-      // });
+      const dictIds = row.dictId || this.ids;
+      let axin = this;
+      this.$confirm('是否确认删除字典编号为"' + dictIds + '"的数据项?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(async () => {
+        const {data: res} = await axin.$http.post('system/dict/type/delDictTypeById', dictIds)
+        if (res.status.status !== 'success') {
+          this.$message.error(res.msg);
+        } else {
+          this.$message.success('删除成功！');
+          this.getDictList();
+        }
+      }).catch(() => {
+        this.getDictList();
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     },
     /** 删除按钮操作 */
     handleDelete: async function (id) {
-      // const confirmResult = await this.$messagebox.confirm(
-      //     '此操作将永久删除, 是否继续?',
-      //     '提示',
-      //     {
-      //       confirmButtonText: '确定',
-      //       cancelButtonText: '取消',
-      //       type: 'warning'
-      //     }
-      // ).catch(err => err)
-      // // 如果用户确认删除，则返回值为字符串 confirm
-      // // 如果用户取消了删除，则返回值为字符串 cancel
-      // // console.log(confirmResult)
-      // if (confirmResult !== 'confirm') {
-      //   return this.$message.info('已取消删除')
-      // }
-      // const {data: res} = await this.$http.delete('system/dict/type/delDictType?dictId=' + id)
-      // if (res.status.status !== 'success') {
-      //   this.$message.error(res.msg);
-      // } else {
-      //   this.$message.success('删除成功！');
-      //   this.getDictList();
-      // }
+      const confirmResult = await this.$messagebox.confirm(
+          '此操作将永久删除, 是否继续?',
+          '提示',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+      ).catch(err => err)
+      // 如果用户确认删除，则返回值为字符串 confirm
+      // 如果用户取消了删除，则返回值为字符串 cancel
+      // console.log(confirmResult)
+      if (confirmResult !== 'confirm') {
+        return this.$message.info('已取消删除')
+      }
+      const {data: res} = await this.$http.delete('system/dict/type/delDictType?dictId=' + id)
+      if (res.status.status !== 'success') {
+        this.$message.error(res.msg);
+      } else {
+        this.$message.success('删除成功！');
+        this.getDictList();
+      }
     },
 
     /** 导出按钮操作 */
     handleExport() {
-      // // window.location='http://localhost:8080/excel/get'
-      // //设置全局配置信息
-      // const config = {
-      //   method: 'post',
-      //   url: 'system/dict/type/getExcel',
-      //   data: this.ids,
-      //   responseType: 'blob'
-      // };
-      // //发送请求
-      // // eslint-disable-next-line no-undef
-      // axios(config).then(response => {
-      //       const url = window.URL.createObjectURL(new Blob([response.data]));
-      //       const link = document.createElement('a');
-      //       link.href = url;
-      //       link.setAttribute('download', '字典类型.xls');
-      //       document.body.appendChild(link);
-      //       link.click();
-      //       if (response.data !== null) {
-      //         this.$message.success("导出成功");
-      //       }
-      //     }
-      // )
+      // window.location='http://localhost:8080/excel/get'
+      //设置全局配置信息
+      const config = {
+        method: 'post',
+        url: 'system/dict/type/getExcel',
+        data: this.ids,
+        responseType: 'blob'
+      };
+      //发送请求
+      // eslint-disable-next-line no-undef
+      axios(config).then(response => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', '字典类型.xls');
+            document.body.appendChild(link);
+            link.click();
+            if (response.data !== null) {
+              this.$message.success("导出成功");
+            }
+          }
+      )
     }
     // /** 清理缓存按钮操作 */
     // handleClearCache() {

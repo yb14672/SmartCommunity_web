@@ -1,7 +1,6 @@
 <template>
     <div>
-        <el-calendar v-model="value">
-        </el-calendar>
+    <el-calendar v-model="value"></el-calendar>
     </div>
 </template>
 
@@ -11,7 +10,8 @@
             return {
                 value: new Date()
             }
-        }
+        },
+
     }
 </script>
 
