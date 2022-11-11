@@ -233,8 +233,6 @@ export default {
     //   });
     // },
     async getList() {
-
-
       const {data: res} = await this.$http.get("sysPost/getPostList", {
         params: {
           pageNum: this.queryParams.pageNum,
@@ -244,7 +242,7 @@ export default {
           status: this.queryParams.status,
         }
       });
-      console.log(res.data.sysPostList)
+      console.log(res)
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.message);
       }
@@ -382,11 +380,10 @@ export default {
         const {data: res} = await this.$http.delete(`sysPost/deletePost?ids=${postIds}`);
         console.log(res)
         if (res.meta.errorCode !== 200) {
-          return this.$message.error("删除成功")
+          return this.$message.error(res.meta.errorMsg)
         }
         this.getList();
-        return this.$message.success(res.meta.errorMsg)
-
+        return this.$message.success("删除成功")
       })
     },
     /** 导出按钮操作 */
