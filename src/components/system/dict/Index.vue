@@ -228,9 +228,6 @@ export default {
         ],
         dictType: [
           { required: true, message: "字典类型不能为空", trigger: "blur" }
-        ],
-        remark: [
-          {required: true, message: "备注不能为空", trigger: "blur"}
         ]
       }
     };
@@ -423,3 +420,15 @@ export default {
   }
 };
 </script>
+<style>
+  a{
+    color: #337ab7;
+    text-decoration:none;
+  }
+  a:hover{
+    color: #1890ff;
+  }
+  a:active{
+    color: #1720b7;
+  }
+</style>

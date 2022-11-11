@@ -176,7 +176,7 @@ export default {
 }
 
 .el-aside {
-  background-color: #333744;
+  background-color: #fff;
 }
   .el-menu {
     border-right: none;
