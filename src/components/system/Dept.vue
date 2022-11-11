@@ -199,9 +199,25 @@ export default {
   },
   methods: {
     /** 查询部门列表 */
-    getList() {
+    async getList() {
       this.loading = true;
-
+      const {data:res} = await this.$http.get('/sysDept/getDeptTree',{
+        params:{
+          // 查询出来的数据
+          pageNum: this.queryParams.pageNum,
+          pageSize: this.queryParams.pageSize,
+          dept_name: this.queryParams.deptName,
+          status: this.queryParams.status,
+        }
+      });
+      console.log(res);
+      if (res.meta.errorCode !== 200){
+        return this.$message.error(res.meta.errorMsg)
+      }
+      this.deptList = res.data[0].children;
+      console.log(this.deptList)
+      // this.total = res.data.deptable.total;
+      this.loading = false;
     },
     /** 转换部门数据结构 */
     normalizer(node) {

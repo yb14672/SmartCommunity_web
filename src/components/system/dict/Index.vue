@@ -71,6 +71,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
+          v-hasPermi="['system:dict:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -236,6 +237,7 @@ export default {
   },
   created() {
     this.getList();
+    // 初始化字典
     this.getDicts("sys_normal_disable");
   },
   methods: {
