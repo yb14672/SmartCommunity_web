@@ -414,7 +414,7 @@ export default {
             console.log(res)
             if (res.meta.errorCode !== 200) {
               this.$message.error(res.meta.errorMsg)
-            }else{
+            } else {
               this.open = false;
               this.$message.success("修改成功！");
               location.reload();
@@ -424,7 +424,7 @@ export default {
             console.log(res);
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg);
-            }else{
+            } else {
               this.$message.success("新增成功");
               this.open = false;
               location.reload();
@@ -439,18 +439,18 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      }).then(() =>{
+      }).then(() => {
         // 通过方法？带参
         this.$http.delete("/sysMenu/deleteById?id=" + row.menuId)
-          .then((res) => {
-            if (res.data.meta.errorCode === 200) {
-              // 重新获取页面
-              location.reload();
-              this.$message.success("删除成功");
-            } else {
-              this.$message.warning(res.data.meta.errorMsg);
-            }
-          })
+            .then((res) => {
+              if (res.data.meta.errorCode === 200) {
+                // 重新获取页面
+                location.reload();
+                this.$message.success("删除成功");
+              } else {
+                this.$message.warning(res.data.meta.errorMsg);
+              }
+            })
       })
     },
     /** 显示批量删除 */

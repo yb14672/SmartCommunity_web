@@ -234,8 +234,8 @@ export default {
         roleName: undefined,
         roleKey: undefined,
         status: undefined,
-        startTime:'',
-        endTime:''
+        startTime: '',
+        endTime: ''
       },
       // 表单参数
       form: {},
@@ -294,8 +294,8 @@ export default {
     async getList() {
       this.loading = true;
       // console.log(this.dateRange)
-      this.queryParams.startTime=this.dateRange[0];
-      this.queryParams.endTime=this.dateRange[1];
+      this.queryParams.startTime = this.dateRange[0];
+      this.queryParams.endTime = this.dateRange[1];
       const {data: res} = await this.$http.get('/sysRole/selectRoleByLimit', {
         params: {
           pageNum: this.queryParams.pageNum,

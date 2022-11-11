@@ -423,7 +423,7 @@ export default {
       this.$refs["form"].validate(async valid => {
         if (valid) {
           if (this.form.dictCode != undefined) {
-            if(!this.checkEquals()){
+            if (!this.checkEquals()) {
               const {data: res} = await this.$http.put("/sysDictData", this.form);
               if (res.meta.errorCode !== 200) {
                 this.$message.error(res.meta.errorMsg)
@@ -433,8 +433,9 @@ export default {
                 //查询当前字典的data
                 await this.getDictDataList();
               }
+            }else{
+              this.$message.warning("修改前后数据不能完全一致");
             }
-            this.$message.warning("修改前后数据不能完全一致");
           } else {
             const {data: res} = await this.$http.post("/sysDictData", this.form);
             if (res.meta.errorCode !== 200) {
@@ -494,14 +495,14 @@ export default {
       })
     },
     /** 检查修改前后是否一致 */
-    checkEquals(){
-      if(this.originalForm.dictLabel==this.form.dictLabel){
-        if(this.originalForm.dictValue==this.form.dictValue){
-          if(this.originalForm.cssClass==this.form.cssClass){
-            if(this.originalForm.dictSort==this.form.dictSort){
-              if(this.originalForm.listClass==this.form.listClass){
-                if(this.originalForm.status==this.form.status){
-                  if(this.originalForm.remark==this.form.remark){
+    checkEquals() {
+      if (this.originalForm.dictLabel == this.form.dictLabel) {
+        if (this.originalForm.dictValue == this.form.dictValue) {
+          if (this.originalForm.cssClass == this.form.cssClass) {
+            if (this.originalForm.dictSort == this.form.dictSort) {
+              if (this.originalForm.listClass == this.form.listClass) {
+                if (this.originalForm.status == this.form.status) {
+                  if (this.originalForm.remark == this.form.remark) {
                     return true;
                   }
                 }
