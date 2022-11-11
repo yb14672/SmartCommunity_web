@@ -308,6 +308,7 @@ export default {
     async getType(dictId) {
       //获取数据
       const {data: res} = await this.$http.get('/sysDictType/' + dictId);
+    console.log(res)
       //判断是否执行成功
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
@@ -323,6 +324,8 @@ export default {
     async getTypeList() {
       //获取数据
       const {data: res} = await this.$http.get('/sysDictType');
+      console.log(res)
+      console.log(res.meta.errorCode)
       //判断是否执行成功
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)

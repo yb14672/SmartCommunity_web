@@ -52,7 +52,7 @@
             icon="el-icon-edit"
             size="mini"
             :disabled="single"
-            @click="handleUpdate"
+            @click="handleUpdate()"
         >修改
         </el-button>
       </el-col>
@@ -62,7 +62,7 @@
             icon="el-icon-delete"
             size="mini"
             :disabled="multiple"
-            @click="handleDelete"
+            @click="handleDelete()"
         >删除
         </el-button>
       </el-col>
@@ -233,6 +233,8 @@ export default {
     //   });
     // },
     async getList() {
+
+
       const {data: res} = await this.$http.get("sysPost/getPostList", {
         params: {
           pageNum: this.queryParams.pageNum,
@@ -384,6 +386,7 @@ export default {
         }
         this.getList();
         return this.$message.success("删除成功")
+
       })
     },
     /** 导出按钮操作 */
