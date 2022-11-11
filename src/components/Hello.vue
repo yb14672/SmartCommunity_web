@@ -100,15 +100,15 @@ export default {
         }
       }
     },
-    //1秒切图
-    setTimer() {
-      this.timer = setInterval(() => {
-        this.listIndex++;
-        if (this.listIndex === this.list.length) {
-          this.listIndex = 0;
-        }
-      }, 1000);
-    },
+    // //1秒切图
+    // setTimer() {
+    //   this.timer = setInterval(() => {
+    //     this.listIndex++;
+    //     if (this.listIndex === this.list.length) {
+    //       this.listIndex = 0;
+    //     }
+    //   }, 1000);
+    // },
     login() {
       //清除定时器
       clearInterval(this.timer);

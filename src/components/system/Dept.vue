@@ -234,6 +234,8 @@
             normalizer(node) {
                 if (node.children && !node.children.length) {
                     delete node.children;
+                }if (node.deptName == null) {
+                    node.deptName = "智慧社区"
                 }
                 return {
                     id: node.deptId,
@@ -288,7 +290,9 @@
                 this.getTreeselect();
                 if (row !== null && row.deptId) {
                     this.form.parentId = row.deptId;
-                } else {
+                } else if (row.deptId===100) {
+                    this.form.parentId = 0;
+                }else {
                     this.form.parentId = 100;
                 }
                 this.open = true;

@@ -71,6 +71,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
+          v-hasPermi="['system:dict:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -236,6 +237,7 @@ export default {
   },
   created() {
     this.getList();
+    // 初始化字典
     this.getDicts("sys_normal_disable");
   },
   methods: {
@@ -279,12 +281,12 @@ export default {
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
-      this.dictList = res.data.sysDictTypeList;
+      this.dictList = res.data.sysDictTypes;
       this.total = res.data.pageable.total;
       this.loading = false
     },
     // 字典状态字典翻译
-    statusFormat(row) {
+    statusFormat(row, column) {
       return this.selectDictLabel(this.statusOptions, row.status);
     },
     // 取消按钮
@@ -421,10 +423,3 @@ export default {
   }
 };
 </script>
-<style>
-a{
-  text-decoration: none;
-  color: #337ab7;
-}
-
-</style>

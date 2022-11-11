@@ -52,7 +52,7 @@
             icon="el-icon-edit"
             size="mini"
             :disabled="single"
-            @click="handleUpdate"
+            @click="handleUpdate()"
         >修改
         </el-button>
       </el-col>
@@ -62,7 +62,7 @@
             icon="el-icon-delete"
             size="mini"
             :disabled="multiple"
-            @click="handleDelete"
+            @click="handleDelete()"
         >删除
         </el-button>
       </el-col>
@@ -382,10 +382,10 @@ export default {
         const {data: res} = await this.$http.delete(`sysPost/deletePost?ids=${postIds}`);
         console.log(res)
         if (res.meta.errorCode !== 200) {
-          return this.$message.error("删除成功")
+          return this.$message.success(res.meta.errorMsg)
         }
         this.getList();
-        return this.$message.success(res.meta.errorMsg)
+        return this.$message.error("删除成功")
 
       })
     },
