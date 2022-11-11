@@ -382,10 +382,10 @@ export default {
         const {data: res} = await this.$http.delete(`sysPost/deletePost?ids=${postIds}`);
         console.log(res)
         if (res.meta.errorCode !== 200) {
-          return this.$message.success(res.meta.errorMsg)
+          return this.$message.error(res.meta.errorMsg)
         }
         this.getList();
-        return this.$message.error("删除成功")
+        return this.$message.success("删除成功")
 
       })
     },
