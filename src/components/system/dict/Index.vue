@@ -272,12 +272,10 @@ export default {
         }
       });
       console.log(res)
-      console.log(this.queryParams.startTime)
-      console.log(this.queryParams.endTime)
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
-      this.dictList = res.data.sysDictTypeList;
+      this.dictList = res.data.sysDictTypes;
       this.total = res.data.pageable.total;
       this.loading = false
     },

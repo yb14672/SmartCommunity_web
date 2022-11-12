@@ -5,6 +5,9 @@ import store from './store'
 import axios from 'axios'
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree } from "@/utils/zhiyu";
 import { getDicts } from "@/utils/data";
+//导入面包屑导航
+import Breadcrumb from '@/components/breadcrumb/Breadcrumb'
+// import Breadcrumb from '@/components/breadcrumb/index'
 //动态背景
 import VueParticles from 'vue-particles'
 //图片裁剪
@@ -28,6 +31,8 @@ Vue.use(iconPicker);
 Vue.use(VueParticles)
 //将图片裁剪全局挂载
 Vue.component('VueCropper',VueCropper);
+//面包屑导航
+Vue.component("Breadcrumb",Breadcrumb);
 //滑块验证
 Vue.use(SlideVerify);
 //树状选择器

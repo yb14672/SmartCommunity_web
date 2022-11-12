@@ -34,7 +34,6 @@
             router class="el-menu-vertical-demo"
             :default-active="activePath"
         >
-
           <!-- submenu：菜单栏中的一项 index: 它的标识（唯一）-->
           <el-menu-item index="/welcome">
             <template>
