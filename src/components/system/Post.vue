@@ -48,16 +48,6 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-            type="success"
-            icon="el-icon-edit"
-            size="mini"
-            :disabled="single"
-            @click="handleUpdate()"
-        >修改
-        </el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
             type="danger"
             icon="el-icon-delete"
             size="mini"
@@ -300,7 +290,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.postId)
-      this.single = selection.length != 1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -372,7 +362,13 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const postIds = row.postId || this.ids;
+      let postIds;
+      if (row){
+        postIds = row.postId;
+      }else {
+        postIds = this.ids
+      }
+
       this.$confirm('是否确认删除岗位编号为"' + postIds + '"的数据项?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
