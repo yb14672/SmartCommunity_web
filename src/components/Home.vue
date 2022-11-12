@@ -127,10 +127,8 @@ export default {
     async getMenuList() {
       // 发送请求获取左侧菜单数据
       const {data: res} = await this.$http.get('sysMenu/getMenus')
-      // console.log(res)
       // if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       this.menuList = res.data
-      // console.log(res)
     },
     async getAvatarById() {
       // 发送请求获取头像
@@ -138,14 +136,7 @@ export default {
       if (res.meta.errorCode === 2012) return this.$message(res.meta.errorMsg)
       if (res.meta.errorCode !== 200) return this.$message.error(res.meta.errorMsg)
       this.avatar = res.data;
-      // console.log(res)
     },
-    // handleOpen(key, keyPath) {
-    //   console.log(key, keyPath);
-    // },
-    // handleClose(key, keyPath) {
-    //   console.log(key, keyPath);
-    // }
   }
 }
 </script>

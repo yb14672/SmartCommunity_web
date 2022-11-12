@@ -234,7 +234,6 @@ export default {
           status: this.queryParams.status,
         }
       });
-      console.log(res.data.sysPostList)
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.message);
       }
@@ -246,7 +245,6 @@ export default {
     async getDicts(deptType) {
       const {data: res} = await this.$http.get(`sysDictData/getDict?dictType=${deptType}`);
       this.statusOptions = res.data;
-      console.log(res)
     },
     // 取消按钮
     cancel() {
@@ -267,13 +265,11 @@ export default {
     },
     /** 分页每页多少条数据 */
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
       this.queryParams.pageSize = val;
       this.getList();
     },
     /** 点击切换上下页 */
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
       this.queryParams.pageNum = val;
       this.getList();
     },
@@ -310,7 +306,6 @@ export default {
 
     },
     handleStatusChange(row) {
-      console.log(row)
       let text = row.status === "0" ? "启用" : "停用";
       this.$confirm('确认要"' + text + '""' + row.postName + '"岗位?', "警告", {
         confirmButtonText: "确定",
@@ -318,7 +313,6 @@ export default {
         type: "warning"
       }).then(async () => {
         const {data: res} = await this.$http.put(`/sysPost`, row);
-        console.log(res)
         if (res.code !== 0) {
           return this.$message.error("修改失败");
         }
@@ -336,7 +330,6 @@ export default {
           if (this.form.postId !== undefined) {
             const {data: res} = await this.$http.post("sysPost/updatePost", this.form)
             {
-              console.log(res)
               if (res.meta.errorCode !== 200) {
                 return this.$message.error(res.meta.errorMsg);
               }
@@ -348,7 +341,6 @@ export default {
           } else {
             const {data: res} = await this.$http.post("sysPost/addPost", this.form)
             {
-              console.log(res)
               if (res.meta.errorCode !== 200) {
                 return this.$message.error(res.meta.errorMsg);
               }
@@ -376,7 +368,6 @@ export default {
 
       }).then(async () => {
         const {data: res} = await this.$http.delete(`sysPost/deletePost?ids=${postIds}`);
-        console.log(res)
         if (res.meta.errorCode !== 200) {
           return this.$message.error(res.meta.errorMsg)
         }
@@ -413,13 +404,11 @@ export default {
 
   /**  分页每页多少条数据 */
   handleSizeChange(val) {
-    console.log(`每页 ${val} 条`);
     this.queryParams.pageSize = val;
     this.getList();
   },
 
   handleCurrentChange(val) {
-    console.log(`当前页: ${val}`);
     this.queryParams.pageNum = val;
     this.getList();
   },

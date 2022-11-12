@@ -308,7 +308,6 @@ export default {
           visible: this.queryParams.visible
         }
       });
-      console.log(res)
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
@@ -344,7 +343,6 @@ export default {
     },
     /** 菜单状态字典翻译*/
     statusFormat(row) {
-      // console.log(row)
       if (row.menuType == "F") {
         return "";
       }
@@ -411,7 +409,6 @@ export default {
         if (valid) {
           if (this.form.menuId != undefined) {
             const {data: res} = await this.$http.put("sysMenu/updateMenu", this.form);
-            console.log(res)
             if (res.meta.errorCode !== 200) {
               this.$message.error(res.meta.errorMsg)
             } else {
@@ -421,7 +418,6 @@ export default {
             }
           } else {
             const {data: res} = await this.$http.post("sysMenu/addMenu", this.form);
-            console.log(res);
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg);
             } else {
@@ -460,7 +456,6 @@ export default {
     /** 批量删除 */
     getCheckedKeys() {
       //获取的id列表
-      //console.log(this.$refs.tree.getCheckedKeys());
       this.$confirm("确定删除吗？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

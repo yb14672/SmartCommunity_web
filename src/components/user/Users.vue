@@ -591,9 +591,6 @@ export default {
     handleSelect() {
 
     },
-    handleIconClick() {
-      //console.log(ev)
-    },
     async getUserList() {
       this.form.startTime = this.searchTime[0]
       this.form.endTime = this.searchTime[1]
@@ -606,7 +603,6 @@ export default {
       this.form.pageSize = parseInt(userList.pageSize)
       this.total = parseInt(userList.totalPage)
       this.loading = false
-      console.log(userList);
     },
     async selectDept() {
 
