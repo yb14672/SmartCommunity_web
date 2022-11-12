@@ -469,6 +469,7 @@ import axios from "axios";
       },
       /** 导出按钮操作 */
       handleExport() {
+        const msg=this.exportList.ids.length==0?"是否确认导出所有数据？":'是否确认导出编号为' + this.exportList.ids + '的数据项?';
         //设置全局配置信息
         const config = {
           method: 'get',
@@ -476,7 +477,7 @@ import axios from "axios";
           responseType: 'blob'
         };
         console.log(config.data)
-        this.$confirm('是否确认导出所有数据项?', "警告", {
+        this.$confirm(msg, "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
