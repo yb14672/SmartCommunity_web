@@ -739,11 +739,24 @@ export default {
 
 
     },
-    reLoadPwd() {
+    reLoadPwd(row) {
+        this.title = '添加';
+        this.dialogVisible =true;
+        this.form={
+            userId: row.userId,
+            password:this.password,
+
+        }
 
     },
     /*修改密码*/
     async changPwd() {
+        const {data:res} = await this.$http.put("sysUser/insertUser",this.form);
+        if (res.meta.errorCode!==200)
+        {
+            return this.$message.error(res.meta.errorMsg)
+        }
+        return this.$message.success("重置成功")
 
 
     }
