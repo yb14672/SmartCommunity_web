@@ -277,9 +277,9 @@
             /** 查询菜单下拉树结构 */
             async getTreeselect() {
                 this.deptOptions = [];
-                const dept = {deptId: 100, deptName: '主类目', children: []};
+                const dept = {deptId: 0, deptName: '智慧社区', children: []};
                 const {data: res} = await this.$http.get('sysDept/getDeptList');
-                dept.children = res.data;
+                dept.children = res.data[0].children;
                 this.deptOptions.push(dept)
             },
             /** 新增按钮操作 */

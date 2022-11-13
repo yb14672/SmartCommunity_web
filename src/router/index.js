@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import Welcome from '../components/Welcome'
 import Hello from '../components/Hello'
 import Login from '../components/Login.vue'
-import Users from '../components/user/Users'
+import Users from '../components/user/User'
 import Home from '../components/Home.vue'
 import Person from "../components/user/Person"
 import Menu from "../components/system/Menu"
@@ -38,19 +38,19 @@ const router = new Router({
     ]
 })
 
-// //挂载路由导航守卫,to表示将要访问的路径，from表示从哪里来，next是下一个要做的操作
-// router.beforeEach((to, from, next) => {
-//   if (to.path === '/login')
-//     return next();
-//
-//   //获取token
-//   const tokenStr = window.sessionStorage.getItem('token');
-//
-//   if (!tokenStr)
-//     return next('/login');
-//
-//   next();
-//
-// })
+//挂载路由导航守卫,to表示将要访问的路径，from表示从哪里来，next是下一个要做的操作
+router.beforeEach((to, from, next) => {
+  if (to.path === '/login')
+    return next();
+
+  //获取token
+  const tokenStr = window.sessionStorage.getItem('token');
+
+  if (!tokenStr)
+    return next('/login');
+
+  next();
+
+})
 
 export default router

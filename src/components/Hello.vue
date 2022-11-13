@@ -4,8 +4,8 @@
     <!-- 轮播区域 -->
     <div class="imgBox">
       <el-carousel :interval="4000" type="card" height="400px">
-        <el-carousel-item v-for="item in imgList" :key="item">
-          <img :src="item.url" alt="" style="width: 100%"/>
+        <el-carousel-item v-for="item in imgList" :key="item.id">
+          <img :src="item.url" style="width: 100%"/>
         </el-carousel-item>
       </el-carousel>
     </div>
@@ -59,10 +59,10 @@ export default {
       mnum: 0,
       snum: 0,
       imgList: [
-        {url: require("../assets/imgs/pic01.jpg")},
-        {url: require("../assets/imgs/pic02.jpg")},
-        {url: require("../assets/imgs/pic03.jpg")},
-        {url: require("../assets/imgs/pic04.jpg")},
+        {id:0,url: require("../assets/imgs/pic01.jpg")},
+        {id:1,url: require("../assets/imgs/pic02.jpg")},
+        {id:2,url: require("../assets/imgs/pic03.jpg")},
+        {id:3,url: require("../assets/imgs/pic04.jpg")},
       ],
       index: 0, //现在是第几张
       time: 1500, //设置循环时间
@@ -76,9 +76,10 @@ export default {
     // 这里是计算建站时间的脚本
     createTime() {
       if(this.checkTimer){
+        console.log(1)
         let now = new Date()
         // 页脚建站时间计算脚本
-        let grt = new Date("02/24/2021 00:00:00");//在此处修改你的建站时间，格式：月/日/年 时:分:秒
+        let grt = new Date("11/01/2021 00:00:00");//在此处修改你的建站时间，格式：月/日/年 时:分:秒
         now.setTime(now.getTime() + 250);
 
         let days = (now - grt) / 1000 / 60 / 60 / 24;
@@ -100,15 +101,15 @@ export default {
         }
       }
     },
-    // //1秒切图
-    // setTimer() {
-    //   this.timer = setInterval(() => {
-    //     this.listIndex++;
-    //     if (this.listIndex === this.list.length) {
-    //       this.listIndex = 0;
-    //     }
-    //   }, 1000);
-    // },
+    //1秒切图
+    setTimer() {
+      this.timer = setInterval(() => {
+        this.listIndex++;
+        if (this.listIndex === this.imgList.length) {
+          this.listIndex = 0;
+        }
+      }, 1000);
+    },
     login() {
       //清除定时器
       clearInterval(this.timer);

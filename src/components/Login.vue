@@ -67,8 +67,8 @@ export default {
       // 数据绑定
       loginForm: {
         // 5*声明数据
-        username: '',
-        password: ''
+        username: 'admin',
+        password: '123456'
       },
 
       // 表单验证规则
