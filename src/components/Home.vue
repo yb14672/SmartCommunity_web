@@ -88,7 +88,7 @@
         </el-menu>
       </el-aside>
       <!-- 页面主题部分-->
-      <el-main>
+      <el-main style="background-color: #ffffff">
         <router-view></router-view>
       </el-main>
     </el-container>
