@@ -65,18 +65,14 @@ Vue.config.productionTip = false
 
 const myInterceptor = axios.interceptors.response.use(res => {
   if(res.data.jsonResult.errorCode !==undefined && res.data.jsonResult.errorCode === 2013){
-    // this.$message.error("登录过期请重新登录");
-    // console.log(res.data.meta.msg)
-    // vm.$router.push('/login')
-    console.log(myInterceptor)
     //移除拦截器
     axios.interceptors.request.eject(myInterceptor);
     // 从 sessionStorage 删除所有保存的数据
     window.sessionStorage.clear();
-    Vue.prototype.$message.error(res.data.jsonResult.errorMsg).
-
+    localStorage.setItem("msg",res.data.jsonResult.errorMsg)
     window.location.reload();
   }else{
+    localStorage.clear()
     return res
   }
 //这里是响应成功执行的代码

@@ -95,6 +95,10 @@ export default {
     }
   },
   created() {
+    if (localStorage.getItem("msg") != null || localStorage.getItem("msg") != undefined){
+      this.$message.error(localStorage.getItem("msg"))
+      localStorage.clear()
+    }
     // eslint-disable-next-line no-unused-vars
     document.onkeydown = function (e) {
       let key = window.event.keyCode;
