@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { success, warning } from '@/utils/message'
+// import { success, warning } from '@/utils/message'
 import { apiDefaultErrorHandler } from '@/api/base'
 import questionsApi from '@/api/exam/questions'
 
@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     handleExceed (files, fileList) {
-      warning('无法添加更多文件')
+      // warning('无法添加更多文件')
     },
     /**
      * 判断文件类型
@@ -46,7 +46,7 @@ export default {
     judgeFileType (file) {
       let suffix = file.name.substring(file.name.lastIndexOf('.') + 1)
       if (suffix !== 'xlsx' && suffix !== 'xls') {
-        warning('请选择正确的文件格式的文件')
+        // warning('请选择正确的文件格式的文件')
         this.fileList.splice(0, 1)
       }
     },
@@ -54,6 +54,7 @@ export default {
      * 上传文件
      */
     async uploadFile(param) {
+        console.log(param)
       let fileObject = param.file
       let formData = new FormData()
       formData.append('file', fileObject)
@@ -71,7 +72,7 @@ export default {
       if (this.$refs.upload.uploadFiles.length === 1) {
         this.$refs.upload.submit()
       }else{
-        warning('请选取文件')
+        // warning('请选取文件')
       }
     },
     init() {

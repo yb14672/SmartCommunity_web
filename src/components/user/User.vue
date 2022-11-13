@@ -375,6 +375,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "UserList",
   inject: ["reload"],
@@ -547,13 +549,15 @@ export default {
     /**
      * 上传文件
      */
-    uploadFile(param) {
+   async uploadFile(param) {
+        console.log(param)
       let fileObject = param.file
       let formData = new FormData()
       formData.append('file', fileObject)
       console.log(formData)
       console.log(111)
-      // const {data: res} = await this.$http.post('sysUser/import-data', this.formData)
+      const {data: res} = await this.$http.post('sysUser/import-data', formData)
+        console.log(res)
 
     },
     cancelUpload() {
@@ -741,10 +745,29 @@ export default {
     beforeAvatarUpload() {
 
     },
-    /*导出*/
-    handleExport() {
-
-    },
+      /** 导出按钮操作 */
+      handleExport() {
+          //设置全局配置信息
+          const config = {
+              method: 'get',
+              url: 'sysUser/getExcel?userIds='+this.ids,
+              responseType: 'blob'
+          };
+          //发送请求
+          // eslint-disable-next-line no-undef
+          axios(config).then(response => {
+                  const url = window.URL.createObjectURL(new Blob([response.data]));
+                  const link = document.createElement('a');
+                  link.href = url;
+                  link.setAttribute('download', '用户管理.xls');
+                  document.body.appendChild(link);
+                  link.click();
+                  if (response.data !== null) {
+                      this.$message.success("导出成功");
+                  }
+              }
+          )
+      },
     /*下载模板*/
     downloadExport() {
 

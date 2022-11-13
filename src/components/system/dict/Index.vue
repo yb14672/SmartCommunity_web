@@ -383,6 +383,7 @@ export default {
         }).then(() => {
           return this.$http.delete(`/sysDictType?idList=${dictIds}`);
         }).then((res) => {
+
           console.log(res)
           if (res.data.meta.errorCode !== 200) {
             return this.$message.error(res.data.meta.errorMsg);
