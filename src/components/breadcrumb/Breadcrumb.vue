@@ -2,7 +2,7 @@
   <div>
     <!-- 面包屑导航区域 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item class="bread" @click="toHome()">首页</el-breadcrumb-item>
+      <el-breadcrumb-item class="bread" :to="'/welcome'" @click="toHome()">首页</el-breadcrumb-item>
       <el-breadcrumb-item class="bread">{{ name1 }}</el-breadcrumb-item>
       <el-breadcrumb-item class="bread">{{ name2 }}</el-breadcrumb-item>
     </el-breadcrumb>

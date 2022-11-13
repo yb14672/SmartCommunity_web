@@ -67,8 +67,8 @@ export default {
       // 数据绑定
       loginForm: {
         // 5*声明数据
-        username: '',
-        password: ''
+        username: 'admin',
+        password: '123456'
       },
 
       // 表单验证规则
@@ -95,6 +95,10 @@ export default {
     }
   },
   created() {
+    if (localStorage.getItem("msg") != null || localStorage.getItem("msg") != undefined){
+      this.$message.error(localStorage.getItem("msg"))
+      localStorage.clear()
+    }
     // eslint-disable-next-line no-unused-vars
     document.onkeydown = function (e) {
       let key = window.event.keyCode;
