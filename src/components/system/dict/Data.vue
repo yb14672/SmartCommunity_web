@@ -376,7 +376,6 @@ import axios from "axios";
       /** 搜索按钮操作 */
       handleQuery() {
         this.queryParams.pageNum = 1;
-        console.log(this.queryParams)
         this.getDictDataList();
       },
       /** 重置按钮操作 */
@@ -407,7 +406,6 @@ import axios from "axios";
         const dictCode = row.dictCode || this.ids;
         //获取数据
         const {data: res} = await this.$http.get('/sysDictData/' + dictCode);
-        console.log(res)
         //判断是否执行成功
         if (res.meta.errorCode !== 200) {
           this.$message.error(res.meta.errorMsg)
@@ -476,7 +474,6 @@ import axios from "axios";
           url: 'sysDictData/export?ids=' + this.exportList.ids + '&dictType=' + this.exportList.dictType,
           responseType: 'blob'
         };
-        console.log(config.data)
         this.$confirm(msg, "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",

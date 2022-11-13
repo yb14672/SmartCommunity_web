@@ -221,7 +221,6 @@
                         status: this.queryParams.status
                     }
                 });
-                // console.log(res);
                 //根据状态码来返回错误信息
                 if (res.meta.errorCode !== 200) {
                     return this.$message.error(res.meta.errorMsg)
@@ -339,7 +338,6 @@
                             return this.$message.success("修改成功！")
                         } else {
                             const {data: res} = await this.$http.post("sysDept/insertDept", this.form);
-                            console.log(res);
                             if (res.meta.errorCode !== 200) {
                                 return this.$message.error(res.meta.errorMsg);
                             }
@@ -373,8 +371,6 @@
                     // 通过方法？带参
                     this.$http.delete("/sysDept/deleteDept?idList=" + row.deptId)
                         .then((res) => {
-                            console.log(res)
-                            console.log(res.data.meta.errorCode)
                             if (res.data.meta.errorCode === 200) {
                                 // 重新获取页面
                                 this.getList();
