@@ -331,6 +331,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
+      console.log(selection)
       this.ids = selection.map(item => item.dictId)
       this.single = selection.length!=1
       this.multiple = !selection.length
@@ -343,6 +344,7 @@ export default {
       this.open = true;
       /** 对数据进行深拷贝 */
       this.form = JSON.parse(JSON.stringify(row))
+      console.log(this.form)
     },
     /** 提交按钮 添加字典 */
     submitForm: function() {
@@ -394,8 +396,7 @@ export default {
       //设置全局配置信息
       const config = {
         method: 'get',
-        url: 'sysDictType/getExcel',
-        data: this.ids,
+        url: 'sysDictType/getExcel?dictIds='+this.ids,
         responseType: 'blob'
       };
       //发送请求
