@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch">
+      <breadcrumb name1="部门" name2="部门名称"></breadcrumb>
+      <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch">
       <el-form-item label="部门名称" prop="deptName">
         <el-input
             v-model="queryParams.deptName"
@@ -169,8 +170,8 @@
                 },
                 // 表单参数
                 form: {},
-                // 修改表单参数
-                form1: {},
+                //用来存储修改之前的数据
+                originalForm: {},
                 // 表单校验
                 rules: {
                     parentId: [
@@ -300,24 +301,29 @@
             },
             /** 修改按钮操作 */
             async handleUpdate(row) {
-                this.open = true;
-                this.reset();
-                await this.getTreeselect();
-                this.form.deptId = row.deptId;
-                this.form.parentId = row.parentId;
-                this.form.deptName = row.deptName;
-                this.form.orderNum = row.orderNum;
-                this.form.leader = row.leader;
-                this.form.phone = row.phone;
-                this.form.email = row.email;
-                this.form.status = row.status;
-                const {data: res} = await this.$http.get(`sysDept/${row.deptId}`);
-                if (res.code !== 0) {
-                    return this.$message.error("获取失败！")
+                if (row.status !== '0') {
+                    this.$message.error('当前部门已被停用！无法进行修改操作！');
+                }else {
+                    this.open = true;
+                    this.reset();
+                    await this.getTreeselect();
+                    this.form.deptId = row.deptId;
+                    this.form.parentId = row.parentId;
+                    this.form.deptName = row.deptName;
+                    this.form.orderNum = row.orderNum;
+                    this.form.leader = row.leader;
+                    this.form.phone = row.phone;
+                    this.form.email = row.email;
+                    this.form.status = row.status;
+                    const {data: res} = await this.$http.get(`sysDept/${row.deptId}`);
+                    if (res.code !== 0) {
+                        return this.$message.error("获取失败！")
+                    }
+                    this.originalForm = JSON.parse(JSON.stringify(res.data));
+                    this.open = true;
+                    this.title = "修改部门";
+                    this.form = res.data;
                 }
-                this.open = true;
-                this.title = "修改部门";
-                this.form = res.data;
             },
             /** 提交按钮 */
             submitForm: function () {
@@ -343,6 +349,19 @@
                         }
                     }
                 });
+            },
+            /**修改数值比较*/
+            checkEquals(row){
+                this.getList();
+                if (this.originalForm.deptId === row.deptId &&
+                this.originalForm.parentName === row.parentName &&
+                this.originalForm.deptName === row.deptName &&
+                this.originalForm.orderNum === row.orderNum &&
+                this.originalForm.leader === row.leader &&
+                this.originalForm.phone === row.phone &&
+                this.originalForm.email === row.email && this.originalForm.status === row.status){
+                    return this.$message.error("修改前后数据一致");
+                }
             },
             /**删除单个菜单*/
             async handleDelete(row) {

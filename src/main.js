@@ -44,25 +44,27 @@ Vue.filter('moment', function (value, formatString) {
 });
 
 // 全局方法挂载
-Vue.prototype.getDicts = getDicts
-Vue.prototype.parseTime = parseTime
-Vue.prototype.resetForm = resetForm
-Vue.prototype.addDateRange = addDateRange
-Vue.prototype.selectDictLabel = selectDictLabel
-Vue.prototype.selectDictLabels = selectDictLabels
-Vue.prototype.download = download
-Vue.prototype.handleTree = handleTree
+Vue.prototype.getDicts = getDicts;
+Vue.prototype.parseTime = parseTime;
+Vue.prototype.resetForm = resetForm;
+Vue.prototype.addDateRange = addDateRange;
+Vue.prototype.selectDictLabel = selectDictLabel;
+Vue.prototype.selectDictLabels = selectDictLabels;
+Vue.prototype.download = download;
+Vue.prototype.handleTree = handleTree;
 //接口前缀
-axios.defaults.baseURL = 'http://localhost:8080/'
+axios.defaults.baseURL = 'http://localhost:8080/';
 //请求在到达服务器之前，先会调用use中的这个回调函数来添加请求头信息
+
 axios.interceptors.request.use(config=>{
   //为请求头对象，添加token验证的Authorization字段
   config.headers.token = window.sessionStorage.getItem("token")
   return config
+
 })
 
-Vue.prototype.$http = axios
-Vue.config.productionTip = false
+Vue.prototype.$http = axios;
+Vue.config.productionTip = false;
 
 
 new Vue({
