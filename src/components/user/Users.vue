@@ -637,7 +637,7 @@ export default {
     },
     async updateForm(row) {
       this.open = true;
-       const{data:res} = await this.$http.put('sysUser/updateUser',{
+       const{data:res} = await this.$http.put('sysUser/adminUpdateUser',{
          userId:row.userId,
          phonenumber: this.formData.phonenumber,
          nickName: this.formData.nickName,
@@ -744,6 +744,7 @@ export default {
     },
     /*修改密码*/
     async changPwd() {
+
 
     }
   },
