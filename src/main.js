@@ -52,6 +52,9 @@ Vue.prototype.selectDictLabel = selectDictLabel
 Vue.prototype.selectDictLabels = selectDictLabels
 Vue.prototype.download = download
 Vue.prototype.handleTree = handleTree
+
+Vue.prototype.$http = axios
+Vue.config.productionTip = false
 //接口前缀
 axios.defaults.baseURL = 'http://localhost:8080/'
 //请求在到达服务器之前，先会调用use中的这个回调函数来添加请求头信息
@@ -61,8 +64,23 @@ axios.interceptors.request.use(config=>{
   return config
 })
 
-Vue.prototype.$http = axios
-Vue.config.productionTip = false
+const myInterceptor = axios.interceptors.response.use(res => {
+  if(res.data.jsonResult.errorCode !==undefined && res.data.jsonResult.errorCode === 2013 || res.data.jsonResult.errorCode === 2014){
+    //移除拦截器
+    axios.interceptors.request.eject(myInterceptor);
+    // 从 sessionStorage 删除所有保存的数据
+    window.sessionStorage.clear();
+    localStorage.setItem("msg",res.data.jsonResult.errorMsg)
+    window.location.reload();
+  }else{
+    localStorage.clear()
+    return res
+  }
+//这里是响应成功执行的代码
+}, function axiosRetryInterceptor(err) {
+  console.log(err)
+//这里是响应失败执行的代码
+});
 
 
 new Vue({
