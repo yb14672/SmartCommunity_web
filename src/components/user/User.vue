@@ -147,8 +147,10 @@
                              accept=".xlsx,.xls">
                       <i class="el-icon-upload"></i>
                       <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+
                       <div class="el-upload__tip" slot="tip"  style="text-align: center">只能上传xls文件，且不超过500kb</div>
                   </el-upload>
+                <div style="text-align: center">没有模板？点击<a class="el-upload__text" @click="downloadExport" href="#">下载模板</a></div>
                 <div style="text-align: center">
                   <span>
                     <el-button @click="cancelUpload">取消</el-button>
@@ -156,7 +158,6 @@
                   </span>
                 </div>
               </el-dialog>
-
             <el-col :span="1.5">
               <el-button
                   plain
@@ -165,16 +166,6 @@
                   icon="el-icon-download"
                   @click="handleExport"
               >导出
-              </el-button>
-            </el-col>
-            <el-col :span="1.5">
-              <el-button
-                  plain
-                  size="mini"
-                  type="warning"
-                  icon="el-icon-download"
-                  @click="downloadExport"
-              >下载模板
               </el-button>
             </el-col>
           </el-row>
@@ -384,7 +375,6 @@ import axios from "axios";
 
 export default {
   name: "UserList",
-  inject: ["reload"],
   props: {
     /* 配置项 */
     props: {
@@ -574,9 +564,18 @@ export default {
       let formData = new FormData()
       formData.append('file', fileObject)
       console.log(formData)
-      console.log(111)
       const {data: res} = await this.$http.post('sysUser/import-data', formData)
         console.log(res)
+      if (res.meta.errorCode !== 200) {
+        this.$message.error(res.meta.errorMsg)
+      }else {
+        this.$message({
+          message: '导入成功！',
+          type: 'success'
+        });
+      }
+      this.fileList.splice(0,1)
+      this.visible = false
 
     },
     cancelUpload() {
@@ -589,7 +588,7 @@ export default {
     submitUpload() {
       if (this.$refs.upload.uploadFiles.length === 1) {
         this.$refs.upload.submit()
-      }else{
+        this.dialogVisible6=false;
       }
     },
     init() {
@@ -789,7 +788,26 @@ export default {
       },
     /*下载模板*/
     downloadExport() {
-
+      //设置全局配置信息
+      const config = {
+        method: 'get',
+        url: 'sysUser/uploadExcel',
+        responseType: 'blob'
+      };
+      //发送请求
+      // eslint-disable-next-line no-undef
+      axios(config).then(response => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', '用户管理模板.xls');
+                document.body.appendChild(link);
+                link.click();
+                if (response.data !== null) {
+                  this.$message.success("下载成功");
+                }
+              }
+      )
     },
     /*表单提交*/
     async submitForm() {
