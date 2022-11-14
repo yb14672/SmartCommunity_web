@@ -441,7 +441,7 @@ export default {
       fileList: [],
       form: {
         pageNum: 1,
-        pageSize: 1,
+        pageSize: 5,
         userName: undefined,
         phonenumber: undefined,
         status: undefined,
