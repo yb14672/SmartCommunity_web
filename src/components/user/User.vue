@@ -366,6 +366,16 @@
           <el-button type="primary" @click="changPwd()">确 定</el-button>
         </div>
       </el-dialog>
+<!--      验证重复有多少条数据-->
+      <el-dialog
+              title="错误"
+              :visible.sync="dialogVisibleUpload"
+              width="30%">
+        <span>{{uploadData}}</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="dialogVisibleUpload = false">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -427,6 +437,8 @@ export default {
       },
       dialogVisible: false,
       dialogVisible6: false,
+      dialogVisibleUpload: false,
+      uploadData:'',
       defaultExpandedKey: [],
       pageSizes: [2,4, 6, 8, 10],
       loading: true,
@@ -529,6 +541,14 @@ export default {
     this.$forceUpdate();
   },
   methods: {
+    // 关闭导入报错有重复的弹窗
+    handleCloseUpload(done) {
+      this.$confirm('确认关闭？')
+              .then(_ => {
+                done();
+              })
+              .catch(_ => {});
+    },
       // 关闭导入的x
       handleClose(done) {
           this.$confirm('确认关闭？')
@@ -559,15 +579,14 @@ export default {
      * 上传文件
      */
    async uploadFile(param) {
-        console.log(param)
       let fileObject = param.file
       let formData = new FormData()
       formData.append('file', fileObject)
-      console.log(formData)
       const {data: res} = await this.$http.post('sysUser/import-data', formData)
-        console.log(res)
+      console.log(res)
       if (res.meta.errorCode !== 200) {
-        this.$message.error(res.meta.errorMsg)
+        this.dialogVisibleUpload=true;
+        this.uploadData = res.data;
       }else {
         this.$message({
           message: '导入成功！',
