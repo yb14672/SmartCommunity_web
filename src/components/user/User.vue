@@ -125,35 +125,50 @@
               >删除
               </el-button>
             </el-col>
-
-            <el-col :span="1.5">
-              <!--              <el-upload action="#" :auto-upload="false" :multiple="false" :show-file-list="false"-->
-              <!--                         :on-change="uploadByJsqd" :file-list="fileList">-->
-              <!--                <el-button-->
-              <!--                    plain-->
-              <!--                    size="mini"-->
-              <!--                    type="el-button el-button&#45;&#45;info is-plain"-->
-              <!--                    icon="el-icon-upload2"-->
-              <!--                >导入-->
-              <!--                </el-button>-->
-              <!--              </el-upload>-->
-            </el-col>
             <el-col :span="1.5">
               <el-button
                   plain
                   size="mini"
-                  type="warning"
-                  icon="el-icon-download"
-              >导出
+                  type="el-button el-button--info is-plain"
+                  icon="el-icon-upload2"
+                  @click="dialogVisible6 = true"
+              >导入
               </el-button>
             </el-col>
+            <!--弹出的导入-->
+            <el-dialog  :visible.sync="dialogVisible6" :before-close="handleClose"  width="400px" >
+              <el-upload ref="upload"
+                         action=""
+                         drag
+                         :http-request="uploadFile"
+                         :file-list="fileList"
+                         :on-change="judgeFileType"
+                         :auto-upload="false"
+                         :on-exceed="handleExceed"
+                         :multiple="false"
+                         :limit="1"
+                         accept=".xlsx,.xls">
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+
+                <div class="el-upload__tip" slot="tip"  style="text-align: center">只能上传xls文件，且不超过500kb</div>
+              </el-upload>
+              <div style="text-align: center">没有模板？点击<a class="el-upload__text" @click="downloadExport" href="#">下载模板</a></div>
+              <div style="text-align: center">
+                  <span>
+                    <el-button @click="cancelUpload">取消</el-button>
+                    <el-button type="primary" @click="submitUpload">上传<i class="el-icon-upload2"></i></el-button>
+                  </span>
+              </div>
+            </el-dialog>
             <el-col :span="1.5">
               <el-button
                   plain
                   size="mini"
                   type="warning"
                   icon="el-icon-download"
-              >下载模板
+                  @click="handleExport"
+              >导出
               </el-button>
             </el-col>
           </el-row>
@@ -363,10 +378,22 @@
         <el-button type="primary" @click="changPwd()">确 定</el-button>
       </div>
     </el-dialog>
+    <!--验证重复有多少条数据-->
+    <el-dialog
+        title="错误"
+        :visible.sync="dialogVisibleUpload"
+        width="30%">
+      <span>{{uploadData}}</span>
+      <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="dialogVisibleUpload = false">确 定</el-button>
+        </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "UserList",
   // inject: ["reload"],
@@ -420,6 +447,9 @@ export default {
         password: '',
       },
       dialogVisible: false,
+      dialogVisible6: false,
+      dialogVisibleUpload: false,
+      uploadData:'',
       defaultExpandedKey: [],
       loading: true,
       open: false,
@@ -520,6 +550,9 @@ export default {
     });
   },
   methods: {
+    handleExceed (files, fileList) {
+      warning('无法添加更多文件')
+    },
     // 更多操作触发
     handleCommand(command, row) {
       switch (command) {
@@ -780,6 +813,116 @@ export default {
       this.ids = selection.map(item => item.userId)
       this.single = selection.length!=1
       this.multiple = !selection.length
+    },
+    /** 导出按钮操作 */
+    handleExport() {
+      //设置全局配置信息
+      const config = {
+        method: 'get',
+        url: 'sysUser/getExcel?userIds='+this.ids,
+        responseType: 'blob'
+      };
+      //发送请求
+      // eslint-disable-next-line no-undef
+      axios(config).then(response => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', '用户管理.xls');
+            document.body.appendChild(link);
+            link.click();
+            if (response.data !== null) {
+              this.$message.success("导出成功");
+            }
+          }
+      )
+    },
+    /*下载模板*/
+    downloadExport() {
+      //设置全局配置信息
+      const config = {
+        method: 'get',
+        url: 'sysUser/uploadExcel',
+        responseType: 'blob'
+      };
+      //发送请求
+      // eslint-disable-next-line no-undef
+      axios(config).then(response => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', '用户管理模板.xls');
+            document.body.appendChild(link);
+            link.click();
+            if (response.data !== null) {
+              this.$message.success("下载成功");
+            }
+          }
+      )
+    },
+    // 关闭导入报错有重复的弹窗
+    handleCloseUpload(done) {
+      this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+    },
+    // 关闭导入的x
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+            this.fileList.splice(0,1)
+            this.visible = false
+          })
+          .catch(_ => {});
+    },
+    /**
+     * 判断文件类型
+     */
+    judgeFileType (file) {
+      let suffix = file.name.substring(file.name.lastIndexOf('.') + 1)
+      if (suffix !== 'xlsx' && suffix !== 'xls') {
+        // warning('请选择正确的文件格式的文件')
+        this.fileList.splice(0, 1)
+      }
+    },
+    /**
+     * 上传文件
+     */
+    async uploadFile(param) {
+      let fileObject = param.file
+      let formData = new FormData()
+      formData.append('file', fileObject)
+      const {data: res} = await this.$http.post('sysUser/import-data', formData)
+      console.log(res)
+      if (res.meta.errorCode !== 200) {
+        this.dialogVisibleUpload=true;
+        this.uploadData = res.data;
+      }else {
+        this.$message({
+          message: '导入成功！',
+          type: 'success'
+        });
+        this.getUserList();
+      }
+      this.fileList.splice(0,1)
+      this.visible = false
+
+    },
+    cancelUpload() {
+      this.fileList.splice(0,1)
+      this.visible = false
+    },
+    /**
+     * 点击上传
+     */
+    submitUpload() {
+      if (this.$refs.upload.uploadFiles.length === 1) {
+        this.$refs.upload.submit()
+        this.dialogVisible6=false;
+      }
     },
   },
   watch: {
