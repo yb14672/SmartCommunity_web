@@ -4,13 +4,13 @@
     <!--页面数据渲染-->
     <el-container>
       <!--左侧部门树状列表-->
-      <el-card>
+      <el-card shadow="hover" style="border: none">
         <el-aside>
-          <el-autocomplete
+          <el-input
               size="small"
               style="width: 60%"
               popper-class="my-autocomplete"
-              v-model="state"
+              v-model="filterText"
               :fetch-suggestions="querySearch"
               placeholder="请输入部门名称"
               @select="handleSelect"
@@ -25,9 +25,14 @@
               <span style="font-size: 2px;
       color: rgba(43,43,44,0.51);">{{ item.parentName }}</span>
             </template>
-          </el-autocomplete>
+          </el-input>
           <div style="padding-top: 15%">
-            <el-tree e :data="deptList" :props="defaultProps" @node-click="handleNodeClick" default-expand-all
+            <el-tree :data="deptList"
+                     ref="tree"
+                     :props="defaultProps"
+                     :filter-node-method="filterNode"
+                     @node-click="handleNodeClick"
+                     default-expand-all
                      highlight-current
                      :expand-on-click-node="false"
             ></el-tree>
@@ -35,7 +40,7 @@
         </el-aside>
       </el-card>
       <!--右侧用户列表和查询条件-->
-      <el-card style="margin-left: 20px">
+      <el-card shadow="hover" style="margin-left: 20px;border: none">
         <el-main>
           <!--查询条件表单-->
           <el-form :model="form" ref="queryForm" :inline="true" label-width="68px" :rules="formRules">
@@ -54,7 +59,6 @@
             <el-form-item label="手机号码"
                           prop="phonenumber">
               <el-input
-
                   v-model="form.phonenumber"
                   placeholder="请输入手机号码"
                   clearable
@@ -203,11 +207,15 @@
                       @click="deleteUser(scope.row)"
                   >删除
                   </el-button>
-                  <el-button
-                      size="mini"
-                      type="text"
-                      @click="reLoadPwd(scope.row)">重置密码
-                  </el-button>
+                  <el-dropdown size="mini" @command="(command) => handleCommand(command, scope.row)" v-hasPermi="['system:user:resetPwd', 'system:user:edit']">
+                    <el-button size="mini" type="text" icon="el-icon-d-arrow-right">更多</el-button>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item command="handleResetPwd" icon="el-icon-key"
+                                        v-hasPermi="['system:user:resetPwd']">重置密码</el-dropdown-item>
+                      <el-dropdown-item command="handleAuthRole" icon="el-icon-circle-check"
+                                        v-hasPermi="['system:user:edit']">分配角色</el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
                 </template>
               </el-table-column>
             </el-table>
@@ -243,6 +251,7 @@
                            :props="props"
                            :node-key="props.value"
                            :default-expanded-keys="defaultExpandedKey"
+
                            @node-click="handleNodeClick2">
                   </el-tree>
                 </el-option>
@@ -451,7 +460,7 @@ export default {
         status: undefined,
       },
       restaurants: [],
-      state: '',
+      filterText: '',
       deptList: [],
       defaultProps: {
         value: 'deptId',        // ID字段名
@@ -513,14 +522,32 @@ export default {
     await this.getUserList()
     this.loading = false
     this.$forceUpdate();
+    //查询需要使用的字典
+    this.getDicts("sys_normal_disable").then(response => {
+      this.statusList = response.data.data;
+    });
   },
   methods: {
+    // 更多操作触发
+    handleCommand(command, row) {
+      switch (command) {
+        case "handleResetPwd":
+          this.reLoadPwd(row);
+          break;
+        case "handleAuthRole":
+          this.handleAuthRole(row);
+          break;
+        default:
+          break;
+      }
+    },
     /* 重置*/
     formReload() {
       this.form.pageNum = 1
       this.form.userName = undefined
       this.form.phonenumber = undefined
       this.form.status = undefined
+      this.searchTime = []
       this.getUserList()
     },
     //查询表单清空
@@ -602,7 +629,6 @@ export default {
       const {data: res} = await this.$http.get('/sysUser/selectUsers', {
         params: this.form
       });
-      console.log(res)
       this.tableData = res.data.sysUserDeptDto;
       this.total = res.data.pageable.total
       this.form.pageNum = res.data.pageable.pageNum
@@ -645,8 +671,10 @@ export default {
     async getPostIds() {
 
     },
-    async getRoleIds() {
-
+    /** 分配角色操作 */
+    handleAuthRole: function(row) {
+      const userId = row.userId;
+      this.$router.push("/system/user-auth/role/" + userId);
     },
     // 每页显示的条数
     handleSizeChange(val) {
@@ -707,83 +735,93 @@ export default {
     reLoadPwd() {
 
     },
-    /*修改密码*/
-    async changPwd() {
-
+    /**批量删除中的查询*/
+    filterNode(value, data) {
+      console.log(value,data)
+      return data.deptName.indexOf(value) !== -1;
+    },
+  },
+  watch: {
+    // 根据名称筛选部门树
+    filterText(val) {
+      console.log(val)
+      this.$refs.tree.filter(val);
     }
   },
-
 }
 </script>
 
-<style scoped>
-.el-row {
-  margin-bottom: 20px;
-  display: flex;
-  flex-wrap: wrap;
+<style>
+.el-card{
+  border: none;
 }
+/*.el-row {*/
+/*  margin-bottom: 20px;*/
+/*  display: flex;*/
+/*  flex-wrap: wrap;*/
+/*}*/
 
-.el-row .el-card {
-  min-width: 100%;
-  height: 100%;
-  margin-right: 20px;
-  transition: all .5s;
-}
+/*.el-row .el-card {*/
+/*  min-width: 100%;*/
+/*  height: 100%;*/
+/*  margin-right: 20px;*/
+/*  transition: all .5s;*/
+/*}*/
 
 
-li {
-  line-height: normal;
-  padding: 7px;
-}
+/*li {*/
+/*  line-height: normal;*/
+/*  padding: 7px;*/
+/*}*/
 
-.name {
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
+/*.name {*/
+/*  text-overflow: ellipsis;*/
+/*  overflow: hidden;*/
+/*}*/
 
-.addr {
-  font-size: 12px;
-  color: #eaedf1;
-}
+/*.addr {*/
+/*  font-size: 12px;*/
+/*  color: #eaedf1;*/
+/*}*/
 
-.highlighted .addr {
-  color: #eaedf1;
-}
+/*.highlighted .addr {*/
+/*  color: #eaedf1;*/
+/*}*/
 
-.el-dropdown-link {
-  cursor: pointer;
-  color: #409EFF;
-}
+/*.el-dropdown-link {*/
+/*  cursor: pointer;*/
+/*  color: #409EFF;*/
+/*}*/
 
-.el-icon-arrow-down {
-  font-size: 12px;
-}
+/*.el-icon-arrow-down {*/
+/*  font-size: 12px;*/
+/*}*/
 
-.el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
-  height: auto;
-  max-height: 274px;
-  padding: 0;
-  overflow: hidden;
-  overflow-y: auto;
-}
+/*.el-scrollbar .el-scrollbar__view .el-select-dropdown__item {*/
+/*  height: auto;*/
+/*  max-height: 274px;*/
+/*  padding: 0;*/
+/*  overflow: hidden;*/
+/*  overflow-y: auto;*/
+/*}*/
 
-.el-select-dropdown__item.selected {
-  font-weight: normal;
-}
+/*.el-select-dropdown__item.selected {*/
+/*  font-weight: normal;*/
+/*}*/
 
-ul li >>> .el-tree .el-tree-node__content {
-  height: auto;
-  padding: 0 20px;
-}
+/*ul li >>> .el-tree .el-tree-node__content {*/
+/*  height: auto;*/
+/*  padding: 0 20px;*/
+/*}*/
 
-.el-tree >>> .is-current .el-tree-node__label {
-  color: #409EFF;
-  font-weight: 700;
-}
+/*.el-tree >>> .is-current .el-tree-node__label {*/
+/*  color: #409EFF;*/
+/*  font-weight: 700;*/
+/*}*/
 
-.el-tree >>> .is-current .el-tree-node__children .el-tree-node__label {
-  color: #606266;
-  font-weight: normal;
-}
+/*.el-tree >>> .is-current .el-tree-node__children .el-tree-node__label {*/
+/*  color: #606266;*/
+/*  font-weight: normal;*/
+/*}*/
 </style>
 

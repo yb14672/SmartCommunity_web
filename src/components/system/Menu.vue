@@ -281,7 +281,6 @@ export default {
         children: 'children',
         label: 'menuName'
       },
-
     };
   },
   created() {
