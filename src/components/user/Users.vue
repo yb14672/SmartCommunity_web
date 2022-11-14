@@ -482,19 +482,19 @@
                     ],
                     email: [
                         {required: true, message: "邮箱不能为空", trigger: "blur"},
-                        // {pattern: /^([a-zA-Z0-9]+[-_.]?)+@[a-zA-Z0-9]+\.[a-z]+$/, message: '请输入正确邮箱', trigger: "blur"},
+                        {pattern: /^([a-zA-Z0-9]+[-_.]?)+@[a-zA-Z0-9]+\.[a-z]+$/, message: '请输入正确邮箱', trigger: "blur"},
 
                     ],
                     userName: [
                         {required: true, message: "角色名称不能为空", trigger: "blur"},
-                        // {pattern: /^[A-Za-z0-9\u4e00-\u9fa5]+$/, message: '非法字符', trigger: "blur"},
+                        {pattern: /^[A-Za-z0-9\u4e00-\u9fa5]+$/, message: '非法字符', trigger: "blur"},
                         {min: 1, max: 10, message: "角色名称长度不超过10个字符", trigger: "blur"},
                     ],
                     password: [
                         {required: true, message: "密码不能为空", trigger: "blur"},
                         {min: 1, max: 15, message: "密码长度最多10个字符", trigger: "blur"},
                         {
-                            // pattern: /(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W_])/,
+                            pattern: /(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W_])/,
                             message: "密码必须包含大小写英文字母,特殊字符",
                             trigger: "blur"
                         },
