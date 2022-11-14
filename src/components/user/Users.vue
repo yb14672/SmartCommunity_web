@@ -29,6 +29,7 @@
                         <el-tree e :data="deptList" :props="defaultProps" @node-click="handleNodeClick"
                                  default-expand-all
                                  highlight-current
+
                         ></el-tree>
                     </div>
                 </el-aside>
@@ -297,7 +298,7 @@
                 <el-row>
                     <el-col :span="12">
                         <el-form-item label="岗位">
-                            <el-select v-model="formData.postIds" multiple placeholder="请选择">
+                            <el-select v-model="formData.postIds" placeholder="请选择">
                                 <el-option
                                         style="margin-left: 15px"
                                         v-for="item in postOptions"
@@ -311,7 +312,7 @@
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="角色">
-                            <el-select v-model="formData.roleIds" multiple placeholder="请选择">
+                            <el-select v-model="formData.roleIds" placeholder="请选择">
                                 <el-option
                                         style="margin-left: 15px"
                                         v-for="item in roleOptions"
@@ -445,6 +446,7 @@
                     deptId: undefined,
                     postIds: [],
                     roleIds: [],
+                    postId:undefined,
                     userName: undefined,
                     status: undefined,
                 },

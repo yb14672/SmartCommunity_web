@@ -348,7 +348,7 @@ export default {
       this.$refs["form"].validate(async valid => {
         if (valid) {
           if (this.form.postId !== undefined) {
-            const {data: res} = await this.$http.post("sysPost/updatePost", this.form)
+            const {data : res} = await this.$http.put("sysPost/updatePost", this.form)
             {
               console.log(res)
               if (res.meta.errorCode !== 200) {
@@ -376,7 +376,12 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const postIds = row.postId || this.ids;
+      let postIds
+      if (row){
+        postIds = row.postId
+      }else{
+        postIds = this.ids
+      }
       this.$confirm('是否确认删除岗位编号为"' + postIds + '"的数据项?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
