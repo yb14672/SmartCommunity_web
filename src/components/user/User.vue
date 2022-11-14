@@ -161,7 +161,8 @@
           <template>
             <el-table
                 :data="tableData"
-                style="width: 100%">
+                style="width: 100%"
+                @selection-change="handleSelectionChange">
               <el-table-column type="selection" width="50" align="center"/>
               <el-table-column label="用户编号" align="center" prop="userId"/>
               <el-table-column label="用户名称" align="center" prop="userName" :show-overflow-tooltip="true"/>
@@ -773,6 +774,12 @@ export default {
         return this.$message.error("获取角色失败")
       }
       this.roleOptions = res.data;
+    },
+    /**多选框选中*/
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.userId)
+      this.single = selection.length!=1
+      this.multiple = !selection.length
     },
   },
   watch: {
