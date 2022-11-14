@@ -123,35 +123,40 @@
             </el-col>
 
             <el-col :span="1.5">
-<!--              <el-upload action="#" :auto-upload="false" :multiple="false" :show-file-list="false"&ndash;&gt;-->
-<!--                                         :on-change="uploadByJsqd" :file-list="fileList">-->
-<!--                      <el-button-->
-<!--                          plain-->
-<!--                          size="mini"-->
-<!--                          type="el-button el-button&#45;&#45;info is-plain"-->
-<!--                          icon="el-icon-upload2"-->
-<!--                      >导入-->
-<!--                      </el-button>-->
-<!--              </el-upload>-->
-              <el-upload ref="upload"
-                         action=""
-                         :http-request="uploadFile"
-                         :file-list="fileList"
-                         :on-change="judgeFileType"
-                         :auto-upload="false"
-                         :on-exceed="handleExceed"
-                         :multiple="false"
-                         :limit="1"
-                         accept=".xlsx,.xls">
-                <el-button slot="trigger" type="primary">
-                  <i class="el-icon-document-add"></i>选取文件
-                </el-button>
-              </el-upload>
-              <span>
-                <el-button @click="cancelUpload">取消</el-button>
-                <el-button type="primary" @click="submitUpload">上传<i class="el-icon-upload2"></i></el-button>
-              </span>
+                      <el-button
+                          plain
+                          size="mini"
+                          type="el-button el-button--info is-plain"
+                          icon="el-icon-upload2"
+                          @click="dialogVisible6 = true"
+                      >导入
+                      </el-button>
             </el-col>
+<!--            弹出的导入-->
+              <el-dialog  :visible.sync="dialogVisible6" :before-close="handleClose"  width="400px" >
+                  <el-upload ref="upload"
+                             action=""
+                             drag
+                             :http-request="uploadFile"
+                             :file-list="fileList"
+                             :on-change="judgeFileType"
+                             :auto-upload="false"
+                             :on-exceed="handleExceed"
+                             :multiple="false"
+                             :limit="1"
+                             accept=".xlsx,.xls">
+                      <i class="el-icon-upload"></i>
+                      <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                      <div class="el-upload__tip" slot="tip"  style="text-align: center">只能上传xls文件，且不超过500kb</div>
+                  </el-upload>
+                <div style="text-align: center">
+                  <span>
+                    <el-button @click="cancelUpload">取消</el-button>
+                    <el-button type="primary" @click="submitUpload">上传<i class="el-icon-upload2"></i></el-button>
+                  </span>
+                </div>
+              </el-dialog>
+
             <el-col :span="1.5">
               <el-button
                   plain
@@ -431,6 +436,7 @@ export default {
         password: '',
       },
       dialogVisible: false,
+      dialogVisible6: false,
       defaultExpandedKey: [],
       pageSizes: [2,4, 6, 8, 10],
       loading: true,
@@ -533,6 +539,16 @@ export default {
     this.$forceUpdate();
   },
   methods: {
+      // 关闭导入的x
+      handleClose(done) {
+          this.$confirm('确认关闭？')
+              .then(_ => {
+                done();
+                this.fileList.splice(0,1)
+                this.visible = false
+              })
+              .catch(_ => {});
+      },
     /**
      * 判断文件类型
      */
@@ -543,6 +559,9 @@ export default {
         this.fileList.splice(0, 1)
       }
     },
+      uploadByJsqd(){
+        this.dialogVisible6 = true;
+      },
     handleExceed (files, fileList) {
       warning('无法添加更多文件')
     },
