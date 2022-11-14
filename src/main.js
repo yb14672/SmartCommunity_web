@@ -65,6 +65,7 @@ axios.interceptors.request.use(config=>{
 })
 
 const myInterceptor = axios.interceptors.response.use(res => {
+  console.log("myInterceptor",res)
   if(res.data.jsonResult.errorCode !==undefined && res.data.jsonResult.errorCode === 2013 || res.data.jsonResult.errorCode === 2014){
     //移除拦截器
     axios.interceptors.request.eject(myInterceptor);

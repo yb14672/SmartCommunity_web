@@ -395,12 +395,8 @@ export default {
     async handleUpdate(row) {
       this.reset();
       await this.getTreeselect();
-      const {data: res} = await this.$http.get(`sysMenu/${row.menuId}`);
-      if (res.code !== 0) {
-        return this.$message.error("获取失败！")
-      }
       this.open = true;
-      this.form = res.data;
+      this.form = JSON.parse(JSON.stringify(row));
     },
     /** 提交按钮 */
     submitForm: function () {

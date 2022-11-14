@@ -48,10 +48,8 @@ router.beforeEach((to, from, next) => {
 
     //获取token
     const tokenStr = window.sessionStorage.getItem('token');
-
     if (!tokenStr)
         return next('/login');
-
     next();
 
 })

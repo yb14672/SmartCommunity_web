@@ -620,7 +620,6 @@ export default {
 
     },
     handleIconClick() {
-      //console.log(ev)
     },
     async getUserList() {
       this.form.startTime = this.searchTime[0]
@@ -737,14 +736,12 @@ export default {
     },
     /**批量删除中的查询*/
     filterNode(value, data) {
-      console.log(value,data)
       return data.deptName.indexOf(value) !== -1;
     },
   },
   watch: {
     // 根据名称筛选部门树
     filterText(val) {
-      console.log(val)
       this.$refs.tree.filter(val);
     }
   },
