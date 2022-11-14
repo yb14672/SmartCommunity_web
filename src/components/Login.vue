@@ -67,8 +67,8 @@ export default {
       // 数据绑定
       loginForm: {
         // 5*声明数据
-        username: '',
-        password: ''
+        username: 'admin',
+        password: '123456'
       },
 
       // 表单验证规则
@@ -95,6 +95,10 @@ export default {
     }
   },
   created() {
+    if (localStorage.getItem("msg") != null || localStorage.getItem("msg") != undefined){
+      this.$message.error(localStorage.getItem("msg"))
+      localStorage.clear()
+    }
     // eslint-disable-next-line no-unused-vars
     document.onkeydown = function (e) {
       let key = window.event.keyCode;
@@ -122,7 +126,6 @@ export default {
       //进行登录{
       // 点击登录的时候先调用validate方法验证表单内容是否有误
       this.$refs.LoginFormRef.validate(async valid => {
-        console.log(this.loginFormRules)
         // 如果valid参数为true则验证通过
         if (!valid) {
           return
@@ -133,7 +136,6 @@ export default {
             password: this.loginForm.password
           }
         })
-        console.log(res)
         if (res.meta.errorCode !== 200) {
           return this.$message.error(res.meta.errorMsg)
         } else {
@@ -148,7 +150,6 @@ export default {
     // 添加表单重置方法
     resetLoginForm() {
       // this=>当前组件对象，其中的属性$refs包含了设置的表单ref
-      //   console.log(this)
       this.$refs.LoginFormRef.resetFields()
     },
     // 7*登录的方法

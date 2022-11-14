@@ -24,10 +24,10 @@
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="数据状态" clearable size="small">
           <el-option
-                  v-for="dict in statusOptions"
-                  :key="dict.dictValue"
-                  :label="dict.dictLabel"
-                  :value="dict.dictValue"
+              v-for="dict in statusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
@@ -40,48 +40,48 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-                type="primary"
-                icon="el-icon-plus"
-                size="mini"
-                @click="handleAdd"
+            type="primary"
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleAdd"
         >新增
         </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
-                type="success"
-                icon="el-icon-edit"
-                size="mini"
-                :disabled="single"
-                @click="handleUpdate"
+            type="success"
+            icon="el-icon-edit"
+            size="mini"
+            :disabled="single"
+            @click="handleUpdate"
         >修改
         </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
-                type="danger"
-                icon="el-icon-delete"
-                size="mini"
-                :disabled="multiple"
-                @click="handleDelete"
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            :disabled="multiple"
+            @click="handleDelete"
         >删除
         </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
-                type="warning"
-                icon="el-icon-download"
-                size="mini"
-                @click="handleExport"
+            type="warning"
+            icon="el-icon-download"
+            size="mini"
+            @click="handleExport"
         >导出
         </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
-                type="info"
-                icon="el-icon-back"
-                size="mini"
-                @click="exitData"
+            type="info"
+            icon="el-icon-back"
+            size="mini"
+            @click="exitData"
         >返回
         </el-button>
       </el-col>
@@ -107,17 +107,17 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
-                  size="mini"
-                  type="text"
-                  icon="el-icon-edit"
-                  @click="handleUpdate(scope.row)"
+              size="mini"
+              type="text"
+              icon="el-icon-edit"
+              @click="handleUpdate(scope.row)"
           >修改
           </el-button>
           <el-button
-                  size="mini"
-                  type="text"
-                  icon="el-icon-delete"
-                  @click="handleDelete(scope.row)"
+              size="mini"
+              type="text"
+              icon="el-icon-delete"
+              @click="handleDelete(scope.row)"
           >删除
           </el-button>
         </template>
@@ -126,14 +126,14 @@
     <!--分页-->
     <div style="display: block" align="right">
       <el-pagination
-              v-show="total>0"
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page="queryParams.current"
-              :page-sizes="[1, 2, 5, 10]"
-              :page-size="queryParams.size"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="total">
+          v-show="total>0"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="queryParams.current"
+          :page-sizes="[1, 2, 5, 10]"
+          :page-size="queryParams.size"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total">
       </el-pagination>
     </div>
     <!-- 添加或修改参数配置对话框 -->
@@ -157,25 +157,25 @@
         <el-form-item label="回显样式" prop="listClass">
           <el-select v-model="form.listClass" placeholder="请选择回显样式">
             <el-option
-                    v-for="item in listClasses"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                v-for="item in listClasses"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">
             <el-radio
-                    v-for="dict in statusOptions"
-                    :key="dict.dictValue"
-                    :label="dict.dictValue"
+                v-for="dict in statusOptions"
+                :key="dict.dictValue"
+                :label="dict.dictValue"
             >{{ dict.dictLabel }}
             </el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" style="resize: none" type="textarea" placeholder="请输入内容"></el-input>
+          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -188,7 +188,7 @@
 
 <script>
 
-  import axios from "axios";
+import axios from "axios";
 
   export default {
     name: "Data",
@@ -376,7 +376,6 @@
       /** 搜索按钮操作 */
       handleQuery() {
         this.queryParams.pageNum = 1;
-        console.log(this.queryParams)
         this.getDictDataList();
       },
       /** 重置按钮操作 */
@@ -407,7 +406,6 @@
         const dictCode = row.dictCode || this.ids;
         //获取数据
         const {data: res} = await this.$http.get('/sysDictData/' + dictCode);
-        console.log(res)
         //判断是否执行成功
         if (res.meta.errorCode !== 200) {
           this.$message.error(res.meta.errorMsg)
@@ -469,14 +467,14 @@
       },
       /** 导出按钮操作 */
       handleExport() {
+        const msg=this.exportList.ids.length==0?"是否确认导出所有数据？":'是否确认导出编号为' + this.exportList.ids + '的数据项?';
         //设置全局配置信息
         const config = {
           method: 'get',
           url: 'sysDictData/export?ids=' + this.exportList.ids + '&dictType=' + this.exportList.dictType,
           responseType: 'blob'
         };
-        console.log(config.data)
-        this.$confirm('是否确认导出所有数据项?', "警告", {
+        this.$confirm(msg, "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
@@ -516,6 +514,3 @@
     }
   };
 </script>
-<style>
-
-</style>

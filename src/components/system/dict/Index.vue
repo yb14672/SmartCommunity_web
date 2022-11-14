@@ -71,7 +71,6 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['system:dict:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -240,12 +239,10 @@ export default {
   methods: {
     // 分页每页多少条数据
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
       this.queryParams.pageSize = val;
       this.getList();
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
       this.queryParams.pageNum = val;
       this.getList();
     },
@@ -257,7 +254,6 @@ export default {
     /** 查询字典类型列表 */
     async getList() {
       this.loading = true;
-      console.log(this.queryParams)
       // 把值传给queryParams的开始和结束 dateRange是上面双向绑定的开始和结束时间
       this.queryParams.startTime=this.dateRange[0];
       this.queryParams.endTime=this.dateRange[1];
@@ -272,9 +268,6 @@ export default {
           endTime: this.queryParams.endTime,
         }
       });
-      console.log(res)
-      console.log(this.queryParams.startTime)
-      console.log(this.queryParams.endTime)
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
@@ -283,7 +276,7 @@ export default {
       this.loading = false
     },
     // 字典状态字典翻译
-    statusFormat(row, column) {
+    statusFormat(row) {
       return this.selectDictLabel(this.statusOptions, row.status);
     },
     // 取消按钮
@@ -337,7 +330,6 @@ export default {
     },
     /** 修改按钮操作 */
     async handleUpdate(row) {
-      console.log(row)
       this.reset();
       this.title = "修改字典";
       this.open = true;
@@ -349,9 +341,7 @@ export default {
       this.$refs["form"].validate(async valid => {
         if (valid) {
           if (this.form.dictId != undefined) {
-            console.log(this.form.dictId)
             const {data: res} = await this.$http.put('sysDictType/updateDict', this.form);
-            console.log(res)
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg)
             }
@@ -360,7 +350,6 @@ export default {
             return this.$message.success("修改成功！")
           } else {
             const {data: res} = await this.$http.post('sysDictType/addSysDict', this.form)
-            console.log(res)
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg)
             }
@@ -381,7 +370,6 @@ export default {
         }).then(() => {
           return this.$http.delete(`/sysDictType?idList=${dictIds}`);
         }).then((res) => {
-          console.log(res)
           if (res.data.meta.errorCode !== 200) {
             return this.$message.error(res.data.meta.errorMsg);
           }

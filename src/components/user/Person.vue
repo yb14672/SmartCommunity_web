@@ -287,7 +287,6 @@ export default {
         if (valid) {
           //更新对应的信息
           const {data: res} = await this.$http.put("sysUser/updateUser", this.updateForm)
-          console.log(res);
           //检查是否成功
           if (res.meta.errorCode !== 200) {
             return this.$message.error(res.meta.errorMsg)
@@ -306,7 +305,6 @@ export default {
             'userId':this.pwdForm.userId,
             'password':this.pwdForm.newPassword
           })
-          console.log(res);
           //检查是否成功
           if (res.meta.errorCode !== 200) {
             return this.$message.error(res.meta.errorMsg)
@@ -323,7 +321,6 @@ export default {
     },
     async getUserInfo() {
       const {data: res} = await this.$http.get("sysUser/personal")
-      console.log(res);
       if (res) {
         this.ruleForm.sysUser = res.data.sysUser
         this.ruleForm.sysDept = res.data.sysDept
@@ -337,7 +334,6 @@ export default {
         this.userInfo[3].value = res.data.sysDept.deptName + "/" + res.data.sysPost.postName;
         this.userInfo[4].value = res.data.sysRole.roleName;
       }
-      // console.log(this.userInfo)
     },
     // 上传按钮 限制图片大小和类型
     handleChangeUpload(file) {
@@ -359,7 +355,6 @@ export default {
         this.loading = false
         this.dialogVisible = true
         this.fileName=file.name;
-        console.log(file)
       })
     },
     // 放大/缩小
@@ -379,7 +374,6 @@ export default {
     cropMoving(data) {
       // 截图框的左上角 x，y和右下角坐标x，y
       let cropAxis = [data.axis.x1, data.axis.y1, data.axis.x2, data.axis.y2]
-      console.log(cropAxis)
     },
     finish() {
       this.$refs.cropper.getCropBlob(async (data) => {

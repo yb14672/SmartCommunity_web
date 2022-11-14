@@ -244,7 +244,7 @@ export default {
           status: this.queryParams.status,
         }
       });
-      console.log(res.data.sysPostList)
+      console.log(res)
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.message);
       }
@@ -275,7 +275,7 @@ export default {
       };
       this.resetForm("form");
     },
-    /** 分页每页多少条数据 */
+    /**  分页每页多少条数据 */
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
       this.queryParams.pageSize = val;
@@ -300,7 +300,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.postId)
-      this.single = selection.length !== 1
+      this.single = selection.length != 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -376,13 +376,7 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      let postIds;
-      if (row){
-        postIds = row.postId;
-      }else {
-        postIds = this.ids
-      }
-
+      const postIds = row.postId || this.ids;
       this.$confirm('是否确认删除岗位编号为"' + postIds + '"的数据项?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

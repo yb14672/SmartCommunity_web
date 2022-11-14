@@ -234,8 +234,8 @@ export default {
         roleName: undefined,
         roleKey: undefined,
         status: undefined,
-        startTime:'',
-        endTime:''
+        startTime: '',
+        endTime: ''
       },
       // 表单参数
       form: {},
@@ -275,13 +275,11 @@ export default {
     },
     /**  分页每页多少条数据 */
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
       this.queryParams.pageSize = val;
       this.getList();
     },
     /** 点击切换上下页 */
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
       this.queryParams.pageNum = val;
       this.getList();
     },
@@ -293,9 +291,8 @@ export default {
     /** 查询角色列表 */
     async getList() {
       this.loading = true;
-      // console.log(this.dateRange)
-      this.queryParams.startTime=this.dateRange[0];
-      this.queryParams.endTime=this.dateRange[1];
+      this.queryParams.startTime = this.dateRange[0];
+      this.queryParams.endTime = this.dateRange[1];
       const {data: res} = await this.$http.get('/sysRole/selectRoleByLimit', {
         params: {
           pageNum: this.queryParams.pageNum,
@@ -307,20 +304,17 @@ export default {
           endTime: this.queryParams.endTime,
         }
       });
-      console.log(res)
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
       // this.menuList = res.data;
       this.roleList = res.data.sysRole;
       this.total = res.data.pageable.total;
-      // console.log(this.roleList)
       this.loading = false
     },
     /** 查询菜单树结构 */
     async getMenuTreeselect() {
       const {data: res} = await this.$http.get('sysMenu/getMenuTree');
-      console.log(res)
       if (res.meta.errorCode !== 200) {
         return this.$message.error("获取菜单树失败！")
       }
@@ -337,7 +331,6 @@ export default {
     },
     // 角色状态修改
     handleStatusChange(row) {
-      console.log(row)
       let text = row.status === "0" ? "启用" : "停用";
       this.$confirm('确认要"' + text + '""' + row.roleName + '"角色吗?', "警告", {
         confirmButtonText: "确定",
@@ -348,7 +341,7 @@ export default {
         if (res.meta.errorCode !== 200) {
           return this.$message.error(res.data.meta.errorMsg);
         }
-        this.$message(text + "成功");
+        this.$message.success(text + "成功");
         await this.getList();
       }).catch(function () {
         row.status = row.status === "0" ? "1" : "0";
@@ -412,7 +405,6 @@ export default {
     },
     /** 树权限（全选/全不选） */
     handleCheckedTreeNodeAll() {
-      console.log(this.menuNodeAll)
       if (this.menuNodeAll) {
         this.$refs.menu.setCheckedNodes(this.menuOptions);
       } else {
@@ -445,7 +437,6 @@ export default {
       if (res.meta.errorCode !== 200) {
         return this.$message.error("获取失败")
       }
-      console.log(res.data)
       this.menuParentSon = false
       this.$refs.menu.setCheckedKeys(res.data);
       /** 对数据进行深拷贝 */
@@ -453,12 +444,10 @@ export default {
     },
     /** 提交按钮 */
     submitForm: function () {
-      console.log(this.form.menuIds)
       this.$refs["form"].validate(async valid => {
         if (valid) {
           if (this.form.roleId != undefined) {
             this.form.menuIds = this.getMenuAllCheckedKeys();
-            console.log(this.form.menuIds)
             const {data: res} = await this.$http.put('sysRole/updateRole', this.form);
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg)
@@ -488,9 +477,7 @@ export default {
         type: "warning"
       }).then(() => {
         return this.$http.delete(`/sysRole?idList=${roleIds}`);
-      })
-          .then((res) => {
-            console.log(res)
+      }).then((res) => {
             if (res.data.meta.errorCode !== 200) {
               return this.$message.error(res.data.meta.errorMsg);
             }

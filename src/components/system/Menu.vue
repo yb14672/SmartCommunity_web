@@ -308,7 +308,6 @@ export default {
           visible: this.queryParams.visible
         }
       });
-      console.log(res)
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
@@ -344,7 +343,6 @@ export default {
     },
     /** 菜单状态字典翻译*/
     statusFormat(row) {
-      // console.log(row)
       if (row.menuType == "F") {
         return "";
       }
@@ -411,20 +409,18 @@ export default {
         if (valid) {
           if (this.form.menuId != undefined) {
             const {data: res} = await this.$http.put("sysMenu/updateMenu", this.form);
-            console.log(res)
             if (res.meta.errorCode !== 200) {
               this.$message.error(res.meta.errorMsg)
-            }else{
+            } else {
               this.open = false;
               this.$message.success("修改成功！");
               location.reload();
             }
           } else {
             const {data: res} = await this.$http.post("sysMenu/addMenu", this.form);
-            console.log(res);
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg);
-            }else{
+            } else {
               this.$message.success("新增成功");
               this.open = false;
               location.reload();
@@ -439,18 +435,18 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      }).then(() =>{
+      }).then(() => {
         // 通过方法？带参
         this.$http.delete("/sysMenu/deleteById?id=" + row.menuId)
-          .then((res) => {
-            if (res.data.meta.errorCode === 200) {
-              // 重新获取页面
-              location.reload();
-              this.$message.success("删除成功");
-            } else {
-              this.$message.warning(res.data.meta.errorMsg);
-            }
-          })
+            .then((res) => {
+              if (res.data.meta.errorCode === 200) {
+                // 重新获取页面
+                location.reload();
+                this.$message.success("删除成功");
+              } else {
+                this.$message.warning(res.data.meta.errorMsg);
+              }
+            })
       })
     },
     /** 显示批量删除 */
@@ -460,7 +456,6 @@ export default {
     /** 批量删除 */
     getCheckedKeys() {
       //获取的id列表
-      //console.log(this.$refs.tree.getCheckedKeys());
       this.$confirm("确定删除吗？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

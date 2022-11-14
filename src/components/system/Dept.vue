@@ -60,7 +60,6 @@
                             type="text"
                             icon="el-icon-edit"
                             @click="handleUpdate(scope.row)"
-                            v-hasPermi="['system:dept:edit']"
                     >修改
                     </el-button>
                     <el-button
@@ -220,7 +219,7 @@
                         status: this.queryParams.status
                     }
                 });
-                // console.log(res);
+                console.log(res);
                 //根据状态码来返回错误信息
                 if (res.meta.errorCode !== 200) {
                     return this.$message.error(res.meta.errorMsg)
@@ -234,8 +233,7 @@
             normalizer(node) {
                 if (node.children && !node.children.length) {
                     delete node.children;
-                }
-                if (node.deptName == null) {
+                }if (node.deptName == null) {
                     node.deptName = "智慧社区"
                 }
                 return {
@@ -279,8 +277,9 @@
             /** 查询菜单下拉树结构 */
             async getTreeselect() {
                 this.deptOptions = [];
+                const dept = {deptId: 0, deptName: '智慧社区', children: []};
                 const {data: res} = await this.$http.get('sysDept/getDeptList');
-                const dept = res.data[0];
+                dept.children = res.data[0].children;
                 this.deptOptions.push(dept)
             },
             /** 新增按钮操作 */
@@ -290,9 +289,9 @@
                 this.getTreeselect();
                 if (row !== null && row.deptId) {
                     this.form.parentId = row.deptId;
-                } else if (row.deptId === 100) {
+                } else if (row.deptId===100) {
                     this.form.parentId = 0;
-                } else {
+                }else {
                     this.form.parentId = 100;
                 }
                 this.open = true;
@@ -300,36 +299,38 @@
             },
             /** 修改按钮操作 */
             async handleUpdate(row) {
-                this.open = true;
+              this.open = true;
                 this.reset();
                 await this.getTreeselect();
                 this.form.deptId = row.deptId;
                 this.form.parentId = row.parentId;
-                this.form.deptName = row.deptName;
-                this.form.orderNum = row.orderNum;
-                this.form.leader = row.leader;
-                this.form.phone = row.phone;
-                this.form.email = row.email;
-                this.form.status = row.status;
+                this.form.deptName=row.deptName;
+                this.form.orderNum=row.orderNum;
+                this.form.leader=row.leader;
+                this.form.phone=row.phone;
+                this.form.email=row.email;
+              this.form.status=row.status;
                 const {data: res} = await this.$http.get(`sysDept/${row.deptId}`);
                 if (res.code !== 0) {
                     return this.$message.error("获取失败！")
                 }
                 this.open = true;
-                this.title = "修改部门";
+              this.title = "修改部门";
                 this.form = res.data;
             },
             /** 提交按钮 */
             submitForm: function () {
                 this.$refs["form"].validate(async valid => {
                     if (valid) {
-                        if (this.form.deptId != undefined) {
+                      console.log(this.form)
+
+                      if (this.form.deptId != undefined) {
                             const {data: res} = await this.$http.put("sysDept/updateDept", this.form);
                             if (res.meta.errorCode !== 200) {
                                 return this.$message.error(res.meta.errorMsg)
                             }
                             this.open = false;
-                            this.getList();
+                            location.reload();
                             return this.$message.success("修改成功！")
                         } else {
                             const {data: res} = await this.$http.post("sysDept/insertDept", this.form);
@@ -339,33 +340,33 @@
                             }
                             this.$message.success("新增成功");
                             this.open = false;
-                            this.getList();
+                            location.reload();
                         }
                     }
                 });
             },
-            /**删除单个菜单*/
-            async handleDelete(row) {
-                this.$confirm('是否确认删除名称为"' + row.deptName + '"的数据项?', "警告", {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning"
-                }).then(() => {
-                    // 通过方法？带参
-                    this.$http.delete("/sysDept/deleteDept?idList=" + row.deptId)
-                        .then((res) => {
-                            console.log(res)
-                            console.log(res.data.meta.errorCode)
-                            if (res.data.meta.errorCode === 200) {
-                                // 重新获取页面
-                                this.getList();
-                                this.$message.success("删除成功");
-                            } else {
-                                this.$message.warning(res.data.meta.errorMsg);
-                            }
-                        })
-                })
-            },
+          /**删除单个菜单*/
+          async handleDelete(row) {
+            this.$confirm('是否确认删除名称为"' + row.deptName + '"的数据项?', "警告", {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning"
+            }).then(() =>{
+              // 通过方法？带参
+              this.$http.delete("/sysDept/deleteDept?idList=" + row.deptId)
+                      .then((res) => {
+                        console.log(res)
+                        console.log(res.data.meta.errorCode)
+                        if (res.data.meta.errorCode === 200) {
+                          // 重新获取页面
+                          this.getList();
+                          this.$message.success("删除成功");
+                        } else {
+                          this.$message.warning(res.data.meta.errorMsg);
+                        }
+                      })
+            })
+          },
         }
     };
 </script>
