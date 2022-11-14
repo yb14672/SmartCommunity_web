@@ -223,8 +223,6 @@ export default {
     //   });
     // },
     async getList() {
-
-
       const {data: res} = await this.$http.get("sysPost/getPostList", {
         params: {
           pageNum: this.queryParams.pageNum,
@@ -311,8 +309,10 @@ export default {
         type: "warning"
       }).then(async () => {
         const {data: res} = await this.$http.put(`/sysPost/updatePost`, row);
+        console.log(res)
         if (res.meta.errorCode !== 200) {
-          return this.$message.error("修改失败");
+          row.status = row.status === "0" ? "1" : "0";
+          return this.$message.error(res.meta.errorMsg);
         }
         this.$message.success(text + "成功");
         await this.getList();
@@ -327,25 +327,23 @@ export default {
         if (valid) {
           if (this.form.postId !== undefined) {
             const {data: res} = await this.$http.put("sysPost/updatePost", this.form)
-            {
-              if (res.meta.errorCode !== 200) {
-                return this.$message.error(res.meta.errorMsg);
-              }
-              this.$message.success("修改成功")
-              this.open = false;
-              await this.getList();
+            console.log(res)
+            if (res.meta.errorCode !== 200) {
+              return this.$message.error(res.meta.errorMsg);
             }
-
+            this.$message.success("修改成功")
+            this.open = false;
+            await this.getList();
           } else {
             const {data: res} = await this.$http.post("sysPost/addPost", this.form)
-            {
-              if (res.meta.errorCode !== 200) {
-                return this.$message.error(res.meta.errorMsg);
-              }
-              this.$message.success("添加成功")
-              this.open = false;
-              await this.getList();
+            console.log(res)
+            if (res.meta.errorCode !== 200) {
+              return this.$message.error(res.meta.errorMsg);
             }
+            this.$message.success("添加成功")
+            this.open = false;
+            await this.getList();
+
           }
         }
       });

@@ -310,13 +310,8 @@
                 this.form.phone = row.phone;
                 this.form.email = row.email;
                 this.form.status = row.status;
-                const {data: res} = await this.$http.get(`sysDept/${row.deptId}`);
-                if (res.code !== 0) {
-                    return this.$message.error("获取失败！")
-                }
                 this.open = true;
                 this.title = "修改部门";
-                this.form = res.data;
             },
             /** 提交按钮 */
             submitForm: function () {
