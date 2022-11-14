@@ -167,7 +167,7 @@
               <el-table-column label="用户编号" align="center" prop="userId"/>
               <el-table-column label="用户名称" align="center" prop="userName" :show-overflow-tooltip="true"/>
               <el-table-column label="用户昵称" align="center" prop="nickName" :show-overflow-tooltip="true"/>
-              <el-table-column label="部门" align="center" prop="dept.deptName"
+              <el-table-column label="部门" align="center" prop="deptName"
                                :show-overflow-tooltip="true"/>
               <el-table-column label="手机号码" align="center" prop="phonenumber" width="120"/>
               <el-table-column label="状态" align="center">
@@ -209,10 +209,10 @@
             <!--分页-->
             <el-pagination @size-change="handleSizeChange"
                            @current-change="handleCurrentChange"
-                           :current-page="form.nowPage"
-                           :page-sizes="pageSizes"
+                           :current-page="form.pageNum"
+                           :page-sizes="[1, 2, 5, 10]"
                            :page-size="form.pageSize" layout="total, sizes, prev, pager, next, jumper"
-                           :total="total">
+                           :total="this.total">
             </el-pagination>
           </template>
         </el-main>
@@ -413,7 +413,6 @@ export default {
       },
       dialogVisible: false,
       defaultExpandedKey: [],
-      pageSizes: [2,4, 6, 8, 10],
       loading: true,
       open: false,
       multiple: true,
@@ -430,8 +429,8 @@ export default {
       title: '',
       fileList: [],
       form: {
-        nowPage: 1,
-        pageSize: 3,
+        pageNum: 1,
+        pageSize: 1,
         userName: undefined,
         phonenumber: undefined,
         status: undefined,
@@ -516,7 +515,7 @@ export default {
   methods: {
     /* 重置*/
     formReload(){
-      this.form.nowPage = 1
+      this.form.pageNum = 1
       this.form.userName = undefined
       this.form.phonenumber = undefined
       this.form.status = undefined
@@ -586,7 +585,12 @@ export default {
       };
     },
     async getDeptList() {
-
+      const {data: res} = await this.$http.get('sysDept/getDeptList');
+      console.log(res)
+      if (res.meta.errorCode !== 200){
+        return this.$message.error(res.meta.errorMsg)
+      }
+      this.deptList = res.data
     },
     handleSelect() {
 
@@ -598,15 +602,15 @@ export default {
       this.form.startTime = this.searchTime[0]
       this.form.endTime = this.searchTime[1]
       this.loading = true;
-      const {data: userList} = await this.$http.get('/system/sysUser/selectUsers', {
+      const {data: res} = await this.$http.get('/sysUser/selectUsers', {
         params: this.form
-      })
-      this.tableData = userList.data
-      this.form.nowPage = parseInt(userList.nowPage)
-      this.form.pageSize = parseInt(userList.pageSize)
-      this.total = parseInt(userList.totalPage)
+      });
+      console.log(res)
+      this.tableData = res.data.sysUserDeptDto;
+      this.total = res.data.pageable.total
+      this.form.pageNum = res.data.pageable.pageNum
       this.loading = false
-      console.log(userList);
+      console.log(res);
     },
     async selectDept() {
 
@@ -645,13 +649,13 @@ export default {
       // 改变每页显示的条数
       this.form.pageSize = val
       // 注意：在改变每页显示的条数时，要将页码显示到第一页
-      this.form.nowPage = 1
+      this.form.pageNum = 1
       this.getUserList()
     },
     // 显示第几页
     handleCurrentChange(val) {
       // 改变默认的页数
-      this.form.nowPage = val
+      this.form.pageNum = val
       this.getUserList()
     },
     //取消
