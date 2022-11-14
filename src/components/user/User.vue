@@ -12,13 +12,10 @@
               popper-class="my-autocomplete"
               v-model="filterText"
               :fetch-suggestions="querySearch"
-              placeholder="请输入部门名称"
-              @select="handleSelect"
-              @blur="selectDept">
+              placeholder="请输入部门名称">
             <i
                 class="el-input__icon el-icon-search"
-                slot="suffix"
-                @click="handleIconClick">
+                slot="suffix">
             </i>
             <template slot-scope="{ item }">
               <div class="name">{{ item.deptName }}</div>
@@ -27,7 +24,7 @@
             </template>
           </el-input>
           <div style="padding-top: 15%">
-            <el-tree :data="deptList"
+            <el-tree :data="deptOptions"
                      ref="tree"
                      :props="defaultProps"
                      :filter-node-method="filterNode"
@@ -147,7 +144,6 @@
                   size="mini"
                   type="warning"
                   icon="el-icon-download"
-                  @click="handleExport"
               >导出
               </el-button>
             </el-col>
@@ -157,7 +153,6 @@
                   size="mini"
                   type="warning"
                   icon="el-icon-download"
-                  @click="downloadExport"
               >下载模板
               </el-button>
             </el-col>
@@ -165,7 +160,6 @@
           <!--渲染数据的表格-->
           <template>
             <el-table
-                @selection-change="handleSelectionChange"
                 :data="tableData"
                 style="width: 100%">
               <el-table-column type="selection" width="50" align="center"/>
@@ -207,13 +201,16 @@
                       @click="deleteUser(scope.row)"
                   >删除
                   </el-button>
-                  <el-dropdown size="mini" @command="(command) => handleCommand(command, scope.row)" v-hasPermi="['system:user:resetPwd', 'system:user:edit']">
+                  <el-dropdown size="mini" @command="(command) => handleCommand(command, scope.row)"
+                               v-hasPermi="['system:user:resetPwd', 'system:user:edit']">
                     <el-button size="mini" type="text" icon="el-icon-d-arrow-right">更多</el-button>
                     <el-dropdown-menu slot="dropdown">
                       <el-dropdown-item command="handleResetPwd" icon="el-icon-key"
-                                        v-hasPermi="['system:user:resetPwd']">重置密码</el-dropdown-item>
+                                        v-hasPermi="['system:user:resetPwd']">重置密码
+                      </el-dropdown-item>
                       <el-dropdown-item command="handleAuthRole" icon="el-icon-circle-check"
-                                        v-hasPermi="['system:user:edit']">分配角色</el-dropdown-item>
+                                        v-hasPermi="['system:user:edit']">分配角色
+                      </el-dropdown-item>
                     </el-dropdown-menu>
                   </el-dropdown>
                 </template>
@@ -251,7 +248,6 @@
                            :props="props"
                            :node-key="props.value"
                            :default-expanded-keys="defaultExpandedKey"
-
                            @node-click="handleNodeClick2">
                   </el-tree>
                 </el-option>
@@ -313,7 +309,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="岗位">
-              <el-select @change="$forceUpdate" v-model="formData.postIds" multiple placeholder="请选择">
+              <el-select @change="$forceUpdate" v-model="formData.postIds" placeholder="请选择">
                 <el-option
                     style="margin-left: 15px"
                     v-for="item in postOptions"
@@ -327,7 +323,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="角色">
-              <el-select v-model="formData.roleIds" multiple placeholder="请选择">
+              <el-select v-model="formData.roleIds" placeholder="请选择">
                 <el-option
                     style="margin-left: 15px"
                     v-for="item in roleOptions"
@@ -484,7 +480,6 @@ export default {
         email: [
           {required: true, message: "邮箱不能为空", trigger: "blur"},
           {pattern: /^([a-zA-Z0-9]+[-_.]?)+@[a-zA-Z0-9]+\.[a-z]+$/, message: '请输入正确邮箱', trigger: "blur"},
-
         ],
         userName: [
           {required: true, message: "角色名称不能为空", trigger: "blur"},
@@ -493,14 +488,8 @@ export default {
         ],
         password: [
           {required: true, message: "密码不能为空", trigger: "blur"},
-          {min: 1, max: 15, message: "密码长度最多10个字符", trigger: "blur"},
-          {
-            pattern: /(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W_])/,
-            message: "密码必须包含大小写英文字母,特殊字符",
-            trigger: "blur"
-          },
+          {min: 6, max: 20, message: "密码长度最多15个字符", trigger: "blur"},
         ],
-
         phonenumber: [
           {required: true, message: "手机号不能为空", trigger: "blur"},
           {max: 11, message: "手机号最长为11位", trigger: "blur"},
@@ -508,7 +497,6 @@ export default {
         ],
         sex: [
           {required: true, message: "用户性别不能为空", trigger: "blur"},
-
         ],
         remark: [
           {max: 50, message: "角色备注不能超过50字符", trigger: "blur"}
@@ -517,12 +505,15 @@ export default {
     }
   },
   async created() {
-    await this.getDeptList()
-    await this.getformInfo()
-    await this.getUserList()
+    await this.getDeptList();
+    await this.getformInfo();
+    await this.getUserList();
+    await this.getPostIds();
+    await this.getRoleIds();
     this.loading = false
     this.$forceUpdate();
     //查询需要使用的字典
+    await this.getSex("sys_user_sex");
     this.getDicts("sys_normal_disable").then(response => {
       this.statusList = response.data.data;
     });
@@ -572,7 +563,6 @@ export default {
         scrollWrap.style.cssText = 'margin: 0px; max-height: none; overflow: hidden;'
         scrollBar.forEach(ele => ele.style.width = 0)
       })
-
     },
     // 切换选项
     handleNodeClick2(node) {
@@ -614,12 +604,7 @@ export default {
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
-      this.deptList = res.data
-    },
-    handleSelect() {
-
-    },
-    handleIconClick() {
+      this.deptOptions = res.data
     },
     async getUserList() {
       this.form.startTime = this.searchTime[0]
@@ -632,15 +617,6 @@ export default {
       this.total = res.data.pageable.total
       this.form.pageNum = res.data.pageable.pageNum
       this.loading = false
-    },
-    async selectDept() {
-    },
-    /*修改状态*/
-    handleStatusChange() {
-
-    },
-    handleSelectionChange() {
-
     },
     /*根据id删除*/
     deleteUser(row) {
@@ -664,14 +640,8 @@ export default {
       //清空验证
       this.$refs['formData'].resetFields()
     },
-    updateForm() {
-
-    },
-    async getPostIds() {
-
-    },
     /** 分配角色操作 */
-    handleAuthRole: function(row) {
+    handleAuthRole: function (row) {
       const userId = row.userId;
       this.$router.push("/system/user-auth/role/" + userId);
     },
@@ -712,31 +682,97 @@ export default {
       }
       this.open = true
       this.$refs.formData.resetFields();
-
-    },
-    //文件校验方法
-    beforeAvatarUpload() {
-
-    },
-    /*导出*/
-    handleExport() {
-
-    },
-    /*下载模板*/
-    downloadExport() {
-
-    },
-    /*表单提交*/
-    async submitForm() {
-
-
-    },
-    reLoadPwd() {
-
     },
     /**批量删除中的查询*/
     filterNode(value, data) {
       return data.deptName.indexOf(value) !== -1;
+    },/*表单提交*/
+    submitForm() {
+      this.$refs["formData"].validate(async valid => {
+        if (valid) {
+          if (this.formData.userId === undefined) {
+            const {data: res} = await this.$http.post("sysUser/insertUser", {
+              phonenumber: this.formData.phonenumber,
+              nickName: this.formData.nickName,
+              email: this.formData.email,
+              sex: this.formData.sex,
+              deptId: this.formData.deptId,
+              postIds: this.formData.postIds,
+              roleIds: this.formData.roleIds,
+              userName: this.formData.userName,
+              status: this.formData.status,
+              password: this.formData.password
+            });
+            if (res.meta.errorCode !== 200) {
+              return this.$message.error(res.meta.errorMsg)
+            }
+            this.getUserList();
+            this.$message.success("新增成功");
+            this.open = false;
+          } else {
+            const {data: res} = await this.$http.put('sysUser/adminUpdateUser', {
+              userId: this.formData.userId,
+              phonenumber: this.formData.phonenumber,
+              nickName: this.formData.nickName,
+              email: this.formData.email,
+              sex: this.formData.sex,
+              deptId: this.formData.deptId,
+              postIds: this.formData.postIds,
+              roleIds: this.formData.roleIds,
+              userName: this.formData.userName,
+              status: this.formData.status,
+            });
+            if (res.meta.errorCode !== 200) {
+              return this.$message.error(res.meta.errorMsg)
+            }
+            this.getUserList();
+            this.$message.success("修改成功");
+            this.open = false;
+          }
+        }
+      });
+    },
+    reLoadPwd(row) {
+      this.title = '重置密码';
+      this.dialogVisible = true;
+      this.user.userId = row.userId;
+      this.user.password = row.password;
+      this.user.username = row.nickName;
+    },
+    /*修改密码*/
+    async changPwd() {
+      const {data: res} = await this.$http.post("sysUser/resetPassword", {
+        userId: this.user.userId,
+        password: this.user.password
+      });
+      if (res.meta.errorCode !== 200) {
+        return this.$message.error(res.meta.errorMsg)
+      }
+      this.dialogVisible = false;
+      return this.$message.success("重置成功")
+    },
+    /** 查询数据字典性别 */
+    async getSex(deptType) {
+      const {data: res} = await this.$http.get(`sysDictData/getDict?dictType=${deptType}`);
+      this.sexOptions = res.data;
+    },
+    async updateForm(row) {
+      this.open = true;
+      this.formData = JSON.parse(JSON.stringify(row));
+    },
+    async getPostIds() {
+      const {data: res} = await this.$http.get('sysPost/getAllPost');
+      if (res.meta.errorCode !== 200) {
+        return this.$message.error("获取岗位失败")
+      }
+      this.postOptions = res.data;
+    },
+    async getRoleIds() {
+      const {data: res} = await this.$http.get('sysRole/getAllRole');
+      if (res.meta.errorCode !== 200) {
+        return this.$message.error("获取角色失败")
+      }
+      this.roleOptions = res.data;
     },
   },
   watch: {
@@ -749,76 +785,15 @@ export default {
 </script>
 
 <style>
-.el-card{
+.el-card {
   border: none;
 }
-/*.el-row {*/
-/*  margin-bottom: 20px;*/
-/*  display: flex;*/
-/*  flex-wrap: wrap;*/
-/*}*/
-
-/*.el-row .el-card {*/
-/*  min-width: 100%;*/
-/*  height: 100%;*/
-/*  margin-right: 20px;*/
-/*  transition: all .5s;*/
-/*}*/
-
-
-/*li {*/
-/*  line-height: normal;*/
-/*  padding: 7px;*/
-/*}*/
-
-/*.name {*/
-/*  text-overflow: ellipsis;*/
-/*  overflow: hidden;*/
-/*}*/
-
-/*.addr {*/
-/*  font-size: 12px;*/
-/*  color: #eaedf1;*/
-/*}*/
-
-/*.highlighted .addr {*/
-/*  color: #eaedf1;*/
-/*}*/
-
-/*.el-dropdown-link {*/
-/*  cursor: pointer;*/
-/*  color: #409EFF;*/
-/*}*/
-
-/*.el-icon-arrow-down {*/
-/*  font-size: 12px;*/
-/*}*/
-
-/*.el-scrollbar .el-scrollbar__view .el-select-dropdown__item {*/
-/*  height: auto;*/
-/*  max-height: 274px;*/
-/*  padding: 0;*/
-/*  overflow: hidden;*/
-/*  overflow-y: auto;*/
-/*}*/
-
-/*.el-select-dropdown__item.selected {*/
-/*  font-weight: normal;*/
-/*}*/
-
-/*ul li >>> .el-tree .el-tree-node__content {*/
-/*  height: auto;*/
-/*  padding: 0 20px;*/
-/*}*/
-
-/*.el-tree >>> .is-current .el-tree-node__label {*/
-/*  color: #409EFF;*/
-/*  font-weight: 700;*/
-/*}*/
-
-/*.el-tree >>> .is-current .el-tree-node__children .el-tree-node__label {*/
-/*  color: #606266;*/
-/*  font-weight: normal;*/
-/*}*/
+.el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
+  height: auto;
+  max-height: 274px;
+  padding: 0;
+  overflow: hidden;
+  overflow-y: auto;
+}
 </style>
 

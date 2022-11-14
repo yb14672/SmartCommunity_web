@@ -63,27 +63,8 @@ axios.interceptors.request.use(config=>{
 })
 
 const myInterceptor = axios.interceptors.response.use(res => {
-  console.log("myInterceptor",res)
+  // console.log("myInterceptor",res)
   if(res.data.jsonResult.errorCode !==undefined && res.data.jsonResult.errorCode === 2013 || res.data.jsonResult.errorCode === 2014){
-    //移除拦截器
-    axios.interceptors.request.eject(myInterceptor);
-    // 从 sessionStorage 删除所有保存的数据
-    window.sessionStorage.clear();
-    localStorage.setItem("msg",res.data.jsonResult.errorMsg)
-    window.location.reload();
-  }else{
-    localStorage.clear()
-    return res
-  }
-//这里是响应成功执行的代码
-}, function axiosRetryInterceptor(err) {
-  console.log(err)
-//这里是响应失败执行的代码
-});
-
-
-const myInterceptor = axios.interceptors.response.use(res => {
-  if(res.data.jsonResult.errorCode !==undefined && res.data.jsonResult.errorCode === 2013){
     //移除拦截器
     axios.interceptors.request.eject(myInterceptor);
     // 从 sessionStorage 删除所有保存的数据
