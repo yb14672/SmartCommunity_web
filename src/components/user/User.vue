@@ -325,7 +325,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="岗位">
+            <el-form-item label="岗位" prop="postId">
               <el-select @change="$forceUpdate" v-model="formData.postId" placeholder="请选择">
                 <el-option
                     style="margin-left: 15px"
@@ -339,7 +339,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="角色">
+            <el-form-item label="角色" prop="roleId">
               <el-select v-model="formData.roleId" placeholder="请选择">
                 <el-option
                     style="margin-left: 15px"
@@ -535,6 +535,12 @@ export default {
         ],
         deptId: [
           {required: true, message: "部门不能为空", trigger: "blur"},
+        ],
+        postId: [
+          {required: true, message: "岗位不能为空", trigger: "blur"},
+        ],
+        roleId: [
+          {required: true, message: "角色不能为空", trigger: "blur"},
         ]
       }
     }
