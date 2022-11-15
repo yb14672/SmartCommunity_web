@@ -748,21 +748,22 @@ export default {
     },
     /**表单提交 */
     submitForm() {
+      console.log(this.formData)
       this.$refs["formData"].validate(async valid => {
         if (valid) {
           if (this.formData.userId === undefined) {
-            const {data: res} = await this.$http.post("sysUser/insertUser", {
-              phonenumber: this.formData.phonenumber,
-              nickName: this.formData.nickName,
-              email: this.formData.email,
-              sex: this.formData.sex,
-              deptId: this.formData.deptId,
-              postId: this.formData.postIds,
-              roleId: this.formData.roleIds,
-              userName: this.formData.userName,
-              status: this.formData.status,
-              password: this.formData.password
-            });
+            const {data: res} = await this.$http.post("sysUser/insertUser", this.formData)
+            //   phonenumber: this.formData.phonenumber,
+            //   nickName: this.formData.nickName,
+            //   email: this.formData.email,
+            //   sex: this.formData.sex,
+            //   deptId: this.formData.deptId,
+            //   postId: this.formData.postIds,
+            //   roleId: this.formData.roleIds,
+            //   userName: this.formData.userName,
+            //   status: this.formData.status,
+            //   password: this.formData.password
+            // });
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg)
             }
@@ -816,7 +817,6 @@ export default {
     async updateForm(row) {
       this.open = true;
       const {data: res} = await this.$http.get(`sysUser/getUserInfo?userId=`+row.userId);
-      console.log(res)
       this.formData.phonenumber=res.data.sysUser.phonenumber;
       this.formData.userId=res.data.sysUser.userId;
       this.formData.nickName=res.data.sysUser.nickName;

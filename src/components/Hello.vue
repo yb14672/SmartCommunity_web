@@ -76,7 +76,6 @@ export default {
     // 这里是计算建站时间的脚本
     createTime() {
       if(this.checkTimer){
-        console.log(1)
         let now = new Date()
         // 页脚建站时间计算脚本
         let grt = new Date("11/01/2021 00:00:00");//在此处修改你的建站时间，格式：月/日/年 时:分:秒
