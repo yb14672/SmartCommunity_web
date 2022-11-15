@@ -1,12 +1,14 @@
 <template>
   <div>
-    <breadcrumb name1="asd" name2="as"></breadcrumb>
+    <!--    <breadcrumb name1="asd" name2="as"></breadcrumb>-->
+    <!--页面数据渲染-->
     <el-container>
-      <el-card style="width: 500px">
+      <!--左侧部门树状列表-->
+      <el-card>
         <el-aside>
           <el-autocomplete
               size="small"
-              style="width: 80%"
+              style="width: 60%"
               popper-class="my-autocomplete"
               v-model="state"
               :fetch-suggestions="querySearch"
@@ -27,13 +29,15 @@
           <div style="padding-top: 15%">
             <el-tree e :data="deptList" :props="defaultProps" @node-click="handleNodeClick" default-expand-all
                      highlight-current
+                     :expand-on-click-node="false"
             ></el-tree>
           </div>
         </el-aside>
       </el-card>
-      <el-card style="margin-left: 60px">
+      <!--右侧用户列表和查询条件-->
+      <el-card style="margin-left: 20px">
         <el-main>
-
+          <!--查询条件表单-->
           <el-form :model="form" ref="queryForm" :inline="true" label-width="68px" :rules="formRules">
             <el-form-item label="用户名称">
               <el-input
@@ -81,7 +85,6 @@
             </el-form-item>
             <el-form-item label="创建时间">
               <el-date-picker
-
                   v-model="searchTime"
                   size="small"
                   style="width: 240px"
@@ -91,7 +94,6 @@
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
                   @change="getUserList"
-
               ></el-date-picker>
             </el-form-item>
             <el-form-item>
@@ -100,7 +102,7 @@
               <el-button icon="el-icon-refresh" size="mini" @click="formReload()">重置</el-button>
             </el-form-item>
           </el-form>
-
+          <!--操作列表-->
           <el-row :gutter="10" class="mb8">
             <el-col :span="1.5">
               <el-button
@@ -118,22 +120,22 @@
                   type="danger"
                   icon="el-icon-delete"
                   :disabled="multiple"
-                  @click="handleDelete"
+                  @click="deleteUser"
               >删除
               </el-button>
             </el-col>
 
             <el-col :span="1.5">
-<!--              <el-upload action="#" :auto-upload="false" :multiple="false" :show-file-list="false"-->
-<!--                         :on-change="uploadByJsqd" :file-list="fileList">-->
-<!--                <el-button-->
-<!--                    plain-->
-<!--                    size="mini"-->
-<!--                    type="el-button el-button&#45;&#45;info is-plain"-->
-<!--                    icon="el-icon-upload2"-->
-<!--                >导入-->
-<!--                </el-button>-->
-<!--              </el-upload>-->
+              <!--              <el-upload action="#" :auto-upload="false" :multiple="false" :show-file-list="false"-->
+              <!--                         :on-change="uploadByJsqd" :file-list="fileList">-->
+              <!--                <el-button-->
+              <!--                    plain-->
+              <!--                    size="mini"-->
+              <!--                    type="el-button el-button&#45;&#45;info is-plain"-->
+              <!--                    icon="el-icon-upload2"-->
+              <!--                >导入-->
+              <!--                </el-button>-->
+              <!--              </el-upload>-->
             </el-col>
             <el-col :span="1.5">
               <el-button
@@ -156,8 +158,7 @@
               </el-button>
             </el-col>
           </el-row>
-
-
+          <!--渲染数据的表格-->
           <template>
             <el-table
                 @selection-change="handleSelectionChange"
@@ -167,12 +168,13 @@
               <el-table-column label="用户编号" align="center" prop="userId"/>
               <el-table-column label="用户名称" align="center" prop="userName" :show-overflow-tooltip="true"/>
               <el-table-column label="用户昵称" align="center" prop="nickName" :show-overflow-tooltip="true"/>
-              <el-table-column label="部门" align="center" prop="deptName"
+              <el-table-column label="部门" align="center" prop="dept.deptName"
                                :show-overflow-tooltip="true"/>
               <el-table-column label="手机号码" align="center" prop="phonenumber" width="120"/>
               <el-table-column label="状态" align="center">
                 <template slot-scope="scope">
                   <el-switch
+                      :disabled="scope.row.userId === 1"
                       v-model="scope.row.status"
                       active-value="0"
                       inactive-value="1"
@@ -180,8 +182,11 @@
                   ></el-switch>
                 </template>
               </el-table-column>
-              <el-table-column label="创建时间" align="center" prop="createTime"
-                               width="160"></el-table-column>
+              <el-table-column label="创建时间" align="center" prop="createTime" width="160">
+                <template slot-scope="scope">
+                  <span>{{ scope.row.createTime | moment }}</span>
+                </template>
+              </el-table-column>
               <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
                 <template slot-scope="scope" v-if="scope.row.userName != 'admin'">
                   <el-button
@@ -218,9 +223,8 @@
         </el-main>
       </el-card>
     </el-container>
-
-    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body @close="closeFrom()
-">
+    <!--修改添加弹出层-->
+    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body @close="closeFrom()">
       <el-form ref="formData" :model="formData" label-width="80px" :rules="rules">
         <el-row>
           <el-col :span="12">
@@ -340,35 +344,34 @@
         <el-button @click="open=false">取 消</el-button>
       </div>
     </el-dialog>
-    <div>
-      <el-dialog
-          title="提示"
-          :visible.sync="dialogVisible"
-          width="30%"
-          center>
-        <span>确认要重置{{ user.usernamne }}用户的密码</span>
-        <el-input v-model="user.password" placeholder="请输入密码"></el-input>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="changPwd()">确 定</el-button>
-        </div>
-      </el-dialog>
-    </div>
+    <!--重置密码确认框-->
+    <el-dialog
+        title="提示"
+        :visible.sync="dialogVisible"
+        width="30%"
+        center>
+      <span>确认要重置{{ user.usernamne }}用户的密码</span>
+      <el-input v-model="user.password" placeholder="请输入密码"></el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="changPwd()">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 export default {
   name: "UserList",
-  inject: ["reload"],
+  // inject: ["reload"],
   props: {
     /* 配置项 */
     props: {
       type: Object,
       default: () => {
         return {
-          value: 'deptId',             // ID字段名
-          label: 'deptName',         // 显示名称
+          value: 'deptId',        // ID字段名
+          label: 'deptName',      // 显示名称
           children: 'children'    // 子级字段名
         }
       }
@@ -393,7 +396,6 @@ export default {
       default: () => {
         return true
       }
-
     },
     /* 自动收起 */
     accordion: {
@@ -434,7 +436,7 @@ export default {
         userName: undefined,
         phonenumber: undefined,
         status: undefined,
-        deptId: 100
+        deptId: 100,
       },
       formData: {
         phonenumber: undefined,
@@ -452,8 +454,8 @@ export default {
       state: '',
       deptList: [],
       defaultProps: {
-        value: 'deptId',             // ID字段名
-        label: 'deptName',         // 显示名称
+        value: 'deptId',        // ID字段名
+        label: 'deptName',      // 显示名称
         children: 'children'    // 子级字段名
       },
       tableData: [],
@@ -514,7 +516,7 @@ export default {
   },
   methods: {
     /* 重置*/
-    formReload(){
+    formReload() {
       this.form.pageNum = 1
       this.form.userName = undefined
       this.form.phonenumber = undefined
@@ -528,8 +530,6 @@ export default {
       }
       this.getUserList()
     },
-
-
     // 初始化值
     initHandle() {
       // eslint-disable-next-line vue/no-mutating-props
@@ -565,8 +565,6 @@ export default {
       this.$emit('getValue', null)
     },
     async getformInfo() {
-
-
     },
     handleNodeClick(data) {
       this.form.deptId = data.deptId
@@ -586,8 +584,7 @@ export default {
     },
     async getDeptList() {
       const {data: res} = await this.$http.get('sysDept/getDeptList');
-      console.log(res)
-      if (res.meta.errorCode !== 200){
+      if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
       this.deptList = res.data
@@ -610,11 +607,8 @@ export default {
       this.total = res.data.pageable.total
       this.form.pageNum = res.data.pageable.pageNum
       this.loading = false
-      console.log(res);
     },
     async selectDept() {
-
-
     },
     /*修改状态*/
     handleStatusChange() {
@@ -623,15 +617,25 @@ export default {
     handleSelectionChange() {
 
     },
-    /* 选中删除*/
-    handleDelete() {
-
-    },
-    deleteUser() {
-
+    /*根据id删除*/
+    deleteUser(row) {
+      const userIds = row.userId || this.ids;
+      this.$confirm('是否确认删除角色编号为"' + userIds + '"的数据项?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        return this.$http.delete(`/sysUser?idList=${userIds}`);
+      }).then((res) => {
+        if (res.data.meta.errorCode !== 200) {
+          return this.$message.error(res.data.meta.errorMsg);
+        }
+        this.getUserList();
+        this.$message.success("删除成功");
+      })
     },
     /*关闭表单的方法*/
-    closeFrom(){
+    closeFrom() {
       //清空验证
       this.$refs['formData'].resetFields()
     },

@@ -152,6 +152,7 @@ export default {
         callback();
       }
     };
+
     //判断新旧密码是否一致
     const equalToOldPassword = (rule, value, callback) => {
       if (this.pwdForm.oldPassword === value) {
@@ -194,10 +195,20 @@ export default {
           {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
         ],
         phonenumber: [
-          {required: true, message: '请输入手机号码', trigger: 'change'}
+          {required: true, message: "手机号码不能为空", trigger: "blur"},
+          {
+            pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+            message: "请输入正确的手机号",
+            trigger: "blur"
+          }
         ],
         email: [
-          {required: true, message: '请输入正确的邮箱', trigger: 'change'}
+          {required: true, message: "邮箱地址不能为空", trigger: "blur"},
+          {
+            type: "email",
+            message: "请输入正确的邮箱地址",
+            trigger: ["blur", "change"]
+          }
         ],
         oldPassword: [
           {required: true, message: "旧密码不能为空", trigger: "blur"}
@@ -287,7 +298,6 @@ export default {
         if (valid) {
           //更新对应的信息
           const {data: res} = await this.$http.put("sysUser/updateUser", this.updateForm)
-          console.log(res);
           //检查是否成功
           if (res.meta.errorCode !== 200) {
             return this.$message.error(res.meta.errorMsg)
@@ -306,7 +316,6 @@ export default {
             'userId':this.pwdForm.userId,
             'password':this.pwdForm.newPassword
           })
-          console.log(res);
           //检查是否成功
           if (res.meta.errorCode !== 200) {
             return this.$message.error(res.meta.errorMsg)
@@ -323,7 +332,6 @@ export default {
     },
     async getUserInfo() {
       const {data: res} = await this.$http.get("sysUser/personal")
-      console.log(res);
       if (res) {
         this.ruleForm.sysUser = res.data.sysUser
         this.ruleForm.sysDept = res.data.sysDept
@@ -337,7 +345,6 @@ export default {
         this.userInfo[3].value = res.data.sysDept.deptName + "/" + res.data.sysPost.postName;
         this.userInfo[4].value = res.data.sysRole.roleName;
       }
-      // console.log(this.userInfo)
     },
     // 上传按钮 限制图片大小和类型
     handleChangeUpload(file) {
@@ -359,7 +366,6 @@ export default {
         this.loading = false
         this.dialogVisible = true
         this.fileName=file.name;
-        console.log(file)
       })
     },
     // 放大/缩小
@@ -379,7 +385,6 @@ export default {
     cropMoving(data) {
       // 截图框的左上角 x，y和右下角坐标x，y
       let cropAxis = [data.axis.x1, data.axis.y1, data.axis.x2, data.axis.y2]
-      console.log(cropAxis)
     },
     finish() {
       this.$refs.cropper.getCropBlob(async (data) => {

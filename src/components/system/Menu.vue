@@ -12,7 +12,7 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.visible" placeholder="菜单状态" clearable size="small">
+        <el-select v-model="queryParams.status" placeholder="菜单状态" clearable size="small">
           <el-option
               v-for="dict in statusOptions"
               :key="dict.dictValue"
@@ -252,12 +252,10 @@ export default {
       // 查询参数
       queryParams: {
         menuName: undefined,
-        visible: undefined
+        status: undefined
       },
       // 表单参数
       form: {},
-      // 修改表单参数
-      form1: {},
       // 表单校验
       rules: {
         menuName: [
@@ -305,10 +303,9 @@ export default {
       const {data: res} = await this.$http.get('sysMenu/queryMenus', {
         params: {
           menuName: this.queryParams.menuName,
-          visible: this.queryParams.visible
+          status: this.queryParams.status
         }
       });
-      console.log(res)
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
@@ -332,6 +329,7 @@ export default {
       this.menuOptions = [];
       const menu = {menuId: 0, menuName: '主类目', children: []};
       const {data: res} = await this.$http.get('sysMenu/queryMenus');
+      console.log(res)
       menu.children = res.data;
       this.menuOptions.push(menu)
     },
@@ -344,7 +342,6 @@ export default {
     },
     /** 菜单状态字典翻译*/
     statusFormat(row) {
-      // console.log(row)
       if (row.menuType == "F") {
         return "";
       }
@@ -364,7 +361,7 @@ export default {
         icon: undefined,
         menuType: "M",
         orderNum: undefined,
-        isFrame: "1",
+        isFrame: 0,
         isCache: "0",
         visible: "0",
         status: "0"
@@ -383,7 +380,6 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd(row) {
-      this.open = true;
       this.reset();
       this.getTreeselect();
       if (row != null && row.menuId) {
@@ -397,13 +393,11 @@ export default {
     /** 修改按钮操作 */
     async handleUpdate(row) {
       this.reset();
+      console.log(row)
       await this.getTreeselect();
-      const {data: res} = await this.$http.get(`sysMenu/${row.menuId}`);
-      if (res.code !== 0) {
-        return this.$message.error("获取失败！")
-      }
       this.open = true;
-      this.form = res.data;
+      this.title = "修改菜单"
+      this.form = JSON.parse(JSON.stringify(row));
     },
     /** 提交按钮 */
     submitForm: function () {
@@ -411,20 +405,18 @@ export default {
         if (valid) {
           if (this.form.menuId != undefined) {
             const {data: res} = await this.$http.put("sysMenu/updateMenu", this.form);
-            console.log(res)
             if (res.meta.errorCode !== 200) {
               this.$message.error(res.meta.errorMsg)
-            }else{
+            } else {
               this.open = false;
               this.$message.success("修改成功！");
               location.reload();
             }
           } else {
             const {data: res} = await this.$http.post("sysMenu/addMenu", this.form);
-            console.log(res);
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg);
-            }else{
+            } else {
               this.$message.success("新增成功");
               this.open = false;
               location.reload();
@@ -439,18 +431,18 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      }).then(() =>{
+      }).then(() => {
         // 通过方法？带参
         this.$http.delete("/sysMenu/deleteById?id=" + row.menuId)
-          .then((res) => {
-            if (res.data.meta.errorCode === 200) {
-              // 重新获取页面
-              location.reload();
-              this.$message.success("删除成功");
-            } else {
-              this.$message.warning(res.data.meta.errorMsg);
-            }
-          })
+            .then((res) => {
+              if (res.data.meta.errorCode === 200) {
+                // 重新获取页面
+                location.reload();
+                this.$message.success("删除成功");
+              } else {
+                this.$message.warning(res.data.meta.errorMsg);
+              }
+            })
       })
     },
     /** 显示批量删除 */
@@ -460,7 +452,6 @@ export default {
     /** 批量删除 */
     getCheckedKeys() {
       //获取的id列表
-      //console.log(this.$refs.tree.getCheckedKeys());
       this.$confirm("确定删除吗？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

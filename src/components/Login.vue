@@ -126,18 +126,17 @@ export default {
       //进行登录{
       // 点击登录的时候先调用validate方法验证表单内容是否有误
       this.$refs.LoginFormRef.validate(async valid => {
-        console.log(this.loginFormRules)
         // 如果valid参数为true则验证通过
         if (!valid) {
           return
         }
-        const {data: res} = await this.$http.post('sysUser/login', {}, {
+        console.log(this.loginForm)
+        const {data: res} = await this.$http.post('sysUser/login',{}, {
           params: {
             userName: this.loginForm.username,
             password: this.loginForm.password
           }
         })
-        console.log(res)
         if (res.meta.errorCode !== 200) {
           return this.$message.error(res.meta.errorMsg)
         } else {
@@ -152,7 +151,6 @@ export default {
     // 添加表单重置方法
     resetLoginForm() {
       // this=>当前组件对象，其中的属性$refs包含了设置的表单ref
-      //   console.log(this)
       this.$refs.LoginFormRef.resetFields()
     },
     // 7*登录的方法
