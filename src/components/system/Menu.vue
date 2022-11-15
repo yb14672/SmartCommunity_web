@@ -227,6 +227,8 @@ export default {
   components: {Treeselect},
   data() {
     return {
+      //用来存储修改之前的数据
+      originalForm: {},
       // 遮罩层
       loading: true,
       // 显示搜索条件
@@ -289,6 +291,12 @@ export default {
     this.statusOptions = this.getDict('sys_normal_disable')
   },
   methods: {
+    /**检查修改前后是否完全一致*/
+    checkForm(){
+      if(this.form.parentId){
+
+      }
+    },
     /**获取字典列表*/
     async getDict(deptType) {
       if (deptType === 'sys_show_hide') {
@@ -397,6 +405,8 @@ export default {
       await this.getTreeselect();
       this.open = true;
       this.form = JSON.parse(JSON.stringify(row));
+      this.originalForm = JSON.parse(JSON.stringify(row));
+      console.log(this.form)
     },
     /** 提交按钮 */
     submitForm: function () {
