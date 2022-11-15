@@ -40,6 +40,15 @@ const router = new Router({
                 {path: '/system/post', component: Post},
                 {path: '/system/user-auth/role/:userId(\\d+)', component: AuthRole},
             ]
+        },
+        {
+            path: "*",
+            name: "NotFound",
+            component: () => import("@/views/error/e404.vue"),
+        },{
+            path: "/500",
+            name: "ServerError",
+            component: () => import("@/views/error/e500.vue"),
         }
     ]
 })
@@ -49,7 +58,6 @@ router.beforeEach((to, from, next) => {
     if (to.path === '/login') {
         return next();
     }
-
     //获取token
     const tokenStr = window.sessionStorage.getItem('token');
     if (!tokenStr)
