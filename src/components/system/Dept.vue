@@ -1,85 +1,86 @@
 <template>
-    <div class="app-container">
-        <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch">
-            <el-form-item label="部门名称" prop="deptName">
-                <el-input
-                        v-model="queryParams.deptName"
-                        placeholder="请输入部门名称"
-                        clearable
-                        size="small"
-                        @keyup.enter.native="handleQuery"
-                />
-            </el-form-item>
-            <el-form-item label="状态" prop="status">
-                <el-select v-model="queryParams.status" placeholder="部门状态" clearable size="small">
-                    <el-option
-                            v-for="dict in statusOptions"
-                            :key="dict.dictValue"
-                            :label="dict.dictLabel"
-                            :value="dict.dictValue"
-                    />
-                </el-select>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-                <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-            </el-form-item>
-        </el-form>
+  <div class="app-container">
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch">
+      <el-form-item label="部门名称" prop="deptName">
+        <el-input
+            v-model="queryParams.deptName"
+            placeholder="请输入部门名称"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-select v-model="queryParams.status" placeholder="部门状态" clearable size="small">
+          <el-option
+              v-for="dict in statusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+      </el-form-item>
+    </el-form>
 
-        <el-row :gutter="10" class="mb8">
-            <el-col :span="1.5">
-                <el-button
-                        type="primary"
-                        icon="el-icon-plus"
-                        size="mini"
-                        @click="handleAdd"
-                >新增
-                </el-button>
-            </el-col>
-        </el-row>
+    <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5">
+        <el-button
+            type="primary"
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleAdd"
+        >新增
+        </el-button>
+      </el-col>
+    </el-row>
 
-        <el-table
-                v-loading="loading"
-                :data="deptList"
-                row-key="deptId"
-                default-expand-all
-                :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-        >
-            <el-table-column prop="deptName" label="部门名称" width="260"></el-table-column>
-            <el-table-column prop="orderNum" label="排序" width="200"></el-table-column>
-            <el-table-column prop="status" label="状态" :formatter="statusFormat" width="100"></el-table-column>
-            <el-table-column label="创建时间" align="center" prop="createTime" width="200">
-                <template slot-scope="scope">
-                    <span>{{ scope.row.createTime | moment }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-                <template slot-scope="scope">
-                    <el-button
-                            size="mini"
-                            type="text"
-                            icon="el-icon-edit"
-                            @click="handleUpdate(scope.row)"
-                    >修改
-                    </el-button>
-                    <el-button
-                            size="mini"
-                            type="text"
-                            icon="el-icon-plus"
-                            @click="handleAdd(scope.row)"
-                    >新增
-                    </el-button>
-                    <el-button
-                            v-if="scope.row.parentId !== 0"
-                            size="mini"
-                            type="text"
-                            icon="el-icon-delete"
-                            @click="handleDelete(scope.row)"
-                    >删除
-                    </el-button>
-                </template>
-            </el-table-column>
-        </el-table>
+    <el-table
+        v-loading="loading"
+        :data="deptList"
+        row-key="deptId"
+        default-expand-all
+        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+    >
+      <el-table-column prop="deptName" label="部门名称" width="260"></el-table-column>
+      <el-table-column prop="orderNum" label="排序" width="200"></el-table-column>
+      <el-table-column prop="status" label="状态" :formatter="statusFormat" width="100"></el-table-column>
+      <el-table-column label="创建时间" align="center" prop="createTime" width="200">
+        <template slot-scope="scope">
+          <span>{{ scope.row.createTime | moment }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-edit"
+              @click="handleUpdate(scope.row)"
+              v-hasPermi="['system:dept:edit']"
+          >修改
+          </el-button>
+          <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-plus"
+              @click="handleAdd(scope.row)"
+          >新增
+          </el-button>
+          <el-button
+              v-if="scope.row.parentId !== 0"
+              size="mini"
+              type="text"
+              icon="el-icon-delete"
+              @click="handleDelete(scope.row)"
+          >删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
 
         <!-- 添加或修改部门对话框 -->
         <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
@@ -168,8 +169,8 @@
                 },
                 // 表单参数
                 form: {},
-                //用来存储修改之前的数据
-                originalForm: {},
+                // 修改表单参数
+                form1: {},
                 // 表单校验
                 rules: {
                     parentId: [
@@ -219,7 +220,6 @@
                         status: this.queryParams.status
                     }
                 });
-                console.log(res);
                 //根据状态码来返回错误信息
                 if (res.meta.errorCode !== 200) {
                     return this.$message.error(res.meta.errorMsg)
@@ -233,7 +233,8 @@
             normalizer(node) {
                 if (node.children && !node.children.length) {
                     delete node.children;
-                }if (node.deptName == null) {
+                }
+                if (node.deptName == null) {
                     node.deptName = "智慧社区"
                 }
                 return {
@@ -277,9 +278,8 @@
             /** 查询菜单下拉树结构 */
             async getTreeselect() {
                 this.deptOptions = [];
-                const dept = {deptId: 0, deptName: '智慧社区', children: []};
                 const {data: res} = await this.$http.get('sysDept/getDeptList');
-                dept.children = res.data[0].children;
+                const dept = res.data[0];
                 this.deptOptions.push(dept)
             },
             /** 新增按钮操作 */
@@ -289,9 +289,9 @@
                 this.getTreeselect();
                 if (row !== null && row.deptId) {
                     this.form.parentId = row.deptId;
-                } else if (row.deptId===100) {
+                } else if (row.deptId === 100) {
                     this.form.parentId = 0;
-                }else {
+                } else {
                     this.form.parentId = 100;
                 }
                 this.open = true;
@@ -299,93 +299,64 @@
             },
             /** 修改按钮操作 */
             async handleUpdate(row) {
-              this.open = true;
+                this.open = true;
                 this.reset();
                 await this.getTreeselect();
                 this.form.deptId = row.deptId;
                 this.form.parentId = row.parentId;
-                this.form.deptName=row.deptName;
-                this.form.orderNum=row.orderNum;
-                this.form.leader=row.leader;
-                this.form.phone=row.phone;
-                this.form.email=row.email;
-              this.form.status=row.status;
-                const {data: res} = await this.$http.get(`sysDept/${row.deptId}`);
-                if (res.code !== 0) {
-                    return this.$message.error("获取失败！")
-                }
+                this.form.deptName = row.deptName;
+                this.form.orderNum = row.orderNum;
+                this.form.leader = row.leader;
+                this.form.phone = row.phone;
+                this.form.email = row.email;
+                this.form.status = row.status;
                 this.open = true;
-              this.title = "修改部门";
-                this.form = res.data;
+                this.title = "修改部门";
             },
             /** 提交按钮 */
             submitForm: function () {
                 this.$refs["form"].validate(async valid => {
                     if (valid) {
-                      console.log(this.form)
-
-                      if (this.form.deptId != undefined) {
+                        if (this.form.deptId != undefined) {
                             const {data: res} = await this.$http.put("sysDept/updateDept", this.form);
                             if (res.meta.errorCode !== 200) {
                                 return this.$message.error(res.meta.errorMsg)
                             }
                             this.open = false;
-                            location.reload();
+                            this.getList();
                             return this.$message.success("修改成功！")
                         } else {
                             const {data: res} = await this.$http.post("sysDept/insertDept", this.form);
-                            console.log(res);
                             if (res.meta.errorCode !== 200) {
                                 return this.$message.error(res.meta.errorMsg);
                             }
                             this.$message.success("新增成功");
                             this.open = false;
-                            location.reload();
+                            this.getList();
                         }
                     }
                 });
             },
-          /**删除单个菜单*/
-          async handleDelete(row) {
-            this.$confirm('是否确认删除名称为"' + row.deptName + '"的数据项?', "警告", {
-              confirmButtonText: "确定",
-              cancelButtonText: "取消",
-              type: "warning"
-            }).then(() =>{
-              // 通过方法？带参
-              this.$http.delete("/sysDept/deleteDept?idList=" + row.deptId)
-                      .then((res) => {
-                        console.log(res)
-                        console.log(res.data.meta.errorCode)
-                        if (res.data.meta.errorCode === 200) {
-                          // 重新获取页面
-                          this.getList();
-                          this.$message.success("删除成功");
-                        } else {
-                          this.$message.warning(res.data.meta.errorMsg);
-                        }
-                      })
-            })
-          },
-        },
-        /** 检查修改前后是否一致 */
-        checkEquals(){
-            if(this.originalForm.parentId===this.form.parentId){
-                if(this.originalForm.deptName===this.form.deptName){
-                    if(this.originalForm.orderNum===this.form.orderNum){
-                        if(this.originalForm.leader===this.form.leader){
-                            if(this.originalForm.phone===this.form.phone){
-                                if(this.originalForm.email===this.form.email){
-                                    if(this.originalForm.status===this.form.status){
-                                        return true
-                                    }
-                                }
+            /**删除单个菜单*/
+            async handleDelete(row) {
+                this.$confirm('是否确认删除名称为"' + row.deptName + '"的数据项?', "警告", {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    type: "warning"
+                }).then(() => {
+                    // 通过方法？带参
+                    this.$http.delete("/sysDept/deleteDept?idList=" + row.deptId)
+                        .then((res) => {
+                            if (res.data.meta.errorCode === 200) {
+                                // 重新获取页面
+                                this.getList();
+                                this.$message.success("删除成功");
+                            } else {
+                                this.$message.warning(res.data.meta.errorMsg);
                             }
-                        }
-                    }
-                }
-            }
-            return false;
+                        })
+                })
+            },
         }
     };
 </script>

@@ -12,7 +12,7 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.visible" placeholder="菜单状态" clearable size="small">
+        <el-select v-model="queryParams.status" placeholder="菜单状态" clearable size="small">
           <el-option
               v-for="dict in statusOptions"
               :key="dict.dictValue"
@@ -252,7 +252,7 @@ export default {
       // 查询参数
       queryParams: {
         menuName: undefined,
-        visible: undefined
+        status: undefined
       },
       // 表单参数
       form: {},
@@ -281,7 +281,6 @@ export default {
         children: 'children',
         label: 'menuName'
       },
-
     };
   },
   created() {
@@ -305,7 +304,7 @@ export default {
       const {data: res} = await this.$http.get('sysMenu/queryMenus', {
         params: {
           menuName: this.queryParams.menuName,
-          visible: this.queryParams.visible
+          status: this.queryParams.status
         }
       });
       if (res.meta.errorCode !== 200) {
@@ -362,8 +361,8 @@ export default {
         icon: undefined,
         menuType: "M",
         orderNum: undefined,
-        isFrame: "1",
-        isCache: "0",
+        isFrame: 1,
+        isCache: 0,
         visible: "0",
         status: "0"
       };
@@ -396,12 +395,8 @@ export default {
     async handleUpdate(row) {
       this.reset();
       await this.getTreeselect();
-      const {data: res} = await this.$http.get(`sysMenu/${row.menuId}`);
-      if (res.code !== 0) {
-        return this.$message.error("获取失败！")
-      }
       this.open = true;
-      this.form = res.data;
+      this.form = JSON.parse(JSON.stringify(row));
     },
     /** 提交按钮 */
     submitForm: function () {
