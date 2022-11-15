@@ -309,7 +309,6 @@ export default {
         type: "warning"
       }).then(async () => {
         const {data: res} = await this.$http.put(`/sysPost/updatePost`, row);
-        console.log(res)
         if (res.meta.errorCode !== 200) {
           row.status = row.status === "0" ? "1" : "0";
           return this.$message.error(res.meta.errorMsg);
@@ -327,7 +326,6 @@ export default {
         if (valid) {
           if (this.form.postId !== undefined) {
             const {data: res} = await this.$http.put("sysPost/updatePost", this.form)
-            console.log(res)
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg);
             }
@@ -336,7 +334,6 @@ export default {
             await this.getList();
           } else {
             const {data: res} = await this.$http.post("sysPost/addPost", this.form)
-            console.log(res)
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg);
             }

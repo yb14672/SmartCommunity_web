@@ -12,7 +12,7 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="菜单状态" clearable size="small">
+        <el-select v-model="queryParams.visible" placeholder="菜单状态" clearable size="small">
           <el-option
               v-for="dict in statusOptions"
               :key="dict.dictValue"
@@ -252,10 +252,12 @@ export default {
       // 查询参数
       queryParams: {
         menuName: undefined,
-        status: undefined
+        visible: undefined
       },
       // 表单参数
       form: {},
+      // 修改表单参数
+      form1: {},
       // 表单校验
       rules: {
         menuName: [
@@ -279,7 +281,6 @@ export default {
         children: 'children',
         label: 'menuName'
       },
-
     };
   },
   created() {
@@ -303,7 +304,7 @@ export default {
       const {data: res} = await this.$http.get('sysMenu/queryMenus', {
         params: {
           menuName: this.queryParams.menuName,
-          status: this.queryParams.status
+          visible: this.queryParams.visible
         }
       });
       if (res.meta.errorCode !== 200) {
@@ -329,7 +330,6 @@ export default {
       this.menuOptions = [];
       const menu = {menuId: 0, menuName: '主类目', children: []};
       const {data: res} = await this.$http.get('sysMenu/queryMenus');
-      console.log(res)
       menu.children = res.data;
       this.menuOptions.push(menu)
     },
@@ -361,7 +361,7 @@ export default {
         icon: undefined,
         menuType: "M",
         orderNum: undefined,
-        isFrame: 0,
+        isFrame: "1",
         isCache: "0",
         visible: "0",
         status: "0"
@@ -380,6 +380,7 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd(row) {
+      this.open = true;
       this.reset();
       this.getTreeselect();
       if (row != null && row.menuId) {
@@ -393,10 +394,8 @@ export default {
     /** 修改按钮操作 */
     async handleUpdate(row) {
       this.reset();
-      console.log(row)
       await this.getTreeselect();
       this.open = true;
-      this.title = "修改菜单"
       this.form = JSON.parse(JSON.stringify(row));
     },
     /** 提交按钮 */
