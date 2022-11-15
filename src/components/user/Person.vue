@@ -191,7 +191,7 @@ export default {
       rules: {
         nickName: [
           {required: true, message: '请输入用户昵称', trigger: 'blur'},
-          {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
+          {min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur'}
         ],
         phonenumber: [
           {required: true, message: "手机号码不能为空", trigger: "blur"},

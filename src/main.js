@@ -3,8 +3,6 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import axios from 'axios'
-import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree } from "@/utils/zhiyu";
-import { getDicts } from "@/utils/data";
 //动态背景
 import VueParticles from 'vue-particles'
 //图片裁剪
@@ -21,6 +19,8 @@ import Treeselect from '@riophae/vue-treeselect'
 import moment from '../node_modules/moment/moment.js';
 
 //element Ui
+import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree } from "@/utils/zhiyu";
+import { getDicts } from "@/utils/data";
 import "./plugins/element"
 import './plugins/element.js'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
@@ -30,6 +30,7 @@ Vue.use(iconPicker);
 Vue.use(VueParticles)
 //将图片裁剪全局挂载
 Vue.component('VueCropper',VueCropper);
+//面包屑
 Vue.component('breadcrumb',Breadcrumb);
 //滑块验证
 Vue.use(SlideVerify);
