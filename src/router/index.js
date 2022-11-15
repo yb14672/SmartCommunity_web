@@ -13,6 +13,7 @@ import DataType from "../components/system/dict/Data"
 import Dept from '../components/system/Dept'
 import Post from '../components/system/Post'
 import AuthRole from "@/components/user/AuthRole";
+import Operlog from "../components/monitor/operlog/Operlog";
 
 Vue.use(Router)
 
@@ -35,6 +36,7 @@ const router = new Router({
                 {path: '/dict/type/data/:dictId(\\d+)', component: DataType},
                 {path: '/system/post', component: Post},
                 {path: '/system/user-auth/role/:userId(\\d+)', component: AuthRole},
+                {path:'/system/log/operlog',component: Operlog},
             ]
         }
     ]
