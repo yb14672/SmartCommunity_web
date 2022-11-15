@@ -3,8 +3,6 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import axios from 'axios'
-import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree } from "@/utils/zhiyu";
-import { getDicts } from "@/utils/data";
 //动态背景
 import VueParticles from 'vue-particles'
 //图片裁剪
@@ -21,6 +19,8 @@ import Treeselect from '@riophae/vue-treeselect'
 import moment from '../node_modules/moment/moment.js';
 
 //element Ui
+import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree } from "@/utils/zhiyu";
+import { getDicts } from "@/utils/data";
 import "./plugins/element"
 import './plugins/element.js'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
@@ -30,6 +30,7 @@ Vue.use(iconPicker);
 Vue.use(VueParticles)
 //将图片裁剪全局挂载
 Vue.component('VueCropper',VueCropper);
+//面包屑
 Vue.component('breadcrumb',Breadcrumb);
 //滑块验证
 Vue.use(SlideVerify);
@@ -63,13 +64,28 @@ axios.interceptors.request.use(config=>{
 })
 
 const myInterceptor = axios.interceptors.response.use(res => {
-  // console.log("myInterceptor",res)
-  if(res.data.jsonResult.errorCode !==undefined && res.data.jsonResult.errorCode === 2013 || res.data.jsonResult.errorCode === 2014){
+  console.log("myInterceptor",res)
+  let code='';
+  if(res.data.meta==undefined){
+    if(res.meta==undefined){
+      if(res.status==undefined){
+        code=200
+      }else{
+        code=res.status
+      }
+    }else{
+      code=res.meta.errorCode
+    }
+  }else{
+    code=res.data.meta.errorCode
+  }
+  console.log(code,res);
+  if(code !==undefined && code === 2013 || code === 2014){
     //移除拦截器
     axios.interceptors.request.eject(myInterceptor);
     // 从 sessionStorage 删除所有保存的数据
     window.sessionStorage.clear();
-    localStorage.setItem("msg",res.data.jsonResult.errorMsg)
+    localStorage.setItem("msg",res.data.meta.errorMsg)
     window.location.reload();
   }else{
     localStorage.clear()

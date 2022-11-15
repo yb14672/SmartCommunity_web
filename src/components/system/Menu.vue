@@ -12,7 +12,7 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.visible" placeholder="菜单状态" clearable size="small">
+        <el-select v-model="queryParams.status" placeholder="菜单状态" clearable size="small">
           <el-option
               v-for="dict in statusOptions"
               :key="dict.dictValue"
@@ -254,7 +254,7 @@ export default {
       // 查询参数
       queryParams: {
         menuName: undefined,
-        visible: undefined
+        status: undefined
       },
       // 表单参数
       form: {},
@@ -312,7 +312,7 @@ export default {
       const {data: res} = await this.$http.get('sysMenu/queryMenus', {
         params: {
           menuName: this.queryParams.menuName,
-          visible: this.queryParams.visible
+          status: this.queryParams.status
         }
       });
       if (res.meta.errorCode !== 200) {
@@ -369,8 +369,8 @@ export default {
         icon: undefined,
         menuType: "M",
         orderNum: undefined,
-        isFrame: "1",
-        isCache: "0",
+        isFrame: 1,
+        isCache: 0,
         visible: "0",
         status: "0"
       };
