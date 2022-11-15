@@ -168,8 +168,8 @@
                 },
                 // 表单参数
                 form: {},
-                // 修改表单参数
-                form1: {},
+                //用来存储修改之前的数据
+                originalForm: {},
                 // 表单校验
                 rules: {
                     parentId: [
@@ -367,6 +367,25 @@
                       })
             })
           },
+        },
+        /** 检查修改前后是否一致 */
+        checkEquals(){
+            if(this.originalForm.parentId===this.form.parentId){
+                if(this.originalForm.deptName===this.form.deptName){
+                    if(this.originalForm.orderNum===this.form.orderNum){
+                        if(this.originalForm.leader===this.form.leader){
+                            if(this.originalForm.phone===this.form.phone){
+                                if(this.originalForm.email===this.form.email){
+                                    if(this.originalForm.status===this.form.status){
+                                        return true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
         }
     };
 </script>

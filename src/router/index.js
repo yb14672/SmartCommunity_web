@@ -7,6 +7,8 @@ import Users from '../components/user/User'
 import Home from '../components/Home.vue'
 import Person from "../components/user/Person"
 import Menu from "../components/system/Menu"
+import Operlog from "../components/system/log/Operlog"
+import Logininfor from "../components/system/log/Logininfor"
 import Role from "../components/system/Role"
 import Dict from "../components/system/dict/Index"
 import DataType from "../components/system/dict/Data"
@@ -27,6 +29,8 @@ const router = new Router({
                 {path: '/welcome', component: Welcome},
                 {path: '/system/user', component: Users},
                 {path: '/system/menu', component: Menu},
+                {path: '/system/log/operlog', component: Operlog},
+                {path: '/system/log/logininfor', component: Logininfor},
                 {path: '/system/role', component: Role},
                 {path: '/user/profile', component: Person},
                 {path: '/system/dict', component: Dict},
