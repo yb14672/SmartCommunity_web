@@ -486,6 +486,7 @@ export default {
         roleId: '',
         userName: undefined,
         status: undefined,
+        remark: '',
       },
       restaurants: [],
       filterText: '',
@@ -532,15 +533,6 @@ export default {
         ],
         remark: [
           {max: 50, message: "角色备注不能超过50字符", trigger: "blur"}
-        ],
-        deptId: [
-          {required: true, message: "部门不能为空", trigger: "blur"},
-        ],
-        postId: [
-          {required: true, message: "岗位不能为空", trigger: "blur"},
-        ],
-        roleId: [
-          {required: true, message: "角色不能为空", trigger: "blur"},
         ]
       }
     }
@@ -683,6 +675,10 @@ export default {
         return (restaurant.deptName.indexOf(queryString.toLowerCase()) === 0);
       };
     },
+    /**批量删除中的查询*/
+    filterNode(value, data) {
+      return data.deptName.indexOf(value) !== -1;
+    },
     /**根据id删除*/
     deleteUser(row) {
       const userIds = row.userId || this.ids;
@@ -748,13 +744,24 @@ export default {
       this.open = true
       this.$refs.formData.resetFields();
     },
-    /**批量删除中的查询*/
-    filterNode(value, data) {
-      return data.deptName.indexOf(value) !== -1;
+    /** 打开修改表单时 */
+    async updateForm(row) {
+      this.open = true;
+      const {data: res} = await this.$http.get(`sysUser/getUserInfo?userId=`+row.userId);
+      this.formData.phonenumber=res.data.sysUser.phonenumber;
+      this.formData.userId=res.data.sysUser.userId;
+      this.formData.nickName=res.data.sysUser.nickName;
+      this.formData.userName=res.data.sysUser.userName;
+      this.formData.status=res.data.sysUser.status;
+      this.formData.email=res.data.sysUser.email;
+      this.formData.sex=res.data.sysUser.sex;
+      this.formData.deptId=res.data.sysUser.deptId;
+      this.formData.remark=res.data.sysUser.remark;
+      this.formData.postId=res.data.sysPost.postId;
+      this.formData.roleId=res.data.sysRole.roleId;
     },
     /**表单提交 */
     submitForm() {
-      console.log(this.formData)
       this.$refs["formData"].validate(async valid => {
         if (valid) {
           if (this.formData.userId === undefined) {
@@ -783,6 +790,8 @@ export default {
               nickName: this.formData.nickName,
               email: this.formData.email,
               sex: this.formData.sex,
+              remark: this.formData.remark,
+              remark: this.formData.remark,
               deptId: this.formData.deptId,
               postId: this.formData.postId,
               roleId: this.formData.roleId,
@@ -818,21 +827,6 @@ export default {
       }
       this.dialogVisible = false;
       return this.$message.success("重置成功")
-    },
-    /** 打开修改表单时 */
-    async updateForm(row) {
-      this.open = true;
-      const {data: res} = await this.$http.get(`sysUser/getUserInfo?userId=`+row.userId);
-      this.formData.phonenumber=res.data.sysUser.phonenumber;
-      this.formData.userId=res.data.sysUser.userId;
-      this.formData.nickName=res.data.sysUser.nickName;
-      this.formData.userName=res.data.sysUser.userName;
-      this.formData.status=res.data.sysUser.status;
-      this.formData.email=res.data.sysUser.email;
-      this.formData.sex=res.data.sysUser.sex;
-      this.formData.deptId=res.data.sysUser.deptId;
-      this.formData.postId=res.data.sysPost.postId;
-      this.formData.roleId=res.data.sysRole.roleId;
     },
     /**多选框选中 */
     handleSelectionChange(selection) {

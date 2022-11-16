@@ -64,7 +64,7 @@ axios.interceptors.request.use(config=>{
 })
 
 const myInterceptor = axios.interceptors.response.use(res => {
-  console.log("myInterceptor",res)
+  // console.log("myInterceptor",res)
   let code='';
   if(res.data.meta==undefined){
     if(res.meta==undefined){
@@ -79,7 +79,7 @@ const myInterceptor = axios.interceptors.response.use(res => {
   }else{
     code=res.data.meta.errorCode
   }
-  console.log(code,res);
+  // console.log(code,res);
   if(code !==undefined && code === 2013 || code === 2014){
     //移除拦截器
     axios.interceptors.request.eject(myInterceptor);
