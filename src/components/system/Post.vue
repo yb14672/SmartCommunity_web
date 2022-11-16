@@ -301,7 +301,7 @@ export default {
       this.open = true;
       this.title = "修改岗位";
     },
-    handleStatusChange(row) {
+      handleStatusChange(row) {
       let text = row.status === "0" ? "启用" : "停用";
       this.$confirm('确认要"' + text + '""' + row.postName + '"岗位?', "警告", {
         confirmButtonText: "确定",
