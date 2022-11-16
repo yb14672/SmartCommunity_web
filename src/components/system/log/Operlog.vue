@@ -319,7 +319,7 @@
         this.getList();
       },
       /** 重置按钮操作 */
-      resetQuery() {
+      resetQuery(compareFn) {
         this.dateRange = [];
         this.resetForm("queryForm");
         this.queryParams.pageNum = 1;
@@ -342,15 +342,15 @@
         this.form = row;
       },
       /** 删除按钮操作 */
-      async handleDelete(ids) {
-        if (ids!=null){
-        this.confirm('是否确认删除日志编号为"' + id+ '"的数据项？', "警告", {
+      async handleDelete(row) {
+        const operIds = row.operId || this.ids;
+        this.$confirm('是否确认删除日志编号为"' + operIds+ '"的数据项？', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
           // 通过方法？带参
-          this.$http.delete("/sysOperLog/deleteById?idList=" + row.id)
+          this.$http.delete(`/sysOperLog/deleteLog?idList=${operIds}`)
                   .then((res) => {
                     if (res.data.meta.errorCode === 200) {
                       // 重新获取页面
@@ -360,15 +360,21 @@
                       this.$message.warning(res.data.meta.errorMsg);
                     }
                   })
-        })
-      }else {this.confirm('是否确认清空？', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(() => {
+        })},
+      /** 清空按钮操作 */
+      handleClean() {
+
+        this.$confirm('是否确认清空所有操作日志数据项？', "警告", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }).then(() => {
           // 通过方法？带参
-          this.$http.delete("/sysOperLog/deleteById")
+
+
+          this.$http.delete("sysOperLog/deleteLog?idList="+this.ids)
                   .then((res) => {
+                    console.log(res)
                     if (res.data.meta.errorCode === 200) {
                       // 重新获取页面
                       this.getList();
@@ -377,18 +383,7 @@
                       this.$message.warning(res.data.meta.errorMsg);
                     }
                   })
-        })}},
-      /** 清空按钮操作 */
-      handleClean() {
-        this.$modal.confirm('是否确认清空所有操作日志数据项？').then(function () {
-          // eslint-disable-next-line no-undef
-          return cleanOperlog();
-        }).then(() => {
-          this.getList();
-          this.$modal.msgSuccess("清空成功");
-        }).catch(() => {
-        });
-      },
+        })},
       /** 导出按钮操作 */
       handleExport() {
         this.download('log/operlog/export', {
