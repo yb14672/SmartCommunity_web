@@ -5,15 +5,15 @@ import Hello from '../components/Hello'
 import Login from '../components/Login.vue'
 import User from '../components/user/User'
 import Home from '../components/Home.vue'
-import Person from "../components/user/Person"
+import Profile from "../components/user/Profile"
 import Menu from "../components/system/Menu"
 import Role from "../components/system/Role"
 import Dict from "../components/system/dict/Index"
-import DataType from "../components/system/dict/Data"
+import DataData from "../components/system/dict/Data"
 import Dept from '../components/system/Dept'
 import Post from '../components/system/Post'
 import AuthRole from "@/components/user/AuthRole";
-import LoginInfo from "@/components/system/log/LoginInfo";
+import LoginInfo from "@/components/monitor/LoginInfo/LoginInfo";
 import Operlog from "../components/monitor/operlog/Operlog";
 
 Vue.use(Router)
@@ -29,15 +29,15 @@ const router = new Router({
             children: [
                 {path: '/welcome', component: Welcome},
                 {path: '/system/user', component: User},
-                {path: '/system/menu', component: Menu},
-                {path: '/system/role', component: Role},
-                {path: '/user/profile', component: Person},
-                {path: '/system/dict', component: Dict},
-                {path: '/system/dept', component: Dept},
-                {path: '/dict/type/data/:dictId(\\d+)', component: DataType},
-                {path: '/system/post', component: Post},
                 {path: '/system/user-auth/role/:userId(\\d+)', component: AuthRole},
-                {path:'/system/log/operlog',component: Operlog},
+                {path: '/user/profile', component: Profile},
+                {path: '/system/role', component: Role},
+                {path: '/system/menu', component: Menu},
+                {path: '/system/dept', component: Dept},
+                {path: '/system/post', component: Post},
+                {path: '/system/dict', component: Dict},
+                {path: '/dict/type/data/:dictId(\\d+)', component: DataData},
+                {path: '/system/log/operlog', component: Operlog},
                 {path: '/system/log/logininfor', component: LoginInfo},
             ]
         },
@@ -45,7 +45,7 @@ const router = new Router({
             path: "*",
             name: "NotFound",
             component: () => import("@/views/error/e404.vue"),
-        },{
+        }, {
             path: "/500",
             name: "ServerError",
             component: () => import("@/views/error/e500.vue"),
