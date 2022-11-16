@@ -65,12 +65,27 @@ axios.interceptors.request.use(config=>{
 
 const myInterceptor = axios.interceptors.response.use(res => {
   // console.log("myInterceptor",res)
-  if(res.data.jsonResult.errorCode !==undefined && res.data.jsonResult.errorCode === 2013 || res.data.jsonResult.errorCode === 2014){
+  let code='';
+  if(res.data.meta==undefined){
+    if(res.meta==undefined){
+      if(res.status==undefined){
+        code=200
+      }else{
+        code=res.status
+      }
+    }else{
+      code=res.meta.errorCode
+    }
+  }else{
+    code=res.data.meta.errorCode
+  }
+  // console.log(code,res);
+  if(code !==undefined && code === 2013 || code === 2014){
     //移除拦截器
     axios.interceptors.request.eject(myInterceptor);
     // 从 sessionStorage 删除所有保存的数据
     window.sessionStorage.clear();
-    localStorage.setItem("msg",res.data.jsonResult.errorMsg)
+    localStorage.setItem("msg",res.data.meta.errorMsg)
     window.location.reload();
   }else{
     localStorage.clear()

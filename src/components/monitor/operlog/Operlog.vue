@@ -105,22 +105,19 @@
             <!--      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>-->
         </el-row>
 
-        <el-table ref="tables" v-loading="loading" :data="list" @selection-change="handleSelectionChange "
-                  :default-sort="defaultSort" @sort-change="handleSortChange">
+        <el-table ref="tables" v-loading="loading" :data="list" @selection-change="handleSelectionChange ">
             <el-table-column type="selection" width="55" align="center"/>
             <el-table-column label="日志编号" align="center" prop="operId"/>
             <el-table-column label="系统模块" align="center" prop="title"/>
             <el-table-column label="操作类型" :formatter="businessTypeFormat" align="center" prop="businessType"/>
             <el-table-column label="请求方式" align="center" prop="requestMethod"/>
-            <el-table-column label="操作人员" align="center" prop="operName" width="100" :show-overflow-tooltip="true"
-                             sortable/>
+            <el-table-column label="操作人员" align="center" prop="operName" width="100" :show-overflow-tooltip="true"/>
             <el-table-column label="操作地址" align="center" prop="operIp" width="130" :show-overflow-tooltip="true"/>
             <el-table-column label="操作地点" align="center" prop="operLocation" :show-overflow-tooltip="true"/>
             <el-table-column label="操作状态" :formatter="statusFormat" align="center" prop="status"/>
             <el-table-column label="操作日期"
                              align="center"
                              prop="operTime"
-                             sortable="custom"
                              width="180">
 
                 <template slot-scope="scope">
@@ -284,7 +281,6 @@
             },
             /** 查询登录日志 */
             async getList() {
-              console.log(this.queryParams)
                 this.queryParams.startTime = this.dateRange[0];
                 this.queryParams.endTime = this.dateRange[1];
                 this.loading = true;
@@ -302,15 +298,12 @@
                         isAsc: this.orderByColumn
                     }
                 });
-                // console.log(res)
                 if (res.meta.errorCode !== 200) {
                     return res.$message.error("获取列表失败")
                 }
-
                 this.list = res.data.sysOperLogs;
                 this.total = res.data.pageable.total;
                 this.loading = false;
-
             },
             // 操作日志类型字典翻译
             typeFormat(row) {
@@ -334,16 +327,17 @@
                 this.multiple = !selection.length
             },
             /** 排序触发事件 */
-            handleSortChange(column) {
-                console.log(column)
-                if (column.order != null) {
-                    this.queryParams.isAsc = column.order == 'ascending' ? 'asc' : 'desc';
-                } else {
-                    this.queryParams.isAsc = 'asc';
-                }
-                this.queryParams.orderByColumn = column.prop == 'operName' ? 'oper_name' : 'oper_time';
-                this.getList();
-            },
+            // handleSortChange(column) {
+            //     console.log(column)
+            //     if (column.order != null) {
+            //         this.queryParams.isAsc = column.order== 'descending' ? 'desc' : 'asc';
+            //     } else {
+            //         this.queryParams.isAsc = 'asc';
+            //     }
+            //     this.queryParams.orderByColumn = column.prop == 'operName' ? 'oper_name' : 'oper_time';
+            //     console.log(this.queryParams,column)
+            //     this.getList();
+            // },
             /** 详细按钮操作 */
             handleView(row) {
                 this.open = true;
@@ -378,7 +372,6 @@
             },
             /** 每页显示的条数 */
             handleSizeChange(val) {
-              console.log(val)
                 // 改变每页显示的条数
                 this.queryParams.pageSize = val
                 // 注意：在改变每页显示的条数时，要将页码显示到第一页
@@ -387,7 +380,6 @@
             },
             /** 显示第几页 */
             handleCurrentChange(val) {
-              console.log(val)
 
               // 改变默认的页数
                 this.queryParams.pageNum = val
