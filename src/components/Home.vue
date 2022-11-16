@@ -120,9 +120,11 @@ export default {
     person() {
       this.$router.push('/user/profile')
     },
-    logout() {
-      window.sessionStorage.clear();
-      return this.$router.push("/login");
+    async logout() {
+      const {data: res} = await this.$http.post("/sysUser/logout");
+      if (res.meta.errorCode !== 2017) {
+        return this.$message.error(res.meta.errorMsg);
+      }
     },
     async getMenuList() {
       // 发送请求获取左侧菜单数据

@@ -406,7 +406,6 @@ export default {
       this.open = true;
       this.form = JSON.parse(JSON.stringify(row));
       this.originalForm = JSON.parse(JSON.stringify(row));
-      console.log(this.form)
     },
     /** 提交按钮 */
     submitForm: function () {

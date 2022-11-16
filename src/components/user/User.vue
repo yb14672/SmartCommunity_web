@@ -952,7 +952,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .el-card {
   border: none;
 }

@@ -136,7 +136,7 @@ export default {
             password: this.loginForm.password
           }
         })
-        if (res.meta.errorCode !== 200) {
+        if (res.meta.errorCode !== 2015) {
           return this.$message.error(res.meta.errorMsg)
         } else {
           // 保存token
