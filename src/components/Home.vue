@@ -120,7 +120,12 @@ export default {
     person() {
       this.$router.push('/user/profile')
     },
-    logout() {
+    async logout() {
+      const {data: res} = await this.$http.post("/sysUser/logout");
+      console.log(res)
+      if (res.meta.errorCode !== 2017) {
+        return this.$message.error(res.meta.errorMsg);
+      }
       window.sessionStorage.clear();
       return this.$router.push("/login");
     },
