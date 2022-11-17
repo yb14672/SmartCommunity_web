@@ -15,6 +15,7 @@ import Post from '../components/system/Post'
 import AuthRole from "@/components/user/AuthRole";
 import LoginInfo from "@/components/monitor/LoginInfo/LoginInfo";
 import Operlog from "../components/monitor/operlog/Operlog";
+import Building from "../components/community/Building";
 
 Vue.use(Router)
 
@@ -39,6 +40,7 @@ const router = new Router({
                 {path: '/dict/type/data/:dictId(\\d+)', component: DataData},
                 {path: '/system/log/operlog', component: Operlog},
                 {path: '/system/log/logininfor', component: LoginInfo},
+                {path: '/community/building', component: Building},
             ]
         },
         {
