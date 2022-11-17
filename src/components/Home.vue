@@ -125,6 +125,7 @@ export default {
       if (res.meta.errorCode !== 2017) {
         return this.$message.error(res.meta.errorMsg);
       }
+      await this.$router.push("/Login")
     },
     async getMenuList() {
       // 发送请求获取左侧菜单数据

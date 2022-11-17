@@ -291,12 +291,6 @@ export default {
     this.statusOptions = this.getDict('sys_normal_disable')
   },
   methods: {
-    /**检查修改前后是否完全一致*/
-    checkForm(){
-      if(this.form.parentId){
-
-      }
-    },
     /**获取字典列表*/
     async getDict(deptType) {
       if (deptType === 'sys_show_hide') {

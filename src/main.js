@@ -23,6 +23,7 @@ import DictTag from '@/components/DictTag'
 import "./plugins/element"
 import './plugins/element.js'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import "@/assets/css/scrollbar.css"
 //工具类
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree } from "@/utils/zhiyu";
 import { getDicts } from "@/utils/data";
@@ -64,7 +65,6 @@ Vue.prototype.$http = axios
 Vue.config.productionTip = false
 //接口前缀
 axios.defaults.baseURL = 'http://localhost:8080/'
-// axios.defaults.baseURL = 'http://49ac97eb.r3.cpolar.top/'
 //请求在到达服务器之前，先会调用use中的这个回调函数来添加请求头信息
 axios.interceptors.request.use(config=>{
   //为请求头对象，添加token验证的Authorization字段
@@ -88,7 +88,6 @@ const myInterceptor = axios.interceptors.response.use(res => {
   }else{
     code=res.data.meta.errorCode
   }
-  // console.log(code,res);
   if(code !==undefined && code === 2013 || code === 2014){
     //移除拦截器
     axios.interceptors.request.eject(myInterceptor);
