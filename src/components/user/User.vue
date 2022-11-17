@@ -508,7 +508,7 @@ export default {
         nickName: [
           {required: true, message: "角色名称不能为空", trigger: "blur"},
           {pattern: /^[A-Za-z0-9\u4e00-\u9fa5]+$/, message: '非法字符', trigger: "blur"},
-          {min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur'}
+          {min: 2, max: 16, message: '长度在 2 到 16 个字符', trigger: 'blur'}
         ],
         email: [
           {required: true, message: "邮箱不能为空", trigger: "blur"},
@@ -551,23 +551,6 @@ export default {
     });
   },
   methods: {
-
-    /** 初始化值 */
-    initHandle() {
-      // eslint-disable-next-line vue/no-mutating-props
-      this.options = []
-      if (this.valueId) {
-        this.valueTitle = this.$refs.selectTree.getNode(this.valueId).data[this.props.label]     // 初始化显示
-        this.$refs.selectTree.setCurrentKey(this.valueId)       // 设置默认选中
-        this.defaultExpandedKey = [this.valueId]      // 设置默认展开
-      }
-      this.$nextTick(() => {
-        let scrollWrap = document.querySelectorAll('.el-scrollbar .el-select-dropdown__wrap')[0]
-        let scrollBar = document.querySelectorAll('.el-scrollbar .el-scrollbar__bar')
-        scrollWrap.style.cssText = 'margin: 0px; max-height: none; overflow: hidden;'
-        scrollBar.forEach(ele => ele.style.width = 0)
-      })
-    },
     /** 查询数据字典性别 */
     async getSex(deptType) {
       const {data: res} = await this.$http.get(`sysDictData/getDict?dictType=${deptType}`);
@@ -766,17 +749,6 @@ export default {
         if (valid) {
           if (this.formData.userId === undefined) {
             const {data: res} = await this.$http.post("sysUser/insertUser", this.formData)
-            //   phonenumber: this.formData.phonenumber,
-            //   nickName: this.formData.nickName,
-            //   email: this.formData.email,
-            //   sex: this.formData.sex,
-            //   deptId: this.formData.deptId,
-            //   postId: this.formData.postIds,
-            //   roleId: this.formData.roleIds,
-            //   userName: this.formData.userName,
-            //   status: this.formData.status,
-            //   password: this.formData.password
-            // });
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg)
             }
@@ -955,13 +927,6 @@ export default {
 <style scoped>
 .el-card {
   border: none;
-}
-.el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
-  height: auto;
-  max-height: 274px;
-  padding: 0;
-  overflow: hidden;
-  overflow-y: auto;
 }
 </style>
 

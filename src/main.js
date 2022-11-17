@@ -23,6 +23,7 @@ import DictTag from '@/components/DictTag'
 import "./plugins/element"
 import './plugins/element.js'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import "@/assets/css/scrollbar.css"
 //工具类
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree } from "@/utils/zhiyu";
 import { getDicts } from "@/utils/data";
