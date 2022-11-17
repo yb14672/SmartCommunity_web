@@ -76,9 +76,9 @@ export default {
         username: [
           {required: true, message: '请输入登录名', trigger: 'blur'},
           {
-            min: 3,
-            max: 10,
-            message: '登录名长度在 3 到 10 个字符',
+            min: 2,
+            max: 16,
+            message: '登录名长度在 2 到 16 个字符',
             trigger: 'blur'
           }
         ],
@@ -137,7 +137,6 @@ export default {
             password: this.loginForm.password
           }
         })
-        console.log(res)
         if (res.meta.errorCode !== 2015) {
           return this.$message.error(res.meta.errorMsg)
         } else {

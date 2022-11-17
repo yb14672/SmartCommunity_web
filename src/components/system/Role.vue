@@ -478,12 +478,12 @@ export default {
       }).then(() => {
         return this.$http.delete(`/sysRole?idList=${roleIds}`);
       }).then((res) => {
-        if (res.data.meta.errorCode !== 200) {
-          return this.$message.error(res.data.meta.errorMsg);
-        }
-        this.getList();
-        this.$message.success("删除成功");
-      })
+            if (res.data.meta.errorCode !== 200) {
+              return this.$message.error(res.data.meta.errorMsg);
+            }
+            this.getList();
+            this.$message.success("删除成功");
+          })
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -496,18 +496,18 @@ export default {
       };
       //发送请求
       // eslint-disable-next-line no-undef
-      axios(config).then(async response => {
-        console.log(response)
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', '角色管理.xls');
-        document.body.appendChild(link);
-        link.click();
-        if (response.data !== null) {
-          this.$message.success("导出成功");
-        }
-      })
+      axios(config).then(response => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', '角色管理.xls');
+            document.body.appendChild(link);
+            link.click();
+            if (response.data !== null) {
+              this.$message.success("导出成功");
+            }
+          }
+      )
     }
   }
 };

@@ -227,6 +227,8 @@ export default {
   components: {Treeselect},
   data() {
     return {
+      //用来存储修改之前的数据
+      originalForm: {},
       // 遮罩层
       loading: true,
       // 显示搜索条件
@@ -362,7 +364,7 @@ export default {
         menuType: "M",
         orderNum: undefined,
         isFrame: 1,
-        isCache: "0",
+        isCache: 0,
         visible: "0",
         status: "0"
       };
@@ -380,6 +382,7 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd(row) {
+      this.open = true;
       this.reset();
       this.getTreeselect();
       if (row != null && row.menuId) {
@@ -396,6 +399,7 @@ export default {
       await this.getTreeselect();
       this.open = true;
       this.form = JSON.parse(JSON.stringify(row));
+      this.originalForm = JSON.parse(JSON.stringify(row));
     },
     /** 提交按钮 */
     submitForm: function () {

@@ -74,7 +74,7 @@ export default {
   computed: {},
   methods: {
     // 这里是计算建站时间的脚本
-    createTime() {
+    createInterval() {
       if(this.checkTimer){
         let now = new Date()
         // 页脚建站时间计算脚本
@@ -125,7 +125,7 @@ export default {
     let that = this
     // 每隔1000毫秒就调用一次createTime()
     this.timer = setInterval(function () {
-      that.createTime()
+      that.createInterval()
     }, 1000);
   },
   // 销毁这个定时任务
@@ -186,7 +186,7 @@ export default {
 }
 
 h1 {
-  overflow: hidden;
+  overflow: auto;
   font-size: 60px;
   width: 0;
   height: 150px;
