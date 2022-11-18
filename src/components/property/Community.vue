@@ -379,14 +379,14 @@ export default {
       this.reset();
       await this.getAreaTree();
       if (row) {
+        this.selectedAreaInfo = []
+        this.form = JSON.parse(JSON.stringify(row))
+      } else {
         const id = this.ids[0];
         this.selectedAreaInfo = []
         const {data: res} = await this.$http.get(`zyCommunity/${id}`)
         console.log(res)
         this.form = res.data
-      } else {
-        this.selectedAreaInfo = []
-        this.form = JSON.parse(JSON.stringify(row))
       }
       this.selectedAreaInfo[0] = this.form.communityProvenceCode
       this.selectedAreaInfo[1] = this.form.communityCityCode
@@ -467,7 +467,8 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const communityIds = row.communityId || this.ids;
+      const communityIds = [row.communityId] || this.ids;
+
       this.$confirm('是否确认删除小区信息编号为"' + communityIds + '"的数据项?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
