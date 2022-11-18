@@ -20,7 +20,8 @@
     "vue-particles": "^1.0.9",
     "vue-puzzle-vcode": "^1.1.9",
     "vue-router": "^3.5.1",
-    "vuex": "^3.6.2"
+    "vuex": "^3.6.2",
+    "postcss": "latest"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

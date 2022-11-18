@@ -17,25 +17,34 @@ import iconPicker from 'vue-fontawesome-elementui-icon-picker';
 import Treeselect from '@riophae/vue-treeselect'
 //日期处理
 import moment from '../node_modules/moment/moment.js';
-
+// 字典标签组件
+import DictTag from '@/components/DictTag'
 //element Ui
-import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree } from "@/utils/zhiyu";
-import { getDicts } from "@/utils/data";
 import "./plugins/element"
 import './plugins/element.js'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import "@/assets/css/scrollbar.css"
+//工具类
+import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree } from "@/utils/zhiyu";
+import { getDicts } from "@/utils/data";
+
 //图标选择器
 Vue.use(iconPicker);
 //粒子效果
 Vue.use(VueParticles)
-//将图片裁剪全局挂载
-Vue.component('VueCropper',VueCropper);
-//面包屑
-Vue.component('breadcrumb',Breadcrumb);
 //滑块验证
 Vue.use(SlideVerify);
 //树状选择器
 Vue.use(Treeselect)
+
+
+// 将图片裁剪全局挂载
+Vue.component('VueCropper',VueCropper);
+// 面包屑
+Vue.component('breadcrumb',Breadcrumb);
+// 字典标签
+Vue.component('DictTag', DictTag)
+
 
 Vue.filter('moment', function (value, formatString) {
   formatString = formatString || 'YYYY-MM-DD HH:mm:ss';
@@ -79,7 +88,6 @@ const myInterceptor = axios.interceptors.response.use(res => {
   }else{
     code=res.data.meta.errorCode
   }
-  // console.log(code,res);
   if(code !==undefined && code === 2013 || code === 2014){
     //移除拦截器
     axios.interceptors.request.eject(myInterceptor);

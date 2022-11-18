@@ -325,7 +325,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="岗位">
+            <el-form-item label="岗位" prop="postId">
               <el-select @change="$forceUpdate" v-model="formData.postId" placeholder="请选择">
                 <el-option
                     style="margin-left: 15px"
@@ -339,7 +339,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="角色">
+            <el-form-item label="角色" prop="roleId">
               <el-select v-model="formData.roleId" placeholder="请选择">
                 <el-option
                     style="margin-left: 15px"
@@ -486,6 +486,7 @@ export default {
         roleId: '',
         userName: undefined,
         status: undefined,
+        remark: '',
       },
       restaurants: [],
       filterText: '',
@@ -507,7 +508,7 @@ export default {
         nickName: [
           {required: true, message: "角色名称不能为空", trigger: "blur"},
           {pattern: /^[A-Za-z0-9\u4e00-\u9fa5]+$/, message: '非法字符', trigger: "blur"},
-          {min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur'}
+          {min: 2, max: 16, message: '长度在 2 到 16 个字符', trigger: 'blur'}
         ],
         email: [
           {required: true, message: "邮箱不能为空", trigger: "blur"},
@@ -532,9 +533,6 @@ export default {
         ],
         remark: [
           {max: 50, message: "角色备注不能超过50字符", trigger: "blur"}
-        ],
-        deptId: [
-          {required: true, message: "部门不能为空", trigger: "blur"},
         ]
       }
     }
@@ -553,23 +551,6 @@ export default {
     });
   },
   methods: {
-
-    /** 初始化值 */
-    initHandle() {
-      // eslint-disable-next-line vue/no-mutating-props
-      this.options = []
-      if (this.valueId) {
-        this.valueTitle = this.$refs.selectTree.getNode(this.valueId).data[this.props.label]     // 初始化显示
-        this.$refs.selectTree.setCurrentKey(this.valueId)       // 设置默认选中
-        this.defaultExpandedKey = [this.valueId]      // 设置默认展开
-      }
-      this.$nextTick(() => {
-        let scrollWrap = document.querySelectorAll('.el-scrollbar .el-select-dropdown__wrap')[0]
-        let scrollBar = document.querySelectorAll('.el-scrollbar .el-scrollbar__bar')
-        scrollWrap.style.cssText = 'margin: 0px; max-height: none; overflow: hidden;'
-        scrollBar.forEach(ele => ele.style.width = 0)
-      })
-    },
     /** 查询数据字典性别 */
     async getSex(deptType) {
       const {data: res} = await this.$http.get(`sysDictData/getDict?dictType=${deptType}`);
@@ -677,6 +658,10 @@ export default {
         return (restaurant.deptName.indexOf(queryString.toLowerCase()) === 0);
       };
     },
+    /**批量删除中的查询*/
+    filterNode(value, data) {
+      return data.deptName.indexOf(value) !== -1;
+    },
     /**根据id删除*/
     deleteUser(row) {
       const userIds = row.userId || this.ids;
@@ -742,27 +727,28 @@ export default {
       this.open = true
       this.$refs.formData.resetFields();
     },
-    /**批量删除中的查询*/
-    filterNode(value, data) {
-      return data.deptName.indexOf(value) !== -1;
+    /** 打开修改表单时 */
+    async updateForm(row) {
+      this.open = true;
+      const {data: res} = await this.$http.get(`sysUser/getUserInfo?userId=`+row.userId);
+      this.formData.phonenumber=res.data.sysUser.phonenumber;
+      this.formData.userId=res.data.sysUser.userId;
+      this.formData.nickName=res.data.sysUser.nickName;
+      this.formData.userName=res.data.sysUser.userName;
+      this.formData.status=res.data.sysUser.status;
+      this.formData.email=res.data.sysUser.email;
+      this.formData.sex=res.data.sysUser.sex;
+      this.formData.deptId=res.data.sysUser.deptId;
+      this.formData.remark=res.data.sysUser.remark;
+      this.formData.postId=res.data.sysPost.postId;
+      this.formData.roleId=res.data.sysRole.roleId;
     },
     /**表单提交 */
     submitForm() {
       this.$refs["formData"].validate(async valid => {
         if (valid) {
           if (this.formData.userId === undefined) {
-            const {data: res} = await this.$http.post("sysUser/insertUser", {
-              phonenumber: this.formData.phonenumber,
-              nickName: this.formData.nickName,
-              email: this.formData.email,
-              sex: this.formData.sex,
-              deptId: this.formData.deptId,
-              postId: this.formData.postIds,
-              roleId: this.formData.roleIds,
-              userName: this.formData.userName,
-              status: this.formData.status,
-              password: this.formData.password
-            });
+            const {data: res} = await this.$http.post("sysUser/insertUser", this.formData)
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg)
             }
@@ -776,6 +762,8 @@ export default {
               nickName: this.formData.nickName,
               email: this.formData.email,
               sex: this.formData.sex,
+              remark: this.formData.remark,
+              remark: this.formData.remark,
               deptId: this.formData.deptId,
               postId: this.formData.postId,
               roleId: this.formData.roleId,
@@ -811,22 +799,6 @@ export default {
       }
       this.dialogVisible = false;
       return this.$message.success("重置成功")
-    },
-    /** 打开修改表单时 */
-    async updateForm(row) {
-      this.open = true;
-      const {data: res} = await this.$http.get(`sysUser/getUserInfo?userId=`+row.userId);
-      console.log(res)
-      this.formData.phonenumber=res.data.sysUser.phonenumber;
-      this.formData.userId=res.data.sysUser.userId;
-      this.formData.nickName=res.data.sysUser.nickName;
-      this.formData.userName=res.data.sysUser.userName;
-      this.formData.status=res.data.sysUser.status;
-      this.formData.email=res.data.sysUser.email;
-      this.formData.sex=res.data.sysUser.sex;
-      this.formData.deptId=res.data.sysUser.deptId;
-      this.formData.postId=res.data.sysPost.postId;
-      this.formData.roleId=res.data.sysRole.roleId;
     },
     /**多选框选中 */
     handleSelectionChange(selection) {
@@ -952,16 +924,9 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .el-card {
   border: none;
-}
-.el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
-  height: auto;
-  max-height: 274px;
-  padding: 0;
-  overflow: hidden;
-  overflow-y: auto;
 }
 </style>
 
