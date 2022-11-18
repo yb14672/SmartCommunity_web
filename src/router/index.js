@@ -43,8 +43,8 @@ const router = new Router({
                 {path: '/system/log/logininfor', component: LoginInfo},
                 {path: '/system/user-auth/role/:userId(\\d+)', component: AuthRole},
                 {path: '/system/log/logininfor', component: LoginInfo},
-                {path: '/system/log/operlog' , component: OperLog},
-                {path: '/community/community',component: Community}
+                {path: '/system/log/operlog' , component: Operlog},
+                {path: '/community/community',component: Community},
                 {path: '/community/building', component: Building},
             ]
         },

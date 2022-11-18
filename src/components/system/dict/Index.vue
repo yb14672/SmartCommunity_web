@@ -364,7 +364,7 @@ export default {
             await this.getList();
             return this.$message.success("修改成功！")
           } else {
-            const {data: res} = await this.$http.post('sysDictType/addSysDict', this.form)
+            const {data: res} = await this.$http.post('sysDictType/addSysDict', this.form);
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg)
             }

@@ -61,6 +61,17 @@
         >导出</el-button>
       </el-col>
     </el-row>
+    <!--下拉框，选小区的-->
+    <template>
+      <el-select v-model="communityId" placeholder="请选择" style="float: right" @change="getList()">
+        <el-option
+                v-for="item in options"
+                :key="item.communityId"
+                :label="item.communityName"
+                :value="item.communityId">
+        </el-option>
+      </el-select>
+    </template>
 
     <el-table v-loading="loading" :data="buildingList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
@@ -134,12 +145,15 @@
 
 <script>
 
+import axios from "axios";
+
 export default {
   name: "Building",
-  components: {
-  },
   data() {
     return {
+      // 选择小区
+      options: [],
+      //
        show: false,
       // 遮罩层
       loading: true,
@@ -159,6 +173,8 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      //选中小区
+      communityId:'1338423709557272577',
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -177,13 +193,15 @@ export default {
           { required: true, message: "楼栋名称不能为空", trigger: "blur" }
         ],
         buildingAcreage: [
-          { pattern: /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/, message: '请输入正确格式,可保留两位小数',trigger: "change" }
-        ],
+          { pattern: /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/, message: '请输入正确格式,可保留两位小数',trigger: "change" },
+          { required: true, message: "楼栋面积不能为空", trigger: "blur" }
+          ],
       }
     };
   },
   created() {
     this.getList();
+    this.getCommunityList();
   },
   methods: {
     // 分页每页多少条数据
@@ -204,7 +222,7 @@ export default {
           pageSize: this.queryParams.pageSize,
           buildingName: this.queryParams.buildingName,
           buildingCode: this.queryParams.buildingCode,
-          status: this.queryParams.status,
+          communityId: this.communityId,
         }
       });
       if (res.meta.errorCode !== 200) {
@@ -212,6 +230,22 @@ export default {
       }
       this.buildingList = res.data.zyBuildingList;
       this.total = res.data.pageable.total;
+      this.loading = false
+    },
+    // 查小区的信息
+    async getCommunityList() {
+      this.loading = true;
+      const {data: res} = await this.$http.get('/zyCommunity/selectAll', {
+        params: {
+          pageNum: 0,
+          pageSize: 0,
+          communityName:'',
+        }
+      });
+      if (res.meta.errorCode !== 200) {
+        return this.$message.error(res.meta.errorMsg)
+      }
+      this.options = res.data.zyCommunityList;
       this.loading = false
     },
     // 取消按钮
@@ -226,7 +260,7 @@ export default {
         buildingName: null,
         buildingCode: null,
         buildingAcreage: null,
-        communityId: null,
+        communityId: '',
         createBy: null,
         createTime: null,
         updateBy: null,
@@ -261,11 +295,9 @@ export default {
     async handleUpdate(row) {
       this.reset();
       const buildingId = row.buildingId || this.ids;
-      console.log(buildingId)
       //获取数据
       const {data: res} = await this.$http.get('/zyBuilding/' + buildingId);
       //判断是否执行成功
-      console.log(res)
       if (res.meta.errorCode !== 200) {
         this.$message.error(res.meta.errorMsg)
       } else {
@@ -277,7 +309,6 @@ export default {
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(async valid => {
-        console.log(this.form)
         if (valid) {
           if (this.form.buildingId != undefined) {
             const {data: res} = await this.$http.put('zyBuilding/updateZyBuilding', this.form);
@@ -288,6 +319,8 @@ export default {
             await this.getList();
             return this.$message.success("修改成功！")
           } else {
+            this.form.communityId=this.communityId;
+            console.log(this.form)
             const {data: res} = await this.$http.post('zyBuilding/addZyBuilding', this.form)
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg)
@@ -302,7 +335,7 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const buildingIds = row.buildingId || this.ids;
-      this.$confirm('是否确认删除字典编号为"' + buildingIds + '"的数据项?', "警告", {
+      this.$confirm('是否确认删除楼层编号为"' + buildingIds + '"的数据项?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -313,21 +346,32 @@ export default {
           return this.$message.error(res.data.meta.errorMsg);
         }
         this.getList();
-        this.msgSuccess("删除成功");
+        this.$message.success("删除成功")
       })
     },
     /** 导出按钮操作 */
     handleExport() {
-      const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有楼栋 数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return exportBuilding(queryParams);
-        }).then(response => {
-          this.download(response.msg);
-        })
+      console.log(this.ids)
+      //设置全局配置信息
+      const config = {
+        method: 'get',
+        url: 'zyBuilding/getExcel?buildingIds='+this.ids,
+        responseType: 'blob'
+      };
+      //发送请求
+      // eslint-disable-next-line no-undef
+      axios(config).then(response => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', '楼栋信息.xls');
+                document.body.appendChild(link);
+                link.click();
+                if (response.data !== null) {
+                  this.$message.success("导出成功");
+                }
+              }
+      )
     }
   }
 };
