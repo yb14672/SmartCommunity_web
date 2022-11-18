@@ -14,6 +14,7 @@ import Dept from '../components/system/Dept'
 import Post from '../components/system/Post'
 import AuthRole from "@/components/user/AuthRole";
 import Operlog from "../components/monitor/operlog/Operlog";
+import Unit from "../components/community/Unit";
 
 Vue.use(Router)
 
@@ -37,6 +38,8 @@ const router = new Router({
                 {path: '/system/post', component: Post},
                 {path: '/system/user-auth/role/:userId(\\d+)', component: AuthRole},
                 {path:'/system/log/operlog',component: Operlog},
+                {path:'/community/unit',component:Unit}
+
             ]
         }
     ]

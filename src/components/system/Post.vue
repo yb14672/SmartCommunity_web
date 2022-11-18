@@ -111,13 +111,13 @@
 
     <div align="right" class="block">
       <el-pagination
-          :current-page="queryParams.pageNum"
-          :page-size="queryParams.pageSize"
-          :page-sizes="[1, 2, 5, 10]"
-          :total="total"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange">
+              :current-page="queryParams.pageNum"
+              :page-size="queryParams.pageSize"
+              :page-sizes="[1, 2, 5, 10]"
+              :total="total"
+              layout="total, sizes, prev, pager, next, jumper"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange">
       </el-pagination>
     </div>
 
