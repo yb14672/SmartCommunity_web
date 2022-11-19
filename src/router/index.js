@@ -13,10 +13,10 @@ import DataData from "../components/system/dict/Data"
 import Dept from '../components/system/Dept'
 import Post from '../components/system/Post'
 import AuthRole from "@/components/user/AuthRole";
-import Operlog from "../components/monitor/operlog/Operlog";
-import Unit from "../components/community/Unit";
-import LoginInfo from "@/components/system/log/LoginInfo";
+import OperLog from "../components/monitor/operlog/Operlog";
+import LoginInfo from "@/components/monitor/LoginInfo/LoginInfo";
 import Community from "@/components/property/Community";
+import Unit from "@/components/community/Unit";
 
 Vue.use(Router)
 
@@ -39,15 +39,11 @@ const router = new Router({
                 {path: '/system/post', component: Post},
                 {path: '/system/dict', component: Dict},
                 {path: '/dict/type/data/:dictId(\\d+)', component: DataData},
-                {path: '/system/log/operlog', component: Operlog},
-                {path: '/system/log/logininfor', component: LoginInfo},
                 {path: '/system/user-auth/role/:userId(\\d+)', component: AuthRole},
-                {path:'/system/log/operlog',component: Operlog},
-                {path:'/community/unit',component:Unit}
-
                 {path: '/system/log/logininfor', component: LoginInfo},
                 {path: '/system/log/operlog' , component: OperLog},
-                {path: '/community/community',component: Community}
+                {path: '/community/community',component: Community},
+                {path:'/community/unit',component:Unit}
             ]
         },
         {
