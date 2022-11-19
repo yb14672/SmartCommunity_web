@@ -145,7 +145,6 @@
 
 <script>
 
-import axios from "axios";
 
 export default {
   name: "Building",
@@ -320,7 +319,6 @@ export default {
             return this.$message.success("修改成功！")
           } else {
             this.form.communityId=this.communityId;
-            console.log(this.form)
             const {data: res} = await this.$http.post('zyBuilding/addZyBuilding', this.form)
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg)
@@ -351,16 +349,15 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      console.log(this.ids)
       //设置全局配置信息
       const config = {
         method: 'get',
-        url: 'zyBuilding/getExcel?buildingIds='+this.ids,
+        url: 'zyBuilding/getExcel?buildingIds='+this.ids+"&communityId="+this.communityId,
         responseType: 'blob'
       };
       //发送请求
       // eslint-disable-next-line no-undef
-      axios(config).then(response => {
+      this.$http(config).then(response => {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
                 link.href = url;

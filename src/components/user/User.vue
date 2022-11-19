@@ -393,7 +393,6 @@
 </template>
 
 <script>
-import axios from "axios";
 
 export default {
   name: "UserList",
@@ -816,7 +815,7 @@ export default {
       };
       //发送请求
       // eslint-disable-next-line no-undef
-      axios(config).then(response => {
+      this.$http(config).then(response => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
@@ -839,7 +838,7 @@ export default {
       };
       //发送请求
       // eslint-disable-next-line no-undef
-      axios(config).then(response => {
+      this.$http(config).then(response => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;

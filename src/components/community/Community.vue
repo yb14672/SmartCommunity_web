@@ -37,16 +37,6 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-            type="success"
-            icon="el-icon-edit"
-            size="mini"
-            :disabled="single"
-            @click="handleUpdate"
-            v-hasPermi="['system:community:edit']"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
             type="danger"
             icon="el-icon-delete"
             size="mini"
@@ -183,8 +173,6 @@
 </template>
 
 <script>
-
-import axios from "axios";
 
 export default {
   name: "Community",
@@ -377,15 +365,8 @@ export default {
     async handleUpdate(row) {
       this.reset();
       await this.getAreaTree();
-      if (row) {
-        this.selectedAreaInfo = []
-        this.form = JSON.parse(JSON.stringify(row))
-      } else {
-        const id = this.ids[0];
-        this.selectedAreaInfo = []
-        const {data: res} = await this.$http.get(`zyCommunity/${id}`)
-        this.form = res.data
-      }
+      this.selectedAreaInfo = []
+      this.form = JSON.parse(JSON.stringify(row))
       this.selectedAreaInfo[0] = this.form.communityProvenceCode
       this.selectedAreaInfo[1] = this.form.communityCityCode
       this.selectedAreaInfo[2] = this.form.communityTownCode
@@ -430,7 +411,6 @@ export default {
     /** 提交按钮 */
     submitForm: function () {
       this.$refs["form"].validate(async valid => {
-        console.log(this.form)
         if (valid) {
           if (this.form.communityId != undefined) {
             //修改
@@ -450,7 +430,6 @@ export default {
             this.form.communityCityCode = this.selectedAreaInfo[1]
             this.form.communityTownCode = this.selectedAreaInfo[2]
             const {data: res} = await this.$http.post("zyCommunity/insertCommunity", this.form);
-            console.log(res)
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg)
             }
@@ -463,8 +442,12 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const communityIds = [row.communityId] || this.ids;
-
+      let communityIds;
+      if (row.communityId !== undefined){
+        communityIds = [row.communityId]
+      }else{
+        communityIds = this.ids
+      }
       this.$confirm('是否确认删除小区信息编号为"' + communityIds + '"的数据项?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -480,9 +463,8 @@ export default {
     handleExport() {
       //设置全局配置信息
       const config = {
-        method: 'post',
-        url: 'zyCommunity/getExcel',
-        data: this.ids,
+        method: 'get',
+        url: 'zyCommunity/getExcel?ids='+this.ids,
         responseType: 'blob'
       };
       this.$confirm('是否确认导出所有小区信息数据项?', "警告", {
@@ -492,8 +474,7 @@ export default {
       }).then(function() {
         //发送请求
         // eslint-disable-next-line no-undef
-        axios(config).then(response => {
-          console.log(response)
+        this.$http(config).then(response => {
           const url = window.URL.createObjectURL(new Blob([response.data]));
           const link = document.createElement('a');
           link.href = url;
