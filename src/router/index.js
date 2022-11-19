@@ -41,17 +41,17 @@ const router = new Router({
                 {path: '/system/log/operlog', component: Operlog},
                 {path: '/system/log/logininfor', component: LoginInfo},
                 {path: '/system/user-auth/role/:userId(\\d+)', component: AuthRole},
-                {path: '/community/community',component: Community}
+                {path: '/community/community', component: Community}
             ]
         },
         {
-            path: "*",
+            path: "/404",
             name: "NotFound",
-            component: () => import("@/views/error/e404.vue"),
+            component: () => import("@/views/error/404.vue"),
         }, {
             path: "/500",
             name: "ServerError",
-            component: () => import("@/views/error/e500.vue"),
+            component: () => import("@/views/error/500.vue"),
         }
     ]
 })
@@ -63,6 +63,18 @@ router.beforeEach((to, from, next) => {
     }
     //获取token
     const tokenStr = window.sessionStorage.getItem('token');
+    //未找到路由
+    if (!to.matched.length) {
+        //判断是否有token
+        if (tokenStr) {
+            next("/404");
+        } else {
+            //如果没有token，说明还没有登录过
+            next('/login');
+        }
+        next(true);
+    }
+
     if (!tokenStr)
         return next('/login');
     next();
