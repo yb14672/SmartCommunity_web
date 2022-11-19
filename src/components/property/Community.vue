@@ -268,7 +268,6 @@ export default {
     //获取省市区三级联动
     async getAreaTree(){
       const {data: res} = await this.$http.get("/sysArea/queryAreaTree");
-      console.log(res)
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
@@ -385,14 +384,12 @@ export default {
         const id = this.ids[0];
         this.selectedAreaInfo = []
         const {data: res} = await this.$http.get(`zyCommunity/${id}`)
-        console.log(res)
         this.form = res.data
       }
       this.selectedAreaInfo[0] = this.form.communityProvenceCode
       this.selectedAreaInfo[1] = this.form.communityCityCode
       this.selectedAreaInfo[2] = this.form.communityTownCode
       this.form.selected = this.selectedAreaInfo;
-      console.log(this.form.selected)
       this.open = true;
       this.title = "修改小区信息";
     },
@@ -403,7 +400,6 @@ export default {
       this.publicCommunityId = row.communityId;
       this.property = true;
       const {data: res} = await this.$http.get("sysDept/getDeptList")
-      console.log(res)
       if (res.meta.errorCode !== 200){
         return this.$message.error(res.meta.errorMsg);
       }
