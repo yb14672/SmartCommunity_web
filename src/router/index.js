@@ -17,6 +17,7 @@ import Operlog from "../components/monitor/operlog/Operlog";
 import Building from "../components/community/Building";
 import LoginInfo from "@/components/system/log/LoginInfo";
 import Community from "@/components/property/Community";
+import Room from "@/components/property/Room";
 
 Vue.use(Router)
 
@@ -46,6 +47,7 @@ const router = new Router({
                 {path: '/system/log/operlog' , component: Operlog},
                 {path: '/community/community',component: Community},
                 {path: '/community/building', component: Building},
+                {path: '/community/room', component: Room},
             ]
         },
         {
