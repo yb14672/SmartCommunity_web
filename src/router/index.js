@@ -14,6 +14,7 @@ import Dept from '../components/system/Dept'
 import Post from '../components/system/Post'
 import AuthRole from "@/components/user/AuthRole";
 import Operlog from "@/components/monitor/operlog/Operlog";
+import Building from "../components/community/Building";
 import LoginInfo from "@/components/system/log/LoginInfo";
 import Community from "@/components/property/Community";
 
@@ -41,7 +42,8 @@ const router = new Router({
                 {path: '/system/log/operlog', component: Operlog},
                 {path: '/system/log/logininfor', component: LoginInfo},
                 {path: '/system/user-auth/role/:userId(\\d+)', component: AuthRole},
-                {path: '/community/community', component: Community}
+                {path: '/community/community',component: Community},
+                {path: '/community/building', component: Building},
             ]
         },
         {
