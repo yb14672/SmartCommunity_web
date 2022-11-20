@@ -550,6 +550,24 @@ export default {
     });
   },
   methods: {
+    /** 角色状态修改 */
+    handleStatusChange(row) {
+      let text = row.status === "0" ? "启用" : "停用";
+      this.$confirm('确认要"' + text + '""' + row.roleName + '"角色吗?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(async () => {
+        const {data: res} = await this.$http.put('sysUser/adminUpdateUser', row);
+        if (res.meta.errorCode !== 200) {
+          return this.$message.error(res.meta.errorMsg)
+        }
+        await this.getUserList();
+        this.$message.success(text + "成功");
+      }).catch(function () {
+        row.status = row.status === "0" ? "1" : "0";
+      });
+    },
     /** 查询数据字典性别 */
     async getSex(deptType) {
       const {data: res} = await this.$http.get(`sysDictData/getDict?dictType=${deptType}`);
@@ -761,7 +779,6 @@ export default {
               nickName: this.formData.nickName,
               email: this.formData.email,
               sex: this.formData.sex,
-              remark: this.formData.remark,
               remark: this.formData.remark,
               deptId: this.formData.deptId,
               postId: this.formData.postId,

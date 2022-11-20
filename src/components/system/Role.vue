@@ -456,7 +456,14 @@ export default {
             return this.$message.success("修改成功！")
           } else {
             this.form.menuIds = this.getMenuAllCheckedKeys();
-            const {data: res} = await this.$http.post('sysRole/addRole', this.form)
+            const {data: res} = await this.$http.post('sysRole/addRole', {
+              roleName:this.form.roleName,
+              roleKey:this.form.roleKey,
+              roleSort:this.form.roleSort,
+              status:this.form.status,
+              remark:this.form.remark,
+              menuIds:this.form.menuIds,
+            })
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg)
             }

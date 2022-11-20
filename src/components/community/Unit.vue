@@ -284,13 +284,9 @@
                         unitHaveElevator: this.queryParams.unitHaveElevator,
                     }
                 });
-                console.log(this.queryParams.pageSize)
-                console.log(this.queryParams.pageNum)
-                console.log(res)
                 if (res.meta.errorCode !== 200) {
                     return res.$message.error(res.meta.errorMsg)
                 }
-                console.log(res)
                 this.unitList = res.data.unitListDtos;
                 this.total = res.data.pageable.total;
                 this.options = res.data.unitListDtos
@@ -359,7 +355,6 @@
                     if (valid) {
                         if (this.form.unitId != null) {
                             const {data: res} = await this.$http.put("zyUnit/updateUnit", this.form);
-                            console.log(res)
                             if (res.meta.errorCode !== 200) {
                                 return this.$message.error(res.meta.errorMsg)
                             }
@@ -367,7 +362,6 @@
                             this.open = false
                             this.getList();
                         } else {
-                            console.log(this.form)
                             const {data: res} = await this.$http.post("zyUnit/insertUnit", this.form);
                             if (res.meta.errorCode !== 200) {
                                 return this.$message.error(res.meta.errorMsg)
@@ -396,7 +390,6 @@
                     const {data: res} = await this.$http.delete("zyUnit/deleteUnit", {data: unitIds});
                     return res;
                 }).then((res) => {
-                    console.log(res)
                     if (res.meta.errorCode !== 200) {
                         return this.$message.error(res.meta.errorMsg)
                     }

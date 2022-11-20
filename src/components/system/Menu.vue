@@ -375,7 +375,7 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.queryParams.menuName = undefined
-      this.queryParams.visible = undefined
+      this.queryParams.status = undefined
       this.handleQuery();
     },
     /** 新增按钮操作 */
