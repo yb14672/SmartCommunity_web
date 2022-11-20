@@ -244,7 +244,7 @@ export default {
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
-      this.options = res.data.zyCommunityList;
+        this.options = res.data.zyCommunityList;
       this.loading = false
     },
     // 取消按钮

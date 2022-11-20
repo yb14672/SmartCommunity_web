@@ -80,6 +80,18 @@
             </el-col>
         </el-row>
 
+        <!--下拉框，选小区的-->
+        <template>
+            <el-select v-model="communityId" placeholder="请选择" style="float: right" @change="getList()">
+                <el-option
+                        v-for="item in communitys"
+                        :key="item.communityId"
+                        :label="item.communityName"
+                        :value="item.communityId">
+                </el-option>
+            </el-select>
+        </template>
+
 
         <el-table v-loading="loading" :data="unitList" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55" align="center"/>
@@ -213,8 +225,12 @@
                 open: false,
                 //是否有电梯
                 statusOptions: [],
+
+                communitys:{},
+                communityId:'1338423709557272577',
                 //楼栋数组
                 options: {},
+
                 // 查询参数
                 queryParams: {
                     pageNum: 1,
@@ -250,6 +266,8 @@
             this.getDicts("sys_yes_no").then(response => {
                 this.statusOptions = response.data.data;
             });
+            this.getCommunityList();
+            this.getBuildingList();
         },
         methods: {
             /** 分页每页多少条数据 */
@@ -275,7 +293,7 @@
                         pageNum: this.queryParams.pageNum,
                         pageSize: this.queryParams.pageSize,
                         unitId: this.queryParams.unitId,
-                        communityId: this.queryParams.communityId,
+                        communityId: this.communityId,
                         buildingId: this.queryParams.buildingId,
                         unitName: this.queryParams.unitName,
                         unitCode: this.queryParams.unitCode,
@@ -289,9 +307,39 @@
                 }
                 this.unitList = res.data.unitListDtos;
                 this.total = res.data.pageable.total;
-                this.options = res.data.unitListDtos
-                // this.form.pageNum =res.data.pageable.pageNum;
+
                 this.loading = false;
+            },
+
+            async getBuildingList(){
+                this.loading =true
+                const {data:res} = await  this.$http.get('/zyUnit/getBuildingList',{
+                    params:{ communityId: this.communityId}
+
+                })
+                console.log(this.communityId)
+                console.log(res)
+                if (res.meta.errorCode !== 200) {
+                    return res.$message.error(res.meta.errorMsg)
+                }
+                this.options = res.data;
+                this.loading =false;
+            },
+
+            async getCommunityList() {
+                this.loading = true;
+                const {data: res} = await this.$http.get('/zyCommunity/selectAll', {
+                    params: {
+                        pageNum: 0,
+                        pageSize: 0,
+                        communityName:'',
+                    }
+                });
+                if (res.meta.errorCode !== 200) {
+                    return this.$message.error(res.meta.errorMsg)
+                }
+                this.communitys = res.data.zyCommunityList;
+                this.loading = false
             },
             // 取消按钮
             cancel() {
