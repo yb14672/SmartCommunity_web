@@ -4,15 +4,16 @@ import Welcome from '../components/Welcome'
 import Hello from '../components/Hello'
 import Login from '../components/Login.vue'
 import User from '../components/user/User'
-import Home from '../components/Home.vue'
+import AuthRole from "@/components/user/AuthRole";
+import Room from "../components/community/Room"
 import Profile from "../components/user/Profile"
+import Home from '../components/Home.vue'
 import Menu from "../components/system/Menu"
 import Role from "../components/system/Role"
 import Dict from "../components/system/dict/Index"
 import DataData from "../components/system/dict/Data"
 import Dept from '../components/system/Dept'
 import Post from '../components/system/Post'
-import AuthRole from "@/components/user/AuthRole";
 import LoginInfo from "@/components/monitor/LoginInfo/LoginInfo";
 import Operlog from "../components/monitor/operlog/Operlog";
 
@@ -28,15 +29,16 @@ const router = new Router({
             redirect: '/welcome',
             children: [
                 {path: '/welcome', component: Welcome},
+                {path: '/user/profile', component: Profile},
+                {path: '/dict/type/data/:dictId(\\d+)', component: DataData},
+                {path: '/community/room', component: Room},
                 {path: '/system/user', component: User},
                 {path: '/system/user-auth/role/:userId(\\d+)', component: AuthRole},
-                {path: '/user/profile', component: Profile},
                 {path: '/system/role', component: Role},
                 {path: '/system/menu', component: Menu},
                 {path: '/system/dept', component: Dept},
                 {path: '/system/post', component: Post},
                 {path: '/system/dict', component: Dict},
-                {path: '/dict/type/data/:dictId(\\d+)', component: DataData},
                 {path: '/system/log/operlog', component: Operlog},
                 {path: '/system/log/logininfor', component: LoginInfo},
             ]
