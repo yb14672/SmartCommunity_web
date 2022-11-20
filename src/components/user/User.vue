@@ -393,7 +393,6 @@
 </template>
 
 <script>
-import axios from "axios";
 
 export default {
   name: "UserList",
@@ -508,7 +507,7 @@ export default {
         nickName: [
           {required: true, message: "角色名称不能为空", trigger: "blur"},
           {pattern: /^[A-Za-z0-9\u4e00-\u9fa5]+$/, message: '非法字符', trigger: "blur"},
-          {min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur'}
+          {min: 2, max: 16, message: '长度在 2 到 16 个字符', trigger: 'blur'}
         ],
         email: [
           {required: true, message: "邮箱不能为空", trigger: "blur"},
@@ -551,22 +550,23 @@ export default {
     });
   },
   methods: {
-
-    /** 初始化值 */
-    initHandle() {
-      // eslint-disable-next-line vue/no-mutating-props
-      this.options = []
-      if (this.valueId) {
-        this.valueTitle = this.$refs.selectTree.getNode(this.valueId).data[this.props.label]     // 初始化显示
-        this.$refs.selectTree.setCurrentKey(this.valueId)       // 设置默认选中
-        this.defaultExpandedKey = [this.valueId]      // 设置默认展开
-      }
-      this.$nextTick(() => {
-        let scrollWrap = document.querySelectorAll('.el-scrollbar .el-select-dropdown__wrap')[0]
-        let scrollBar = document.querySelectorAll('.el-scrollbar .el-scrollbar__bar')
-        scrollWrap.style.cssText = 'margin: 0px; max-height: none; overflow: hidden;'
-        scrollBar.forEach(ele => ele.style.width = 0)
-      })
+    /** 角色状态修改 */
+    handleStatusChange(row) {
+      let text = row.status === "0" ? "启用" : "停用";
+      this.$confirm('确认要"' + text + '""' + row.roleName + '"角色吗?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(async () => {
+        const {data: res} = await this.$http.put('sysUser/adminUpdateUser', row);
+        if (res.meta.errorCode !== 200) {
+          return this.$message.error(res.meta.errorMsg)
+        }
+        await this.getUserList();
+        this.$message.success(text + "成功");
+      }).catch(function () {
+        row.status = row.status === "0" ? "1" : "0";
+      });
     },
     /** 查询数据字典性别 */
     async getSex(deptType) {
@@ -766,17 +766,6 @@ export default {
         if (valid) {
           if (this.formData.userId === undefined) {
             const {data: res} = await this.$http.post("sysUser/insertUser", this.formData)
-            //   phonenumber: this.formData.phonenumber,
-            //   nickName: this.formData.nickName,
-            //   email: this.formData.email,
-            //   sex: this.formData.sex,
-            //   deptId: this.formData.deptId,
-            //   postId: this.formData.postIds,
-            //   roleId: this.formData.roleIds,
-            //   userName: this.formData.userName,
-            //   status: this.formData.status,
-            //   password: this.formData.password
-            // });
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg)
             }
@@ -790,7 +779,6 @@ export default {
               nickName: this.formData.nickName,
               email: this.formData.email,
               sex: this.formData.sex,
-              remark: this.formData.remark,
               remark: this.formData.remark,
               deptId: this.formData.deptId,
               postId: this.formData.postId,
@@ -844,7 +832,7 @@ export default {
       };
       //发送请求
       // eslint-disable-next-line no-undef
-      axios(config).then(response => {
+      this.$http(config).then(response => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
@@ -867,7 +855,7 @@ export default {
       };
       //发送请求
       // eslint-disable-next-line no-undef
-      axios(config).then(response => {
+      this.$http(config).then(response => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
@@ -955,13 +943,6 @@ export default {
 <style scoped>
 .el-card {
   border: none;
-}
-.el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
-  height: auto;
-  max-height: 274px;
-  padding: 0;
-  overflow: hidden;
-  overflow-y: auto;
 }
 </style>
 

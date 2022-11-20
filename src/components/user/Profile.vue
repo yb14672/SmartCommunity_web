@@ -152,6 +152,7 @@ export default {
         callback();
       }
     };
+
     //判断新旧密码是否一致
     const equalToOldPassword = (rule, value, callback) => {
       if (this.pwdForm.oldPassword === value) {
@@ -191,7 +192,7 @@ export default {
       rules: {
         nickName: [
           {required: true, message: '请输入用户昵称', trigger: 'blur'},
-          {min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur'}
+          {min: 2, max: 16, message: '长度在 2 到 16 个字符', trigger: 'blur'}
         ],
         phonenumber: [
           {required: true, message: "手机号码不能为空", trigger: "blur"},
@@ -326,9 +327,6 @@ export default {
         }
       });
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
     async getUserInfo() {
       const {data: res} = await this.$http.get("sysUser/personal")
       if (res) {
@@ -365,6 +363,7 @@ export default {
         this.loading = false
         this.dialogVisible = true
         this.fileName=file.name;
+
       })
     },
     // 放大/缩小
@@ -481,7 +480,7 @@ export default {
   border-radius: 6px;
   cursor: pointer;
   position: relative;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .avatar-uploader .el-upload:hover {

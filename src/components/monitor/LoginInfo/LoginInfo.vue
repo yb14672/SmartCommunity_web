@@ -133,7 +133,6 @@
 </template>
 
 <script>
-import axios from "axios";
 
 export default {
   name: "LoginInfo",
@@ -255,9 +254,8 @@ export default {
     handleExport() {
       //设置全局配置信息
       const config = {
-        method: 'post',
-        url: 'sysLogininfor/getExcel',
-        data: this.ids,
+        method: 'get',
+        url: 'sysLogininfor/getExcel?ids='+this.ids,
         responseType: 'blob'
       };
       this.$confirm('是否确认导出所有操作日志数据项?', "警告", {
@@ -267,7 +265,7 @@ export default {
       }).then(() => {
         //发送请求
         // eslint-disable-next-line no-undef
-        axios(config).then(response => {
+        this.$http(config).then(response => {
           const url = window.URL.createObjectURL(new Blob([response.data]));
           const link = document.createElement('a');
           link.href = url;

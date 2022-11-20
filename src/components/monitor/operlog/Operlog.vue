@@ -102,19 +102,26 @@
         >导出
         </el-button>
       </el-col>
-      <!--      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>-->
     </el-row>
 
     <el-table ref="tables" v-loading="loading" :data="list" @selection-change="handleSelectionChange ">
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="日志编号" align="center" prop="operId"/>
       <el-table-column label="系统模块" align="center" prop="title"/>
-      <el-table-column label="操作类型" :formatter="businessTypeFormat" align="center" prop="businessType"/>
+      <el-table-column label="操作类型" :formatter="businessTypeFormat" align="center" prop="businessType">
+        <template slot-scope="scope">
+          <DictTag :options="typeOptions" :value="scope.row.businessType"/>
+        </template>
+      </el-table-column>
       <el-table-column label="请求方式" align="center" prop="requestMethod"/>
       <el-table-column label="操作人员" align="center" prop="operName" width="100" :show-overflow-tooltip="true"/>
       <el-table-column label="操作地址" align="center" prop="operIp" width="130" :show-overflow-tooltip="true"/>
       <el-table-column label="操作地点" align="center" prop="operLocation" :show-overflow-tooltip="true"/>
-      <el-table-column label="操作状态" :formatter="statusFormat" align="center" prop="status"/>
+      <el-table-column label="操作状态" :formatter="statusFormat" align="center" prop="status">
+        <template slot-scope="scope">
+          <DictTag :options="statusOptions" :value="scope.row.status"/>
+        </template>
+      </el-table-column>
       <el-table-column label="操作日期"
                        align="center"
                        prop="operTime"
@@ -171,13 +178,12 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="操作状态：" :formatter="statusFormat">
-                <div v-if="form.statusOptions === 0">正常</div>
-
+                <div v-if="form.status === 0">正常</div>
                 <div v-else-if="form.status === 1">失败</div>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="操作时间：">{{ parseTime(form.operTime) }}</el-form-item>
+              <el-form-item label="操作时间：">{{ form.operTime | moment }}</el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item label="异常信息：" v-if="form.status === 1">{{ form.errorMsg }}</el-form-item>
@@ -209,9 +215,9 @@
 <script>
 
 
+
 export default {
-  // name: "Operlog",
-  // dicts: ['sys_oper_type', 'sys_common_status'],
+  name: "Operlog",
   data() {
     return {
       defaultSort: {prop: 'operTime', order: 'descending'},
@@ -270,13 +276,11 @@ export default {
 
     async getStatus(logType) {
       const {data: res} = await this.$http.get(`sysDictData/getDict?dictType=${logType}`);
-      // console.log(res)
       this.statusOptions = res.data;
     },
 
     async getDicts(logType) {
       const {data: res} = await this.$http.get(`sysDictData/getDict?dictType=${logType}`);
-      // console.log(res)
       this.typeOptions = res.data;
     },
     /** 查询登录日志 */
@@ -307,7 +311,6 @@ export default {
     },
     // 操作日志类型字典翻译
     typeFormat(row) {
-      console.log(row)
       // return this.selectDictLabel( this.getDicts("sys_oper_type"), row.businessType);
     },
     /** 搜索按钮操作 */
@@ -321,6 +324,7 @@ export default {
       this.resetForm("queryForm");
       this.queryParams.pageNum = 1;
       this.$refs.tables.sort(this.defaultSort.prop, this.defaultSort.order)
+      this.getList();
     },
     /** 多选框选中数据 */
     handleSelectionChange(selection) {
@@ -363,7 +367,6 @@ export default {
         // 通过方法？带参
         this.$http.delete("sysOperLog/deleteLog?idList=" + this.ids)
             .then((res) => {
-              console.log(res)
               if (res.data.meta.errorCode === 200) {
                 // 重新获取页面
                 this.getList();
@@ -376,9 +379,26 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('log/operlog/export', {
-        ...this.queryParams
-      }, `operlog_${new Date().getTime()}.xlsx`)
+      //设置全局配置信息
+      const config = {
+        method: 'get',
+        url: 'sysOperLog/getExcel?operLogIds='+this.ids,
+        responseType: 'blob'
+      };
+      //发送请求
+      // eslint-disable-next-line no-undef
+      this.$http(config).then(response => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', '操作日志.xls');
+            document.body.appendChild(link);
+            link.click();
+            if (response.data !== null) {
+              this.$message.success("导出成功");
+            }
+          }
+      )
     },
     /** 每页显示的条数 */
     handleSizeChange(val) {
