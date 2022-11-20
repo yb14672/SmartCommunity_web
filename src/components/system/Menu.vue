@@ -61,7 +61,11 @@
       <el-table-column prop="orderNum" label="排序" width="60"></el-table-column>
       <el-table-column prop="perms" label="权限标识" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="component" label="组件路径" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="status" label="状态" :formatter="statusFormat" width="80"></el-table-column>
+      <el-table-column prop="status" label="状态" :formatter="statusFormat" width="80">
+        <template slot-scope="scope">
+          <DictTag :options="statusOptions" :value="scope.row.status"/>
+        </template>
+      </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime">
         <template slot-scope="scope">
           <span>{{ scope.row.createTime }}</span>
@@ -287,20 +291,14 @@ export default {
   },
   created() {
     this.getList();
-    this.visibleOptions = this.getDict('sys_show_hide')
-    this.statusOptions = this.getDict('sys_normal_disable')
+    this.getDicts("sys_show_hide").then(response => {
+      this.visibleOptions = response.data.data;
+    });
+    this.getDicts("sys_normal_disable").then(response => {
+      this.statusOptions = response.data.data;
+    });
   },
   methods: {
-    /**获取字典列表*/
-    async getDict(deptType) {
-      if (deptType === 'sys_show_hide') {
-        const {data: res} = await this.$http.get(`sysDictData/getDict?dictType=${deptType}`);
-        this.visibleOptions = res.data
-      } else {
-        const {data: res} = await this.$http.get(`sysDictData/getDict?dictType=${deptType}`);
-        this.statusOptions = res.data
-      }
-    },
     /** 查询菜单列表 */
     async getList() {
       const {data: res} = await this.$http.get('sysMenu/queryMenus', {
@@ -377,7 +375,7 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.queryParams.menuName = undefined
-      this.queryParams.visible = undefined
+      this.queryParams.status = undefined
       this.handleQuery();
     },
     /** 新增按钮操作 */

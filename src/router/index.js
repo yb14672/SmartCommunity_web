@@ -13,9 +13,10 @@ import DataData from "../components/system/dict/Data"
 import Dept from '../components/system/Dept'
 import Post from '../components/system/Post'
 import AuthRole from "@/components/user/AuthRole";
-import OperLog from "../components/monitor/operlog/Operlog";
+import Operlog from "@/components/monitor/operlog/Operlog";
 import LoginInfo from "@/components/monitor/LoginInfo/LoginInfo";
-import Community from "@/components/property/Community";
+import Community from "@/components/community/Community";
+import Building from "../components/community/Building";
 import Unit from "@/components/community/Unit";
 
 Vue.use(Router)
@@ -39,21 +40,21 @@ const router = new Router({
                 {path: '/system/post', component: Post},
                 {path: '/system/dict', component: Dict},
                 {path: '/dict/type/data/:dictId(\\d+)', component: DataData},
-                {path: '/system/user-auth/role/:userId(\\d+)', component: AuthRole},
+                {path: '/system/log/operlog', component: Operlog},
                 {path: '/system/log/logininfor', component: LoginInfo},
-                {path: '/system/log/operlog' , component: OperLog},
                 {path: '/community/community',component: Community},
+                {path: '/community/building', component: Building},
                 {path:'/community/unit',component:Unit}
             ]
         },
         {
-            path: "*",
+            path: "/404",
             name: "NotFound",
-            component: () => import("@/views/error/e404.vue"),
+            component: () => import("@/views/error/404.vue"),
         }, {
             path: "/500",
             name: "ServerError",
-            component: () => import("@/views/error/e500.vue"),
+            component: () => import("@/views/error/500.vue"),
         }
     ]
 })
@@ -65,6 +66,18 @@ router.beforeEach((to, from, next) => {
     }
     //获取token
     const tokenStr = window.sessionStorage.getItem('token');
+    //未找到路由
+    if (!to.matched.length) {
+        //判断是否有token
+        if (tokenStr) {
+            next("/404");
+        } else {
+            //如果没有token，说明还没有登录过
+            next('/login');
+        }
+        next(true);
+    }
+
     if (!tokenStr)
         return next('/login');
     next();

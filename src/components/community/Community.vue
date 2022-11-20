@@ -33,17 +33,8 @@
             size="mini"
             @click="handleAdd"
             v-hasPermi="['system:community:add']"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-            type="success"
-            icon="el-icon-edit"
-            size="mini"
-            :disabled="single"
-            @click="handleUpdate"
-            v-hasPermi="['system:community:edit']"
-        >修改</el-button>
+        >新增
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -53,7 +44,8 @@
             :disabled="multiple"
             @click="handleDelete"
             v-hasPermi="['system:community:remove']"
-        >删除</el-button>
+        >删除
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -62,27 +54,27 @@
             size="mini"
             @click="handleExport"
             v-hasPermi="['system:community:export']"
-        >导出</el-button>
+        >导出
+        </el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="communityList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column type="selection" width="55" align="center"/>
       <el-table-column
           label="序号"
           type="index"
           width="50"
           align="center">
       </el-table-column>
-      <el-table-column v-if="show" label="ID" align="center" prop="communityId" />
-      <el-table-column label="小区名称" align="center" prop="communityName" />
-      <el-table-column label="小区编码" align="center" prop="communityCode" />
-      <el-table-column label="省" align="center" prop="communityProvenceName" />
-      <el-table-column label="市" align="center" prop="communityCityName" />
-      <el-table-column label="区/县" align="center" prop="communityTownName" />
-      <el-table-column label="创建时间" align="center" prop="createTime" />
-      <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column v-if="show" label="ID" align="center" prop="communityId"/>
+      <el-table-column label="小区名称" align="center" prop="communityName"/>
+      <el-table-column label="小区编码" align="center" prop="communityCode"/>
+      <el-table-column label="省" align="center" prop="communityProvenceName"/>
+      <el-table-column label="市" align="center" prop="communityCityName"/>
+      <el-table-column label="区/县" align="center" prop="communityTownName"/>
+      <el-table-column label="创建时间" align="center" prop="createTime"/>
+      <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -91,21 +83,24 @@
               icon="el-icon-edit"
               @click="handleUpdate(scope.row)"
               v-hasPermi="['system:community:edit']"
-          >修改</el-button>
+          >修改
+          </el-button>
           <el-button
               size="mini"
               type="text"
               icon="el-icon-delete"
               @click="handleDelete(scope.row)"
               v-hasPermi="['system:community:remove']"
-          >删除</el-button>
+          >删除
+          </el-button>
           <el-button
               size="mini"
               type="text"
               icon="el-icon-setting"
               @click="replaceProperty(scope.row)"
               v-hasPermi="['system:community:remove']"
-          >更换物业</el-button>
+          >更换物业
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -142,13 +137,15 @@
                 icon="el-icon-success"
                 @click="replacePropertyAction(scope.row)"
                 v-hasPermi="['system:dept:add']"
-            >选择</el-button>
+            >选择
+            </el-button>
             <el-button
                 size="mini"
                 type="text"
                 v-else-if="scope.row.deptId === selectedDeptId"
                 icon="el-icon-success"
-            >已选择</el-button>
+            >已选择
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -157,10 +154,10 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="小区名称" prop="communityName">
-          <el-input v-model="form.communityName" placeholder="请输入小区名称" />
+          <el-input v-model="form.communityName" placeholder="请输入小区名称"/>
         </el-form-item>
         <el-form-item label="详细地址" prop="communityDetailedAddress">
-          <el-input v-model="form.communityDetailedAddress" placeholder="请输入详细地址" />
+          <el-input v-model="form.communityDetailedAddress" placeholder="请输入详细地址"/>
         </el-form-item>
         <el-form-item label="所属区划" prop="selected">
           <el-cascader
@@ -171,7 +168,7 @@
           ></el-cascader>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -184,12 +181,9 @@
 
 <script>
 
-import axios from "axios";
-
 export default {
   name: "Community",
-  components: {
-  },
+  components: {},
   data() {
     return {
       show: false,
@@ -221,9 +215,9 @@ export default {
       // 弹出层标题
       title: "",
       //小区ID
-      publicCommunityId:"",
+      publicCommunityId: "",
       //已选择
-      selectedDeptId:"",
+      selectedDeptId: "",
       // 是否显示弹出层
       open: false,
       // 是否显示更换物业弹出层
@@ -247,13 +241,13 @@ export default {
       // 表单校验
       rules: {
         communityName: [
-          { required: true, message: '小区名称不能为空', trigger: 'blur' }
+          {required: true, message: '小区名称不能为空', trigger: 'blur'}
         ],
         communityDetailedAddress: [
-          { required: true, message: '详细地址不能为空', trigger: 'blur' }
+          {required: true, message: '详细地址不能为空', trigger: 'blur'}
         ],
         selected: [
-          { required: true, message: '请选择区划', trigger:  'blur' }
+          {required: true, message: '请选择区划', trigger: 'blur'}
         ],
       }
     };
@@ -266,21 +260,20 @@ export default {
   },
   methods: {
     //获取省市区三级联动
-    async getAreaTree(){
+    async getAreaTree() {
       const {data: res} = await this.$http.get("/sysArea/queryAreaTree");
-      console.log(res)
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
       this.areaOptions = this.getTreeData(res.data)
     },
     //切换每页数据
-    handleSizeChange(val){
+    handleSizeChange(val) {
       this.queryParams.pageSize = val;
       this.getList();
     },
     //上一页下一页
-    handleCurrentChange(val){
+    handleCurrentChange(val) {
       this.queryParams.pageNum = val;
       this.getList();
     },
@@ -309,12 +302,13 @@ export default {
     async getList() {
       this.loading = true;
       const {data: res} = await this.$http.get("/zyCommunity/selectAll", {
-        params:{
-          pageNum : this.queryParams.pageNum,
+        params: {
+          pageNum: this.queryParams.pageNum,
           pageSize: this.queryParams.pageSize,
           communityName: this.queryParams.communityName,
           communityCode: this.queryParams.communityCode
-        }});
+        }
+      });
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
@@ -363,7 +357,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.communityId)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -378,21 +372,12 @@ export default {
     async handleUpdate(row) {
       this.reset();
       await this.getAreaTree();
-      if (row) {
-        const id = this.ids[0];
-        this.selectedAreaInfo = []
-        const {data: res} = await this.$http.get(`zyCommunity/${id}`)
-        console.log(res)
-        this.form = res.data
-      } else {
-        this.selectedAreaInfo = []
-        this.form = JSON.parse(JSON.stringify(row))
-      }
+      this.selectedAreaInfo = []
+      this.form = JSON.parse(JSON.stringify(row))
       this.selectedAreaInfo[0] = this.form.communityProvenceCode
       this.selectedAreaInfo[1] = this.form.communityCityCode
       this.selectedAreaInfo[2] = this.form.communityTownCode
       this.form.selected = this.selectedAreaInfo;
-      console.log(this.form.selected)
       this.open = true;
       this.title = "修改小区信息";
     },
@@ -403,8 +388,7 @@ export default {
       this.publicCommunityId = row.communityId;
       this.property = true;
       const {data: res} = await this.$http.get("sysDept/getDeptList")
-      console.log(res)
-      if (res.meta.errorCode !== 200){
+      if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg);
       }
       this.deptList = res.data
@@ -422,7 +406,7 @@ export default {
         type: "warning",
       }).then(async () => {
             const {data: res} = await this.$http.put("zyCommunity/updateCommunity", this.form);
-            if (res.meta.errorCode !== 200){
+            if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg)
             }
             await this.getList();
@@ -434,7 +418,6 @@ export default {
     /** 提交按钮 */
     submitForm: function () {
       this.$refs["form"].validate(async valid => {
-        console.log(this.form)
         if (valid) {
           if (this.form.communityId != undefined) {
             //修改
@@ -442,7 +425,7 @@ export default {
             this.form.communityCityCode = this.selectedAreaInfo[1]
             this.form.communityTownCode = this.selectedAreaInfo[2]
             const {data: res} = await this.$http.put("zyCommunity/updateCommunity", this.form);
-            if (res.meta.errorCode != 200){
+            if (res.meta.errorCode != 200) {
               return this.$message.error(res.meta.errorMsg);
             }
             this.open = false;
@@ -454,7 +437,6 @@ export default {
             this.form.communityCityCode = this.selectedAreaInfo[1]
             this.form.communityTownCode = this.selectedAreaInfo[2]
             const {data: res} = await this.$http.post("zyCommunity/insertCommunity", this.form);
-            console.log(res)
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg)
             }
@@ -467,14 +449,18 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const communityIds = this.ids;
-      console.log(this.ids)
+      let communityIds;
+      if (row.communityId !== undefined) {
+        communityIds = [row.communityId]
+      } else {
+        communityIds = this.ids
+      }
       this.$confirm('是否确认删除小区信息编号为"' + communityIds + '"的数据项?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       }).then(async () => {
-        await this.$http.delete("/zyCommunity/deleteCommunity",{data:communityIds})
+        await this.$http.delete("/zyCommunity/deleteCommunity", {data: communityIds})
       }).then(() => {
         this.getList();
         this.$message.success("删除成功")
@@ -484,30 +470,20 @@ export default {
     handleExport() {
       //设置全局配置信息
       const config = {
-        method: 'post',
-        url: 'zyCommunity/getExcel',
-        data: this.ids,
+        method: 'get',
+        url: 'zyCommunity/getExcel?ids=' + this.ids,
         responseType: 'blob'
       };
-      this.$confirm('是否确认导出所有小区信息数据项?', "警告", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(function() {
-        //发送请求
-        // eslint-disable-next-line no-undef
-        axios(config).then(response => {
-          console.log(response)
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', '小区信息.xls');
-          document.body.appendChild(link);
-          link.click();
-          if (response.data !== null) {
-            this.$message.success("导出成功");
-          }
-        })
+      //发送请求
+      // eslint-disable-next-line no-undef
+      this.$http(config).then(response => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', '小区信息.xls');
+        document.body.appendChild(link);
+        link.click();
+        this.$message.success("导出成功");
       })
     }
   }
