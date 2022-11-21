@@ -18,6 +18,7 @@ import LoginInfo from "@/components/monitor/LoginInfo/LoginInfo";
 import Community from "@/components/community/Community";
 import Building from "../components/community/Building";
 import Unit from "@/components/community/Unit";
+import Room from "@/components/community/Room";
 import Owenr from "../components/community/Owenr";
 
 Vue.use(Router)
@@ -46,7 +47,9 @@ const router = new Router({
                 {path: '/community/community',component: Community},
                 {path: '/community/building', component: Building},
                 {path:'/community/unit',component:Unit},
-                {path:'/bing/owner',component:Owenr}
+                {path:'/bing/owner',component:Owenr},
+                {path:'/community/unit',component:Unit},
+                {path:'/community/room',component:Room}
             ]
         },
         {
