@@ -39,11 +39,13 @@ export default {
   },
   methods: {
     backPage() {
+      window.sessionStorage.setItem('path', '/welcome');
       this.$router.go(-2);
     },
     goHome() {
+      window.sessionStorage.setItem('path', '/welcome');
       window.open(this.$router.resolve({
-        path: '/',
+        path: '/welcome',
       }).href, '_self');
     }
   }

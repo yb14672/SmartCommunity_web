@@ -284,7 +284,6 @@ export default {
     /** 查询单元 列表 */
     async getList() {
       this.loading = true;
-      console.log("query", this.queryParams)
       const {data: res} = await this.$http.get("zyUnit/getUnitList", {
         params: {
           pageNum: this.queryParams.pageNum,
@@ -371,7 +370,6 @@ export default {
     },
     /** 多选框选中数据 */
     handleSelectionChange(selection) {
-      console.log(selection, this.statusOptions)
       this.ids = selection.map(item => item.unitId)
       this.single = selection.length !== 1
       this.multiple = !selection.length
@@ -380,6 +378,7 @@ export default {
     handleAdd() {
       this.reset();
       this.getBuildingList();
+      this.form.unitHaveElevator="Y"
       this.open = true;
       this.title = "添加单元 ";
     },
