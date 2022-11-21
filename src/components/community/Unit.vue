@@ -390,7 +390,6 @@ export default {
       this.form.unitId = row.unitId
       this.open = true;
       this.title = "修改单元 ";
-      console.log(this.form, "修改")
     },
     /** 提交按钮 */
     submitForm() {
@@ -447,7 +446,7 @@ export default {
       //设置全局配置信息
       const config = {
         method: 'get',
-        url: 'zyUnit/getExcel?unitIds=' + this.ids,
+        url: 'zyUnit/getExcel?unitIds=' + this.ids+"&communityId="+this.communityId,
         responseType: 'blob'
       };
       //发送请求
@@ -468,3 +467,8 @@ export default {
   }
 };
 </script>
+<style scoped>
+#app-container{
+  overflow: scroll;
+}
+</style>

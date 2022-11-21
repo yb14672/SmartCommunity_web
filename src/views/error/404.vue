@@ -39,8 +39,9 @@ export default {
   },
   methods: {
     backPage() {
+      console.log(this.$route,this.$router)
       window.sessionStorage.setItem('path', '/welcome');
-      this.$router.go(-2);
+      this.$router.go(-1);
     },
     goHome() {
       window.sessionStorage.setItem('path', '/welcome');
