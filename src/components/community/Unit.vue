@@ -452,7 +452,7 @@
                 //设置全局配置信息
                 const config = {
                     method: 'get',
-                    url: 'zyUnit/getExcel?unitIds='+this.ids,
+                    url: 'zyUnit/getExcel?unitIds='+this.ids+"&communityId="+this.communityId,
                     responseType: 'blob'
                 };
                 //发送请求
