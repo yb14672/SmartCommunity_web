@@ -36,15 +36,6 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          type="success"
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
           type="danger"
           icon="el-icon-delete"
           size="mini"
@@ -145,7 +136,6 @@
 
 <script>
 
-import axios from "axios";
 
 export default {
   name: "Building",
@@ -245,7 +235,7 @@ export default {
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
-      this.options = res.data.zyCommunityList;
+        this.options = res.data.zyCommunityList;
       this.loading = false
     },
     // 取消按钮
@@ -320,7 +310,6 @@ export default {
             return this.$message.success("修改成功！")
           } else {
             this.form.communityId=this.communityId;
-            console.log(this.form)
             const {data: res} = await this.$http.post('zyBuilding/addZyBuilding', this.form)
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg)
@@ -351,16 +340,15 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      console.log(this.ids)
       //设置全局配置信息
       const config = {
         method: 'get',
-        url: 'zyBuilding/getExcel?buildingIds='+this.ids,
+        url: 'zyBuilding/getExcel?buildingIds='+this.ids+"&communityId="+this.communityId,
         responseType: 'blob'
       };
       //发送请求
       // eslint-disable-next-line no-undef
-      axios(config).then(response => {
+      this.$http(config).then(response => {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
                 link.href = url;

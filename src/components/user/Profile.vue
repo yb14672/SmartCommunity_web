@@ -327,9 +327,6 @@ export default {
         }
       });
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
     async getUserInfo() {
       const {data: res} = await this.$http.get("sysUser/personal")
       if (res) {

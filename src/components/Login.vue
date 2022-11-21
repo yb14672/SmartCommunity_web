@@ -130,7 +130,6 @@ export default {
         if (!valid) {
           return
         }
-        console.log(this.loginForm)
         const {data: res} = await this.$http.post('sysUser/login',{}, {
           params: {
             userName: this.loginForm.username,

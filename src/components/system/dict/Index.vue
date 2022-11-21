@@ -67,16 +67,6 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-            type="success"
-            icon="el-icon-edit"
-            size="mini"
-            :disabled="single"
-            @click="handleUpdate"
-        >修改
-        </el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
             type="danger"
             icon="el-icon-delete"
             size="mini"
@@ -116,7 +106,11 @@
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat"/>
+      <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat">
+        <template slot-scope="scope">
+          <DictTag :options="statusOptions" :value="scope.row.status"/>
+        </template>
+      </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true"/>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
@@ -188,7 +182,6 @@
 
 <script>
 
-import axios from "axios";
 
 export default {
   name: "Dict",
@@ -245,7 +238,7 @@ export default {
     this.getDicts("sys_normal_disable");
   },
   methods: {
-    // 分页每页多少条数据
+    /** 分页每页多少条数据 */
     handleSizeChange(val) {
       this.queryParams.pageSize = val;
       this.getList();
@@ -283,16 +276,16 @@ export default {
       this.total = res.data.pageable.total;
       this.loading = false
     },
-    // 字典状态字典翻译
+    /** 字典状态字典翻译 */
     statusFormat(row) {
       return this.selectDictLabel(this.statusOptions, row.status);
     },
-    // 取消按钮
+    /** 取消按钮 */
     cancel() {
       this.open = false;
       this.reset();
     },
-    // 表单重置
+    /** 表单重置 */
     reset() {
       if (this.$refs.menu != undefined) {
         this.$refs.menu.setCheckedKeys([]);
@@ -330,7 +323,7 @@ export default {
       this.open = true;
       this.title = "添加字典类型";
     },
-    // 多选框选中数据
+    /** 多选框选中数据 */
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.dictId)
       this.single = selection.length != 1
@@ -397,13 +390,12 @@ export default {
       //设置全局配置信息
       const config = {
         method: 'get',
-        url: 'sysDictType/getExcel',
-        data: this.ids,
+        url: 'sysDictType/getExcel?dictIds='+this.ids,
         responseType: 'blob'
       };
       //发送请求
       // eslint-disable-next-line no-undef
-      axios(config).then(response => {
+      this.$http(config).then(response => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;

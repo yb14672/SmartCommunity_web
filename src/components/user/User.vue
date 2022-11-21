@@ -393,7 +393,6 @@
 </template>
 
 <script>
-import axios from "axios";
 
 export default {
   name: "UserList",
@@ -551,6 +550,24 @@ export default {
     });
   },
   methods: {
+    /** 角色状态修改 */
+    handleStatusChange(row) {
+      let text = row.status === "0" ? "启用" : "停用";
+      this.$confirm('确认要"' + text + '""' + row.roleName + '"角色吗?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(async () => {
+        const {data: res} = await this.$http.put('sysUser/adminUpdateUser', row);
+        if (res.meta.errorCode !== 200) {
+          return this.$message.error(res.meta.errorMsg)
+        }
+        await this.getUserList();
+        this.$message.success(text + "成功");
+      }).catch(function () {
+        row.status = row.status === "0" ? "1" : "0";
+      });
+    },
     /** 查询数据字典性别 */
     async getSex(deptType) {
       const {data: res} = await this.$http.get(`sysDictData/getDict?dictType=${deptType}`);
@@ -763,7 +780,6 @@ export default {
               email: this.formData.email,
               sex: this.formData.sex,
               remark: this.formData.remark,
-              remark: this.formData.remark,
               deptId: this.formData.deptId,
               postId: this.formData.postId,
               roleId: this.formData.roleId,
@@ -816,7 +832,7 @@ export default {
       };
       //发送请求
       // eslint-disable-next-line no-undef
-      axios(config).then(response => {
+      this.$http(config).then(response => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
@@ -839,7 +855,7 @@ export default {
       };
       //发送请求
       // eslint-disable-next-line no-undef
-      axios(config).then(response => {
+      this.$http(config).then(response => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
