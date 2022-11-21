@@ -31,16 +31,27 @@
 <script>
 
 export default {
+  data() {
+    return {
+      beforePath:"/welcome"
+    }
+  },
   name: 'Page404',
   computed: {
     message() {
       return '找不到网页！'
     }
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      // console.log(from, 'from')
+      //  这里的vm指的就是vue实例，可以用来当做this使用
+      vm.beforePath=from.path;
+    })
+  },
   methods: {
     backPage() {
-      console.log(this.$route,this.$router)
-      window.sessionStorage.setItem('path', '/welcome');
+      window.sessionStorage.setItem('path', this.beforePath);
       this.$router.go(-1);
     },
     goHome() {
