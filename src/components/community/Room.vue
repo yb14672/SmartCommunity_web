@@ -31,8 +31,7 @@
 
     </el-form>
 
-
-    <!--    CRUD+导入按钮-->
+    <!--CRUD+导出按钮-->
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
@@ -155,7 +154,6 @@
     <!--    添加、修改房屋对话框-->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-
         <el-form-item label="楼栋/单元" prop="unitId" label-width="85px">
           <el-cascader
               v-model="value1"
@@ -229,7 +227,6 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
-
   </div>
 
 
@@ -237,8 +234,6 @@
 
 <script>
 export default {
-  // 全局刷新
-
   data() {
     return {
       //修改/添加选中的楼栋+单元信息
@@ -259,8 +254,9 @@ export default {
       ],
       //级联组件
       cascaderProps: {
-        value: 'code',
-        label: 'name'
+        value: 'buildingId',
+        label: 'buildingName',
+        children: 'children',
       },
       //级联选择
       options: [],
@@ -362,7 +358,8 @@ export default {
   methods: {
     /** 获取楼栋单元下拉框 */
     async getBuildingAndUnitListByCommunityId() {
-      const {data: res} = await this.$http.get("/zyBuilding/buildingList/"+this.queryParams.communityId);
+      const {data: res} = await this.$http.get("/zyBuilding/buildingList/" + this.queryParams.communityId);
+      this.options1 = res.data;
       console.log(res)
     },
     /** 表单重置*/
@@ -397,6 +394,7 @@ export default {
     },
     /**楼栋单元选中变换时执行的方法*/
     handleChange(value) {
+      console.log(value)
       this.from.selected = value
       this.options = value;
       this.getList();
