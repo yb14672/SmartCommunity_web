@@ -11,7 +11,6 @@
             clearable
         />
       </el-form-item>
-
       <el-form-item label="房屋状态" prop="roomStatus">
         <el-select v-model="queryParams.roomStatus" placeholder="请选择房屋状态" @change="statusChange()" clearable
                    @clear="statusChange()"
@@ -28,7 +27,6 @@
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
-
     </el-form>
 
     <!--CRUD+导出按钮-->
@@ -153,7 +151,7 @@
       </el-pagination>
     </div>
 
-    <!--    添加、修改房屋对话框-->
+    <!--添加、修改房屋对话框-->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="楼栋/单元" prop="unitId" label-width="85px">
@@ -162,12 +160,9 @@
               :options="options1"
           />
         </el-form-item>
-
-
         <el-form-item label="楼层" prop="roomLevel">
           <el-input type="number" v-model="form.roomLevel" placeholder="请输入楼层"/>
         </el-form-item>
-
         <el-form-item label="房间名称" prop="roomName">
           <el-input v-model="form.roomName" placeholder="请输入房间名称"/>
         </el-form-item>
@@ -197,7 +192,6 @@
             </el-radio>
           </el-radio-group>
         </el-form-item>
-
         <el-form-item label="是否商品房" label-width="82px">
           <el-radio-group v-model="form.roomSCommercialHouse">
             <el-radio
@@ -289,13 +283,10 @@ export default {
       showSearch: true,
       // 房屋状态字典
       roomStatusOptions: [],
-
       // 房屋户型字典
       roomHouseTypeOptions: [],
-
       // 总条数
       total: 0,
-
       // 获取房屋信息
       roomList: [],
       // 小区信息表格数据
@@ -354,19 +345,18 @@ export default {
     });
     this.getBuildingAndUnitListByCommunityId();
   },
-  mounted() {
-    // this.getlivestockInfo(1);
-  },
   methods: {
     /** 过滤树形结构 */
     getTreeData(data) {
-      for (var i = 0; i < data.length; i++) {
-        if (data[i].children.length < 1) {
-          // children若为空数组，则将children设为undefined
-          data[i].children = undefined;
-        } else {
-          // children若不为空数组，则继续 递归调用 本方法
-          this.getTreeData(data[i].children);
+      if(data!=null){
+        for (let i = 0; i < data.length; i++) {
+          if (data[i].children.length < 1) {
+            // children若为空数组，则将children设为undefined
+            data[i].children = undefined;
+          } else {
+            // children若不为空数组，则继续 递归调用 本方法
+            this.getTreeData(data[i].children);
+          }
         }
       }
       return data;
@@ -374,6 +364,7 @@ export default {
     /** 获取楼栋单元下拉框 */
     async getBuildingAndUnitListByCommunityId() {
       const {data: res} = await this.$http.get("/zyBuilding/buildingList/" + this.queryParams.communityId);
+      console.log(res)
       this.options1 = this.getTreeData(res.data);
     },
     /** 表单重置*/
@@ -387,10 +378,10 @@ export default {
         roomLevel: "",
         roomName: "",
         communityId: this.queryParams.communityId,
-        roomStatus: "none",
+        roomStatus: "",
         roomIsShop: "Y",
         roomSCommercialHouse: "N",
-        roomHouseType: "other",
+        roomHouseType: "",
       };
       this.resetForm("form");
     },
@@ -403,8 +394,9 @@ export default {
     selectedCommunity(value) {
       this.queryParams.communityId = value
       this.queryParams.pageNum = 1
-      this.getList();
       this.communityId = value
+      this.getBuildingAndUnitListByCommunityId();
+      this.getList();
     },
     /**楼栋单元选中变换时执行的方法*/
     handleChange(value) {
@@ -419,7 +411,9 @@ export default {
       const {data: com} = await this.$http.get('/zyCommunity/selectAll', {
         params: {
           communityName: this.queryParams.communityName,
-          communityCode: this.queryParams.communityCode
+          communityCode: this.queryParams.communityCode,
+          pageNum:0,
+          pageSize:0,
         }
       });
       if (com.meta.errorCode !== 200) {
@@ -477,6 +471,7 @@ export default {
     },
     /**  新增按钮操作*/
     handleAdd() {
+      this.reset();
       // eslint-disable-next-line no-undef
       if (this.options1.length === 0 || this.options1[0].children.length === 0) {
         this.$message.error("该小区暂无楼栋以及单元，无法注册房屋信息！");
@@ -487,7 +482,6 @@ export default {
         this.open = true;
         this.title = "添加房屋";
       }
-
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
