@@ -277,11 +277,6 @@
                 this.reset();
                 this.form = row;
                 this.examineRecord = true;
-                // getRoom(row.ownerRoomId).then(response => {
-                //    this.recordList = response.rows;
-                //    this.total = response.total;
-                //    this.loading = false;
-                //   });
                 const {data:res}=await this.$http.get("zyOwnerRoomRecord/selectZyOwnerRoomRecord",{
                     params:{
                         //把id带给后端查询字段
