@@ -298,25 +298,21 @@
                     console.log(this.form)
                     if (valid) {
                         if (this.form.ownerRoomId != null) {
-                            if (type=='Reject'){
+
                                 // 修改业主审核的状态为审核失败
-                                const {data: res} = await this.$http.put('zyOwnerRoom/updateOwnerRoomStatusReject',this.form);
+                                const {data: res} = await this.$http.put('zyOwnerRoom/updateOwnerRoomStatus',this.form,{
+                                    params:{
+                                        status:type
+                                    }
+                                });
                                 if (res.meta.errorCode !== 200) {
                                     return this.$message.error(res.meta.errorMsg)
                                 }
                                 this.open = false;
                                 await this.getList();
                                 return this.$message.success("修改成功！")
-                                // 修改业主审核的状态为绑定
-                            }else if (type=='Binding'){
-                                const {data: res} = await this.$http.put('zyOwnerRoom/updateOwnerRoomStatusBinding',this.form);
-                                if (res.meta.errorCode !== 200) {
-                                    return this.$message.error(res.meta.errorMsg)
-                                }
-                                this.open = false;
-                                await this.getList();
-                                return this.$message.success("修改成功！")
-                            }
+
+
 
                             // // this.form.roomStatus = type;
                             // let data = {
