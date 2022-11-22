@@ -20,6 +20,7 @@ import Building from "../components/community/Building";
 import Unit from "@/components/community/Unit";
 import Room from "@/components/community/Room";
 import OwnerRoom from "@/components/community/OwnerRoom";
+import Owner from "../components/community/Owner";
 import Swagger from "@/views/tool/swagger/index";
 
 Vue.use(Router)
@@ -50,7 +51,8 @@ const router = new Router({
                 {path:'/community/unit',component:Unit},
                 {path:'/community/room',component:Room},
                 {path:'/tool/swagger',component:Swagger},
-                {path:'/bing/ownerRoom',component:OwnerRoom}
+                {path:'/bing/ownerRoom',component:OwnerRoom},
+                {path:'/bing/owner',component:Owner},
             ]
         },
         {
