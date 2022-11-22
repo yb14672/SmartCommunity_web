@@ -2,7 +2,7 @@
   <div class="app-container">
     <!-- 模糊查询-->
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="楼栋/单元" prop="selected" label-width="85px">
+      <el-form-item label="楼栋/单元" label-width="85px">
         <el-cascader
             :v-model="toOptions"
             :prop="cascaderProps"
@@ -11,7 +11,6 @@
             clearable
         />
       </el-form-item>
-
       <el-form-item label="房屋状态" prop="roomStatus">
         <el-select v-model="queryParams.roomStatus" placeholder="请选择房屋状态" @change="statusChange()" clearable
                    @clear="statusChange()"
@@ -28,7 +27,6 @@
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
-
     </el-form>
 
     <!--CRUD+导出按钮-->
@@ -61,9 +59,9 @@
         >导出
         </el-button>
       </el-col>
-      <el-col :span="1.5" style="float: right">
+      <el-col :span="1.5" :offset="14">
         <el-select v-model="queryParams.communityId" @change="selectedCommunity(queryParams.communityId)"
-                   style="border: 0;position: relative;margin-left: 1000px" filterable placeholder="请选择小区"
+                   style="border: 0;position: relative;" filterable placeholder="请选择小区"
                    class="avatar-container right-menu-item hover-effect" value="">
           <el-option
               v-for="item in options"
@@ -141,17 +139,19 @@
     </el-table>
 
     <!-- 分页器 -->
-    <div class="block" style="margin-top:15px;">
+    <div class="block" style="margin-top:15px;float: right;">
       <el-pagination
+          @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="queryParams.pageNum"
+          :page-sizes="[1, 2, 5, 10]"
           :page-size="queryParams.pageSize"
-          layout="total, prev, pager, next, jumper"
+          layout="total, sizes, prev, pager, next, jumper"
           :total="total">
       </el-pagination>
     </div>
 
-    <!--    添加、修改房屋对话框-->
+    <!--添加、修改房屋对话框-->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="楼栋/单元" prop="unitId" label-width="85px">
@@ -160,12 +160,9 @@
               :options="options1"
           />
         </el-form-item>
-
-
         <el-form-item label="楼层" prop="roomLevel">
           <el-input type="number" v-model="form.roomLevel" placeholder="请输入楼层"/>
         </el-form-item>
-
         <el-form-item label="房间名称" prop="roomName">
           <el-input v-model="form.roomName" placeholder="请输入房间名称"/>
         </el-form-item>
@@ -195,7 +192,6 @@
             </el-radio>
           </el-radio-group>
         </el-form-item>
-
         <el-form-item label="是否商品房" label-width="82px">
           <el-radio-group v-model="form.roomSCommercialHouse">
             <el-radio
@@ -254,8 +250,8 @@ export default {
       ],
       //级联组件
       cascaderProps: {
-        value: 'buildingId',
-        label: 'buildingName',
+        value: 'value',
+        label: 'label',
         children: 'children',
       },
       //级联选择
@@ -287,13 +283,10 @@ export default {
       showSearch: true,
       // 房屋状态字典
       roomStatusOptions: [],
-
       // 房屋户型字典
       roomHouseTypeOptions: [],
-
       // 总条数
       total: 0,
-
       // 获取房屋信息
       roomList: [],
       // 小区信息表格数据
@@ -352,15 +345,27 @@ export default {
     });
     this.getBuildingAndUnitListByCommunityId();
   },
-  mounted() {
-    // this.getlivestockInfo(1);
-  },
   methods: {
+    /** 过滤树形结构 */
+    getTreeData(data) {
+      if(data!=null){
+        for (let i = 0; i < data.length; i++) {
+          if (data[i].children.length < 1) {
+            // children若为空数组，则将children设为undefined
+            data[i].children = undefined;
+          } else {
+            // children若不为空数组，则继续 递归调用 本方法
+            this.getTreeData(data[i].children);
+          }
+        }
+      }
+      return data;
+    },
     /** 获取楼栋单元下拉框 */
     async getBuildingAndUnitListByCommunityId() {
       const {data: res} = await this.$http.get("/zyBuilding/buildingList/" + this.queryParams.communityId);
-      this.options1 = res.data;
       console.log(res)
+      this.options1 = this.getTreeData(res.data);
     },
     /** 表单重置*/
     reset() {
@@ -373,10 +378,10 @@ export default {
         roomLevel: "",
         roomName: "",
         communityId: this.queryParams.communityId,
-        roomStatus: "none",
+        roomStatus: "",
         roomIsShop: "Y",
         roomSCommercialHouse: "N",
-        roomHouseType: "other",
+        roomHouseType: "",
       };
       this.resetForm("form");
     },
@@ -389,13 +394,15 @@ export default {
     selectedCommunity(value) {
       this.queryParams.communityId = value
       this.queryParams.pageNum = 1
-      this.getList();
       this.communityId = value
+      this.getBuildingAndUnitListByCommunityId();
+      this.getList();
     },
     /**楼栋单元选中变换时执行的方法*/
     handleChange(value) {
-      console.log(value)
-      this.from.selected = value
+      this.toOptions = value;
+      this.queryParams.buildingId = value[0];
+      this.queryParams.unitId = value[1];
       this.options = value;
       this.getList();
     },
@@ -404,7 +411,9 @@ export default {
       const {data: com} = await this.$http.get('/zyCommunity/selectAll', {
         params: {
           communityName: this.queryParams.communityName,
-          communityCode: this.queryParams.communityCode
+          communityCode: this.queryParams.communityCode,
+          pageNum:0,
+          pageSize:0,
         }
       });
       if (com.meta.errorCode !== 200) {
@@ -449,6 +458,11 @@ export default {
       this.queryParams.pageNum = val;
       this.getList();
     },
+    /** 分页每页多少条数据 */
+    handleSizeChange(val) {
+      this.queryParams.pageSize = val;
+      this.getList();
+    },
     /**多选框选中数据*/
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.zyRoom.roomId)
@@ -457,21 +471,22 @@ export default {
     },
     /**  新增按钮操作*/
     handleAdd() {
+      this.reset();
       // eslint-disable-next-line no-undef
-      console.log(this.options1)
       if (this.options1.length === 0 || this.options1[0].children.length === 0) {
         this.$message.error("该小区暂无楼栋以及单元，无法注册房屋信息！");
       } else {
         this.value1 = [this.options1[0].value, this.options1[0].children[0].value];
+        this.form.roomSCommercialHouse = "Y"
+        this.form.roomIsShop = "Y"
         this.open = true;
         this.title = "添加房屋";
       }
-
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.form = row;
-      this.value1 = [row.ZyBuilding.buildingId, row.zyunit.unitId]
+      this.value1 = [row.buildingId, row.unitId]
       this.open = true;
       this.title = "修改房屋 ";
     },
@@ -479,18 +494,30 @@ export default {
     submitForm: async function () {
       this.form.buildingId = this.value1[0];
       this.form.unitId = this.value1[1];
+      this.form.communityId = this.queryParams.communityId;
       await this.$refs["form"].validate(async valid => {
         if (valid) {
-          let msg = (this.form.roomId !== undefined && this.form.roomId !== "") ? "修改" : "添加";
-          this.$http.post("/zyRoom/updateZyRoom", this.form).then((res) => {
-            if (res.data.msg === "1") {
-              this.$message.error(msg + "失败,该小区楼栋单元下此房间已存在！")
-            } else {
-              this.$message.success(msg + "成功！")
-              this.getList();
-              this.open = false;
+          if (this.form.roomId != undefined) {
+            //修改
+            const {data: res} = await this.$http.put("zyRoom/updateZyRoom", this.form);
+            if (res.meta.errorCode != 200) {
+              return this.$message.error(res.meta.errorMsg);
             }
-          });
+            this.reset();
+            this.open = false;
+            this.$message.success("修改成功");
+            await this.getList();
+          } else {
+            //新增
+            const {data: res} = await this.$http.post("zyRoom/insertZyRoom", this.form);
+            if (res.meta.errorCode !== 200) {
+              return this.$message.error(res.meta.errorMsg)
+            }
+            this.reset();
+            this.open = false;
+            this.$message.success("新增成功")
+            await this.getList();
+          }
         }
       })
     },
@@ -512,7 +539,7 @@ export default {
       this.open = false;
       this.getList();
     },
-    /**  单删+批量删除按钮操作*/
+    /** 单删+批量删除按钮操作 */
     handleDelete(row) {
       if (row.roomId !== undefined) {
         this.ids = [row.roomId]
@@ -526,19 +553,14 @@ export default {
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
-          if (row.roomStatus === "none") {
-            this.$http.post("/zyRoom/delZyRoom", this.ids).then((resp) => {
-
-              if (resp.data.code === 200) {
-                this.$message.success(resp.data.msg);
-              } else {
-                this.$message.error(resp.data.msg);
-              }
-              this.getList();
-            });
-          } else {
-            this.$message.error('存在已被业主购买的房屋！不可删除！')
-          }
+          this.$http.delete("/zyRoom/deleteZyRoom?idList=" + this.ids).then((resp) => {
+            if (resp.data.meta.errorCode === 200) {
+              this.$message.success(resp.data.meta.errorMsg);
+            } else {
+              this.$message.error(resp.data.meta.errorMsg);
+            }
+            this.getList();
+          });
         }).catch(() => {
           this.getList()
           this.$message({

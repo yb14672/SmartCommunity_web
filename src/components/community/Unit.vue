@@ -76,18 +76,18 @@
         >导出
         </el-button>
       </el-col>
+      <el-col :span="1.5" :offset="14">
+        <!--下拉框，选小区的-->
+        <el-select v-model="communityId" placeholder="请选择" style="float: right" @change="changeCommunity">
+          <el-option
+              v-for="item in communities"
+              :key="item.communityId"
+              :label="item.communityName"
+              :value="item.communityId">
+          </el-option>
+        </el-select>
+      </el-col>
     </el-row>
-    <!--下拉框，选小区的-->
-    <template>
-      <el-select v-model="communityId" placeholder="请选择" style="float: right" @change="changeCommuntiy">
-        <el-option
-            v-for="item in communities"
-            :key="item.communityId"
-            :label="item.communityName"
-            :value="item.communityId">
-        </el-option>
-      </el-select>
-    </template>
     <el-table v-loading="loading" :data="unitList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column
@@ -133,7 +133,6 @@
         </template>
       </el-table-column>
     </el-table>
-
     <!-- 添加或修改单元 对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
@@ -219,7 +218,6 @@ export default {
       communityId: '1338423709557272577',
       //楼栋数组
       options: {},
-
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -263,8 +261,9 @@ export default {
   },
   methods: {
     /** 修改小区id */
-    changeCommuntiy(id) {
+    changeCommunity(id) {
       this.communityId = id;
+      this.getBuildingList();
       this.getList();
     },
     /** 修改楼栋id */
