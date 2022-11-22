@@ -920,8 +920,8 @@ export default {
       this.visible = false
     },
     /** 检查是否上传过多的Excel */
-    handleExceed (files, fileList) {
-      warning('无法添加更多文件')
+    handleExceed () {
+      this.$message.warning('无法添加更多文件')
     },
     /** 点击上传 */
     submitUpload() {
@@ -941,8 +941,37 @@ export default {
 </script>
 
 <style scoped>
-.el-card {
-  border: none;
+li {
+  line-height: normal;
+  padding: 7px;
+}
+
+.name {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
+  height: auto;
+  max-height: 274px;
+  padding: 0;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+ul li >>> .el-tree .el-tree-node__content {
+  height: auto;
+  padding: 0 20px;
+}
+
+.el-tree >>> .is-current .el-tree-node__label {
+  color: #409EFF;
+  font-weight: 700;
+}
+
+.el-tree >>> .is-current .el-tree-node__children .el-tree-node__label {
+  color: #606266;
+  font-weight: normal;
 }
 </style>
 
