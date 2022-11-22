@@ -84,7 +84,7 @@
                 <el-table-column label="业主类型" align="center" prop="ownerType" :formatter="ownerTypeFormat"/>
                 <el-table-column label="绑定状态" align="center" prop="roomStatus" :formatter="bindingStatusFormat"/>
                 <el-table-column label="审核意见" align="center" prop="recordAuditOpinion"/>
-                <el-table-column label="审核人姓名" align="center" prop="createByName"/>
+                <el-table-column label="审核人姓名" align="center" prop="updateBy"/>
                 <el-table-column label="审核人类型" align="center" prop="recordAuditType" :formatter="reviewerStatusFormat"/>
                 <el-table-column label="备注" align="center" prop="remark"/>
             </el-table>
@@ -289,20 +289,20 @@
                     }
                 });
                 this.recordList = res.data;
-                console.log(res)
+                console.log(1,res)
                 this.title = "审核记录全过程 ";
             },
             /** 提交按钮 */
             submitForm(type) {
                 this.$refs["form"].validate(async valid => {
-                    console.log(this.form)
                     if (valid) {
                         if (this.form.ownerRoomId != null) {
-
                                 // 修改业主审核的状态为审核失败
                                 const {data: res} = await this.$http.put('zyOwnerRoom/updateOwnerRoomStatus',this.form,{
                                     params:{
-                                        status:type
+                                        status:type,
+                                        recordAuditOpinion:this.form.recordAuditOpinion,
+
                                     }
                                 });
                                 if (res.meta.errorCode !== 200) {
