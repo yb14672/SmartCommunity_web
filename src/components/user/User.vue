@@ -653,7 +653,7 @@ export default {
       this.valueTitle = node[this.props.label]
       this.valueId = node[this.props.value]
       this.$emit('getValue', this.valueId)
-      this.formData.deptId = this.valueId
+      this.formData.deptId = node.deptId
       this.defaultExpandedKey = []
     },
     /** 选中部门节点时 */
@@ -769,7 +769,7 @@ export default {
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg)
             }
-            this.getUserList();
+            await this.getUserList();
             this.$message.success("新增成功");
             this.open = false;
           } else {

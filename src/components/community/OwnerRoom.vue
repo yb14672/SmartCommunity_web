@@ -207,7 +207,6 @@
                         roomStatus: this.queryParams.roomStatus,
                     }
                 });
-                console.log(res)
                 if (res.meta.errorCode !== 200) {
                     return this.$message.error(res.meta.errorMsg)
                 }
@@ -284,7 +283,6 @@
                     }
                 });
                 this.recordList = res.data;
-                console.log(1,res)
                 this.title = "审核记录全过程 ";
             },
             /** 提交按钮 */

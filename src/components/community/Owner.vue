@@ -258,7 +258,6 @@ export default {
           ownerPhoneNumber: this.queryParams.ownerPhoneNumber,
         }
       });
-      console.log(res)
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
@@ -366,7 +365,6 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ownerRoomId = row.ownerRoomId;
-      console.log(ownerRoomId);
       this.$confirm('是否确认解绑该业主?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
