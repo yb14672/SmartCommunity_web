@@ -40,7 +40,6 @@
             <el-table-column label="备注" align="center" prop="remark"/>
             <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
                 <template slot-scope="scope">
-
                     <el-button v-if="scope.row.roomStatus === 'Auditing'"
                                size="mini"
                                type="text"
@@ -204,13 +203,8 @@
                     params: {
                         pageNum: this.queryParams.pageNum,
                         pageSize: this.queryParams.pageSize,
-                        communityName: this.queryParams.communityName,
-                        buildingName: this.queryParams.buildingName,
-                        unitName: this.unitName,
-                        roomName: this.roomName,
-                        ownerRealName: this.ownerRealName,
-                        ownerType: this.ownerType,
-                        roomStatus: this.roomStatus,
+                       //搜索
+                        roomStatus: this.queryParams.roomStatus,
                     }
                 });
                 console.log(res)
@@ -300,26 +294,47 @@
             },
             /** 提交按钮 */
             submitForm(type) {
-                this.$refs["form"].validate(valid => {
+                this.$refs["form"].validate(async valid => {
+                    console.log(this.form)
                     if (valid) {
                         if (this.form.ownerRoomId != null) {
-                            // this.form.roomStatus = type;
-                            let data = {
-                                ownerRoomId: this.form.ownerRoomId,
-                                recordAuditOpinion: this.form.recordAuditOpinion,
-                                roomStatus: type,
-                            };
-                            updateRoom(data).then(response => {
-                                this.msgSuccess("审核成功");
+                            if (type=='Reject'){
+                                // 修改业主审核的状态为审核失败
+                                const {data: res} = await this.$http.put('zyOwnerRoom/updateOwnerRoomStatusReject',this.form);
+                                if (res.meta.errorCode !== 200) {
+                                    return this.$message.error(res.meta.errorMsg)
+                                }
                                 this.open = false;
-                                this.getList();
-                            });
+                                await this.getList();
+                                return this.$message.success("修改成功！")
+                                // 修改业主审核的状态为绑定
+                            }else if (type=='Binding'){
+                                const {data: res} = await this.$http.put('zyOwnerRoom/updateOwnerRoomStatusBinding',this.form);
+                                if (res.meta.errorCode !== 200) {
+                                    return this.$message.error(res.meta.errorMsg)
+                                }
+                                this.open = false;
+                                await this.getList();
+                                return this.$message.success("修改成功！")
+                            }
+
+                            // // this.form.roomStatus = type;
+                            // let data = {
+                            //     ownerRoomId: this.form.ownerRoomId,
+                            //     recordAuditOpinion: this.form.recordAuditOpinion,
+                            //     roomStatus: type,
+                            // };
+                            // updateRoom(data).then(response => {
+                            //     this.msgSuccess("审核成功");
+                            //     this.open = false;
+                            //     this.getList();
+                            // });
                         } else {
-                            addRoom(this.form).then(response => {
-                                this.msgSuccess("新增成功");
-                                this.open = false;
-                                this.getList();
-                            });
+                            // addRoom(this.form).then(response => {
+                            //     this.msgSuccess("新增成功");
+                            //     this.open = false;
+                            //     this.getList();
+                            // });
                         }
                     }
                 });
