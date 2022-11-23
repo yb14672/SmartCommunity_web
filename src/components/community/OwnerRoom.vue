@@ -207,7 +207,6 @@
                         roomStatus: this.queryParams.roomStatus,
                     }
                 });
-                console.log(res)
                 if (res.meta.errorCode !== 200) {
                     return this.$message.error(res.meta.errorMsg)
                 }
@@ -277,11 +276,6 @@
                 this.reset();
                 this.form = row;
                 this.examineRecord = true;
-                // getRoom(row.ownerRoomId).then(response => {
-                //    this.recordList = response.rows;
-                //    this.total = response.total;
-                //    this.loading = false;
-                //   });
                 const {data:res}=await this.$http.get("zyOwnerRoomRecord/selectZyOwnerRoomRecord",{
                     params:{
                         //把id带给后端查询字段
@@ -289,7 +283,6 @@
                     }
                 });
                 this.recordList = res.data;
-                console.log(1,res)
                 this.title = "审核记录全过程 ";
             },
             /** 提交按钮  */

@@ -364,7 +364,6 @@ export default {
     /** 获取楼栋单元下拉框 */
     async getBuildingAndUnitListByCommunityId() {
       const {data: res} = await this.$http.get("/zyBuilding/buildingList/" + this.queryParams.communityId);
-      console.log(res)
       this.options1 = this.getTreeData(res.data);
     },
     /** 表单重置*/
