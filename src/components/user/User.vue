@@ -136,7 +136,7 @@
               </el-button>
             </el-col>
             <!--弹出的导入-->
-            <el-dialog  :visible.sync="dialogVisible6" :before-close="handleClose"  width="400px" >
+            <el-dialog :visible.sync="dialogVisible6" :before-close="handleClose" width="400px">
               <el-upload ref="upload"
                          action=""
                          drag
@@ -151,9 +151,10 @@
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
 
-                <div class="el-upload__tip" slot="tip"  style="text-align: center">只能上传xls文件，且不超过500kb</div>
+                <div class="el-upload__tip" slot="tip" style="text-align: center">只能上传xls文件，且不超过500kb</div>
               </el-upload>
-              <div style="text-align: center">没有模板？点击<a class="el-upload__text" @click="downloadExport" href="#">下载模板</a></div>
+              <div style="text-align: center">没有模板？点击<a class="el-upload__text" @click="downloadExport"
+                                                        href="#">下载模板</a></div>
               <div style="text-align: center">
                   <span>
                     <el-button @click="cancelUpload">取消</el-button>
@@ -384,7 +385,7 @@
         title="错误"
         :visible.sync="dialogVisibleUpload"
         width="30%">
-      <span>{{uploadData}}</span>
+      <span>{{ uploadData }}</span>
       <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="dialogVisibleUpload = false">确 定</el-button>
         </span>
@@ -393,7 +394,6 @@
 </template>
 
 <script>
-
 export default {
   name: "UserList",
   // inject: ["reload"],
@@ -449,7 +449,7 @@ export default {
       dialogVisible: false,
       dialogVisible6: false,
       dialogVisibleUpload: false,
-      uploadData:'',
+      uploadData: '',
       defaultExpandedKey: [],
       loading: true,
       open: false,
@@ -655,7 +655,6 @@ export default {
       this.$emit('getValue', this.valueId)
       this.formData.deptId = node.deptId
       this.defaultExpandedKey = []
-      console.log(this.formData)
     },
     /** 选中部门节点时 */
     handleNodeClick(data) {
@@ -748,22 +747,21 @@ export default {
     /** 打开修改表单时 */
     async updateForm(row) {
       this.open = true;
-      const {data: res} = await this.$http.get(`sysUser/getUserInfo?userId=`+row.userId);
-      this.formData.phonenumber=res.data.sysUser.phonenumber;
-      this.formData.userId=res.data.sysUser.userId;
-      this.formData.nickName=res.data.sysUser.nickName;
-      this.formData.userName=res.data.sysUser.userName;
-      this.formData.status=res.data.sysUser.status;
-      this.formData.email=res.data.sysUser.email;
-      this.formData.sex=res.data.sysUser.sex;
-      this.formData.deptId=res.data.sysUser.deptId;
-      this.formData.remark=res.data.sysUser.remark;
-      this.formData.postId=res.data.sysPost.postId;
-      this.formData.roleId=res.data.sysRole.roleId;
+      const {data: res} = await this.$http.get(`sysUser/getUserInfo?userId=` + row.userId);
+      this.formData.phonenumber = res.data.sysUser.phonenumber;
+      this.formData.userId = res.data.sysUser.userId;
+      this.formData.nickName = res.data.sysUser.nickName;
+      this.formData.userName = res.data.sysUser.userName;
+      this.formData.status = res.data.sysUser.status;
+      this.formData.email = res.data.sysUser.email;
+      this.formData.sex = res.data.sysUser.sex;
+      this.formData.deptId = res.data.sysUser.deptId;
+      this.formData.remark = res.data.sysUser.remark;
+      this.formData.postId = res.data.sysPost.postId;
+      this.formData.roleId = res.data.sysRole.roleId;
     },
     /**表单提交 */
     submitForm() {
-      console.log(this.formData)
       this.$refs["formData"].validate(async valid => {
         if (valid) {
           if (this.formData.userId === undefined) {
@@ -821,7 +819,7 @@ export default {
     /**多选框选中 */
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.userId)
-      this.single = selection.length!=1
+      this.single = selection.length != 1
       this.multiple = !selection.length
     },
     /** 导出按钮操作 */
@@ -829,7 +827,7 @@ export default {
       //设置全局配置信息
       const config = {
         method: 'get',
-        url: 'sysUser/getExcel?userIds='+this.ids,
+        url: 'sysUser/getExcel?userIds=' + this.ids,
         responseType: 'blob'
       };
       //发送请求
@@ -876,20 +874,22 @@ export default {
           .then(_ => {
             done();
           })
-          .catch(_ => {});
+          .catch(_ => {
+          });
     },
     /** 关闭导入的x */
     handleClose(done) {
       this.$confirm('确认关闭？')
           .then(_ => {
             done();
-            this.fileList.splice(0,1)
+            this.fileList.splice(0, 1)
             this.visible = false
           })
-          .catch(_ => {});
+          .catch(_ => {
+          });
     },
     /** 判断文件类型 */
-    judgeFileType (file) {
+    judgeFileType(file) {
       let suffix = file.name.substring(file.name.lastIndexOf('.') + 1)
       if (suffix !== 'xlsx' && suffix !== 'xls') {
         // warning('请选择正确的文件格式的文件')
@@ -903,33 +903,33 @@ export default {
       formData.append('file', fileObject)
       const {data: res} = await this.$http.post('sysUser/import-data', formData)
       if (res.meta.errorCode !== 200) {
-        this.dialogVisibleUpload=true;
+        this.dialogVisibleUpload = true;
         this.uploadData = res.data;
-      }else {
+      } else {
         this.$message({
           message: '导入成功！',
           type: 'success'
         });
         this.getUserList();
       }
-      this.fileList.splice(0,1)
+      this.fileList.splice(0, 1)
       this.visible = false
 
     },
     /** 关闭上传窗口时 */
     cancelUpload() {
-      this.fileList.splice(0,1)
+      this.fileList.splice(0, 1)
       this.visible = false
     },
     /** 检查是否上传过多的Excel */
-    handleExceed () {
+    handleExceed() {
       this.$message.warning('无法添加更多文件')
     },
     /** 点击上传 */
     submitUpload() {
       if (this.$refs.upload.uploadFiles.length === 1) {
         this.$refs.upload.submit()
-        this.dialogVisible6=false;
+        this.dialogVisible6 = false;
       }
     },
   },
