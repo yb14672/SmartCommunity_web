@@ -292,7 +292,7 @@
                 console.log(1,res)
                 this.title = "审核记录全过程 ";
             },
-            /** 提交按钮 */
+            /** 提交按钮  */
             submitForm(type) {
                 this.$refs["form"].validate(async valid => {
                     if (valid) {
