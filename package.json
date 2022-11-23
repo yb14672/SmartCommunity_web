@@ -13,15 +13,17 @@
     "core-js": "^3.8.3",
     "element-ui": "^2.4.5",
     "moment": "^2.29.4",
+    "postcss": "latest",
+    "quill": "^1.3.7",
     "vue": "^2.6.14",
     "vue-cropper": "^0.5.8",
     "vue-fontawesome-elementui-icon-picker": "^0.1.9",
     "vue-monoplasty-slide-verify": "^1.3.1",
     "vue-particles": "^1.0.9",
     "vue-puzzle-vcode": "^1.1.9",
+    "vue-quill-editor": "^3.0.6",
     "vue-router": "^3.5.1",
-    "vuex": "^3.6.2",
-    "postcss": "latest"
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
