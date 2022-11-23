@@ -516,7 +516,7 @@ export default {
         userName: [
           {required: true, message: "角色名称不能为空", trigger: "blur"},
           {pattern: /^[A-Za-z0-9\u4e00-\u9fa5]+$/, message: '非法字符', trigger: "blur"},
-          {min: 2, max: 10, message: "角色名称长度不超过10个字符", trigger: "blur"},
+          {min: 2, max: 10, message: "角色名称长度需在2-10个字符", trigger: "blur"},
         ],
         password: [
           {required: true, message: "密码不能为空", trigger: "blur"},
@@ -655,6 +655,7 @@ export default {
       this.$emit('getValue', this.valueId)
       this.formData.deptId = node.deptId
       this.defaultExpandedKey = []
+      console.log(this.formData)
     },
     /** 选中部门节点时 */
     handleNodeClick(data) {
@@ -664,8 +665,8 @@ export default {
     },
     /** 搜索框变化时 */
     querySearch(queryString, cb) {
-      var restaurants = this.restaurants;
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      let restaurants = this.restaurants;
+      let results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
       // 调用 callback 返回建议列表的数据
       cb(results);
     },
@@ -735,7 +736,7 @@ export default {
         nickName: undefined,
         email: undefined,
         sex: undefined,
-        deptId: undefined,
+        deptId: JSON.parse(JSON.stringify(this.form.deptId)),
         postIds: [],
         roleIds: [],
         userName: undefined,
@@ -762,6 +763,7 @@ export default {
     },
     /**表单提交 */
     submitForm() {
+      console.log(this.formData)
       this.$refs["formData"].validate(async valid => {
         if (valid) {
           if (this.formData.userId === undefined) {
