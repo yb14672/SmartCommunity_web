@@ -374,11 +374,8 @@ export default {
         if (res.meta.errorCode !== 200) {
           return this.$message.error(res.meta.errorMsg)
         }
-
-        this.getList()
+        await this.getList()
         return this.$message.success(res.meta.errorMsg)
-
-
       })
     },
     /** 导出按钮操作 */
