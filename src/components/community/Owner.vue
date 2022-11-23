@@ -299,41 +299,6 @@ export default {
       };
       this.resetForm("form");
     },
-            },
-            // 取消按钮
-            cancel() {
-                this.open = false;
-                this.reset();
-            },
-            // 表单重置
-            reset() {
-                this.form = {
-                    ownerRoomId:null,
-                    ownerId: null,
-                    ownerNickname: null,
-                    ownerRealName: null,
-                    ownerGender: null,
-                    ownerAge: null,
-                    ownerIdCard: null,
-                    ownerPhoneNumber: null,
-                    ownerOpenId: null,
-                    ownerWechatId: null,
-                    ownerQqNumber: null,
-                    ownerBirthday: null,
-                    ownerPortrait: null,
-                    ownerSignature: null,
-                    ownerStatus: "0",
-                    ownerLogonMode: null,
-                    ownerType: null,
-                    ownerPassword: null,
-                    createBy: null,
-                    createTime: null,
-                    updateBy: null,
-                    updateTime: null,
-                    remark: null
-                };
-                this.resetForm("form");
-            },
 
     /** 分页每页多少条数据 */
     handleSizeChange(val) {
@@ -409,81 +374,6 @@ export default {
         if (res.meta.errorCode !== 200) {
           return this.$message.error(res.meta.errorMsg)
         }
-            /** 分页每页多少条数据 */
-            handleSizeChange(val) {
-                this.queryParams.pageSize = val;
-                this.getList();
-            },
-            /** 点击切换上下页 */
-            handleCurrentChange(val) {
-                this.queryParams.pageNum = val;
-                this.getList();
-            },
-            /** 搜索按钮操作 */
-            handleQuery() {
-                this.queryParams.pageNum = 1;
-                this.getList();
-            },
-            /** 重置按钮操作 */
-            resetQuery() {
-                this.resetForm("queryForm");
-                this.handleQuery();
-            },
-            // 多选框选中数据
-            handleSelectionChange(selection) {
-                this.ids = selection.map(item => item.ownerRoomId)
-                this.single = selection.length !== 1
-                this.multiple = !selection.length
-            },
-            /** 新增按钮操作 */
-            handleAdd() {
-                this.reset();
-                this.open = true;
-                this.title = "添加业主 ";
-            },
-            // /** 修改按钮操作 */
-            // handleUpdate(row) {
-            //     this.reset();
-            //     const ownerId = row.ownerId || this.ids
-            //     getOwner(ownerId).then(response => {
-            //         this.form = response.data;
-            //         this.open = true;
-            //         this.title = "修改业主 ";
-            //     });
-            // },
-            // /** 提交按钮 */
-            // submitForm() {
-            //     this.$refs["form"].validate(valid => {
-            //         if (valid) {
-            //             if (this.form.ownerId != null) {
-            //                 updateOwner(this.form).then(response => {
-            //                     this.msgSuccess("修改成功");
-            //                     this.open = false;
-            //                     this.getList();
-            //                 });
-            //             } else {
-            //                 addOwner(this.form).then(response => {
-            //                     this.msgSuccess("新增成功");
-            //                     this.open = false;
-            //                     this.getList();
-            //                 });
-            //             }
-            //         }
-            //     });
-            // },
-            /** 删除按钮操作 */
-            handleDelete(row) {
-                const ownerRoomId = row.ownerRoomId;
-                console.log(ownerRoomId);
-                this.$confirm('是否确认解绑该业主?', "警告", {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning"
-                }).then(async ()=> {
-                    const {data: res} = await this.$http.delete('/zyOwner/deleteOwner?ownerRoomId='+ownerRoomId)
-                    if (res.meta.errorCode !== 200) {
-                        return this.$message.error(res.meta.errorMsg)
-                    }
 
         this.getList()
         return this.$message.success(res.meta.errorMsg)
