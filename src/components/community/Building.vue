@@ -330,7 +330,7 @@ export default {
         }
       });
     },
-    /** 删除按钮操作 */
+    /** 删除按钮操作  */
     handleDelete(row) {
       const buildingIds = row.buildingId || this.ids;
       this.$confirm('是否确认删除楼层编号为"' + buildingIds + '"的数据项?', "警告", {
@@ -347,7 +347,7 @@ export default {
         this.$message.success("删除成功")
       })
     },
-    /** 导出按钮操作 */
+    /** 导出按钮操作  */
     handleExport() {
       //设置全局配置信息
       const config = {
