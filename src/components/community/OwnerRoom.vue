@@ -283,11 +283,13 @@
                     }
                 });
                 this.recordList = res.data;
+                console.log(1,this.recordList)
                 this.title = "审核记录全过程 ";
             },
             /** 提交按钮  */
             submitForm(type) {
                 this.$refs["form"].validate(async valid => {
+                    console.log(this.form)
                     if (valid) {
                         if (this.form.ownerRoomId != null) {
                                 // 修改业主审核的状态为审核失败
@@ -295,7 +297,7 @@
                                     params:{
                                         status:type,
                                         recordAuditOpinion:this.form.recordAuditOpinion,
-
+                                        updateBy:this.form.updateBy,
                                     }
                                 });
                                 if (res.meta.errorCode !== 200) {
