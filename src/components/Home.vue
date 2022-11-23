@@ -120,9 +120,13 @@ export default {
     person() {
       this.$router.push('/user/profile')
     },
-    logout() {
+    async logout() {
+      const {data: res} = await this.$http.post("/sysUser/logout");
+      if (res.meta.errorCode !== 2017) {
+        return this.$message.error(res.meta.errorMsg);
+      }
       window.sessionStorage.clear();
-      return this.$router.push("/login");
+      await this.$router.push("/Login")
     },
     async getMenuList() {
       // 发送请求获取左侧菜单数据
@@ -175,6 +179,8 @@ export default {
 
 .el-main {
   background-color: #eaedf1;
+  overflow: scroll;
+  height: 100vh;
 }
 
 .iconfont {
@@ -189,5 +195,17 @@ export default {
   text-align: center;
   letter-spacing: 0.2em;
   cursor: pointer;
+}
+a {
+  color: #337ab7;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #1890ff;
+}
+
+a:active {
+  color: #1720b7;
 }
 </style>
