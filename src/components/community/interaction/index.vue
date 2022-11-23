@@ -198,6 +198,7 @@ export default {
     getList() {
       this.loading = true;
       this.listInteraction(this.queryParams).then(res => {
+        console.log(res)
         this.interactionList = res.rows;
         this.total = res.total;
         this.loading = false;
@@ -322,7 +323,7 @@ export default {
     /** 获取所有社区互动信息 */
     listInteraction(query) {
       return this.$http({
-        url: '/system/interaction/list',
+        url: '/system/interaction/',
         method: 'get',
         params: query
       })
