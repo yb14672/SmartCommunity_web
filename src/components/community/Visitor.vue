@@ -32,6 +32,14 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
+    <el-select v-model="communityId" placeholder="请选择"  @change="changeCommunity">
+      <el-option
+              v-for="item in communities"
+              :key="item.communityId"
+              :label="item.communityName"
+              :value="item.communityId">
+      </el-option>
+    </el-select>
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
@@ -78,6 +86,17 @@
                 @change="handleStatusChange(scope.row)"
         ></el-switch>
         </template>
+
+<!--        <template>-->
+<!--          <el-select v-model="value" placeholder="请选择">-->
+<!--            <el-option-->
+<!--                    v-for="item in options"-->
+<!--                    :key="item.value"-->
+<!--                    :label="item.label"-->
+<!--                    :value="item.value">-->
+<!--            </el-option>-->
+<!--          </el-select>-->
+<!--        </template>-->
       </el-table-column>
     </el-table>
     
@@ -143,6 +162,8 @@ export default {
   name: "Visitor",
   data() {
     return {
+      communities:{},
+      communityId:'1338423709557272577',
       show: false,
       // 遮罩层
       loading: true,
@@ -164,6 +185,7 @@ export default {
       open: false,
       // 查询参数
       queryParams: {
+        communityId:'1338423709557272577',
         pageNum: 1,
         pageSize: 10,
         visitorName: null,
@@ -178,9 +200,18 @@ export default {
     };
   },
   created() {
+    this.getCommunityList();
     this.getList();
+
   },
   methods: {
+
+    /** 修改小区id */
+    changeCommunity(id) {
+      this.communityId = id;
+      this.queryParams.communityId=id
+      this.getList();
+    },
 //操作：是否允许进入小区
     handleStatusChange(row) {
       console.log(row)
@@ -204,6 +235,7 @@ export default {
       this.loading = true;
        const {data:res} = await this.$http.get("zyVisitor/getVisitorList",{
          params:{
+           communityId:this.queryParams.communityId,
            pageNum: this.queryParams.pageNum,
            pageSize: this.queryParams.pageSize,
            visitorName: this.queryParams.visitorName,
@@ -317,18 +349,47 @@ export default {
           this.msgSuccess("删除成功");
         })
     },
+    /** 获取小区列表 */
+    async getCommunityList() {
+
+      this.loading = true;
+      const {data: res} = await this.$http.get('/zyCommunity/selectAll', {
+        params: {
+          pageNum: 0,
+          pageSize: 0,
+          communityName: '',
+        }
+      });
+      console.log(res)
+      if (res.meta.errorCode !== 200) {
+        return this.$message.error(res.meta.errorMsg)
+      }
+      // this.communityId=res.data.zyCommunityList[0].communityId
+      this.communities = res.data.zyCommunityList;
+      this.loading = false
+    },
     /** 导出按钮操作 */
     handleExport() {
-      const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有访客邀请 数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return exportVisitor(queryParams);
-        }).then(response => {
-          this.download(response.msg);
-        })
+      //设置全局配置信息
+      const config = {
+        method: 'get',
+        url: 'zyVisitor/getExcel?visitorIds=' + this.ids+"&communityId="+this.communityId,
+        responseType: 'blob'
+      };
+      //发送请求
+      // eslint-disable-next-line no-undef
+      this.$http(config).then(response => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', '访客信息.xls');
+                document.body.appendChild(link);
+                link.click();
+                if (response.data !== null) {
+                  this.$message.success("导出成功");
+                }
+              }
+      )
     }
   }
 };
