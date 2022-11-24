@@ -108,7 +108,7 @@
             size="mini"
             type="text"
             icon="el-icon-s-tools"
-            @click="handleUpdate(scope.row)"
+            @click="openDetail(scope.row)"
             v-hasPermi="['wygl:interaction:edit']"
           >查看详情
           </el-button>
@@ -137,7 +137,7 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <div>
           <div class="author-title reply-father">
-            <el-avatar class="header-img" :size="40" :src="form.avatar"></el-avatar>
+            <el-avatar class="header-img" :size="40" :src="form.ownerPortrait"></el-avatar>
             <div class="author-info">
               <span class="author-name">{{ form.ownerNickname }}</span>
               <span class="author-time">{{ form.createTime }}</span>
@@ -151,7 +151,7 @@
               <div v-for="(reply,j) in form.zyCommentList" :key="j" class="author-title">
                 <el-avatar class="header-img" :size="40" :src="reply.ownerPortrait"></el-avatar>
                 <div class="author-info">
-                  <span class="author-name">{{ reply.ownerName }}</span>
+                  <span class="author-name">{{ reply.passiveOwnerName }}</span>
                   <span class="author-time">{{ reply.createTime }}</span>
                 </div>
                 <div class="talk-box">
@@ -300,13 +300,14 @@ export default {
       this.title = "添加社区互动";
     },
     /** 打开评论 */
-    handleUpdate(row) {
+    openDetail(row) {
       this.reset();
       const interactionId = row.interactionId
       this.getInteraction(interactionId).then(res => {
         if (res.data.meta.errorCode !== 200) {
           return this.$message.error(res.data.meta.errorMsg);
         }
+        console.log(res.data.data.ownerPortrait)
         this.form = res.data.data;
         this.open = true;
         this.title = "社区互动详情";

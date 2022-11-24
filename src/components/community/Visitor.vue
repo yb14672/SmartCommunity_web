@@ -21,10 +21,10 @@
       </el-form-item>
       <el-form-item label="到访时间" prop="visitorDate">
         <el-date-picker clearable size="small" style="width: 200px"
-          v-model="queryParams.visitorDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择到访时间">
+                        v-model="queryParams.visitorDate"
+                        type="date"
+                        value-format="yyyy-MM-dd"
+                        placeholder="选择到访时间">
         </el-date-picker>
       </el-form-item>
       <el-form-item>
@@ -32,15 +32,6 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
-    <el-select v-model="communityId" placeholder="请选择"  @change="changeCommunity">
-      <el-option
-              v-for="item in communities"
-              :key="item.communityId"
-              :label="item.communityName"
-              :value="item.communityId">
-      </el-option>
-    </el-select>
-
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
@@ -48,23 +39,36 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-        >导出</el-button>
+        >导出
+        </el-button>
+      </el-col>
+      <el-col :span="1.5" :offset="16">
+        <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      </el-col>
+      <el-col :span="1.5">
+        <el-select size="mini" v-model="communityId" placeholder="请选择" @change="changeCommunity">
+          <el-option
+            v-for="item in communities"
+            :key="item.communityId"
+            :label="item.communityName"
+            :value="item.communityId">
+          </el-option>
+        </el-select>
       </el-col>
     </el-row>
-    <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
 
-    <el-table  :data="visitorList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
+    <el-table :data="visitorList" @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55" align="center"/>
       <el-table-column
-          label="序号"
-          type="index"
-          width="50"
-          align="center">
+        label="序号"
+        type="index"
+        width="50"
+        align="center">
       </el-table-column>
-      <el-table-column label="id" v-if="show" align="center" prop="visitorId" />
-      <el-table-column label="访客姓名" align="center" prop="visitorName" />
-      <el-table-column label="访客手机号" align="center" prop="visitorPhoneNumber" />
-      <el-table-column label="小区名称" align="center" prop="communityName" />
+      <el-table-column label="id" v-if="show" align="center" prop="visitorId"/>
+      <el-table-column label="访客姓名" align="center" prop="visitorName"/>
+      <el-table-column label="访客手机号" align="center" prop="visitorPhoneNumber"/>
+      <el-table-column label="小区名称" align="center" prop="communityName"/>
       <el-table-column label="到访时间" align="center" prop="visitorDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.visitorDate, '{y}-{m}-{d}') }}</span>
@@ -75,27 +79,27 @@
           <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column label="是否允许进入小区" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-            <el-switch
-                v-model="scope.row.status"
-                active-value="1"
-                inactive-value="0"
-                @change="handleStatusChange(scope.row)"
-        ></el-switch>
+          <el-switch
+            v-model="scope.row.status"
+            active-value="1"
+            inactive-value="0"
+            @change="handleStatusChange(scope.row)"
+          ></el-switch>
         </template>
 
-<!--        <template>-->
-<!--          <el-select v-model="value" placeholder="请选择">-->
-<!--            <el-option-->
-<!--                    v-for="item in options"-->
-<!--                    :key="item.value"-->
-<!--                    :label="item.label"-->
-<!--                    :value="item.value">-->
-<!--            </el-option>-->
-<!--          </el-select>-->
-<!--        </template>-->
+        <!--        <template>-->
+        <!--          <el-select v-model="value" placeholder="请选择">-->
+        <!--            <el-option-->
+        <!--                    v-for="item in options"-->
+        <!--                    :key="item.value"-->
+        <!--                    :label="item.label"-->
+        <!--                    :value="item.value">-->
+        <!--            </el-option>-->
+        <!--          </el-select>-->
+        <!--        </template>-->
       </el-table-column>
     </el-table>
 
@@ -111,27 +115,27 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="访客姓名" prop="visitorName">
-          <el-input v-model="form.visitorName" placeholder="请输入访客姓名" />
+          <el-input v-model="form.visitorName" placeholder="请输入访客姓名"/>
         </el-form-item>
         <el-form-item label="访客手机号" prop="visitorPhoneNumber">
-          <el-input v-model="form.visitorPhoneNumber" placeholder="请输入访客手机号" />
+          <el-input v-model="form.visitorPhoneNumber" placeholder="请输入访客手机号"/>
         </el-form-item>
         <el-form-item label="到访时间" prop="visitorDate">
           <el-date-picker clearable size="small" style="width: 200px"
-            v-model="form.visitorDate"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择到访时间">
+                          v-model="form.visitorDate"
+                          type="date"
+                          value-format="yyyy-MM-dd"
+                          placeholder="选择到访时间">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="创建人id" prop="createById">
-          <el-input v-model="form.createById" placeholder="请输入创建人id" />
+          <el-input v-model="form.createById" placeholder="请输入创建人id"/>
         </el-form-item>
         <el-form-item label="创建人openid" prop="createByOpenId">
-          <el-input v-model="form.createByOpenId" placeholder="请输入创建人openid" />
+          <el-input v-model="form.createByOpenId" placeholder="请输入创建人openid"/>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -142,14 +146,14 @@
 
 
     <el-pagination
-            style="float: right"
-            :current-page="queryParams.pageNum"
-            :page-size="queryParams.pageSize"
-            :page-sizes="[1, 2, 5, 10]"
-            :total="total"
-            layout="total, sizes, prev, pager, next, jumper"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange">
+      style="float: right"
+      :current-page="queryParams.pageNum"
+      :page-size="queryParams.pageSize"
+      :page-sizes="[1, 2, 5, 10]"
+      :total="total"
+      layout="total, sizes, prev, pager, next, jumper"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange">
     </el-pagination>
   </div>
 </template>
@@ -161,8 +165,8 @@ export default {
   name: "Visitor",
   data() {
     return {
-      communities:{},
-      communityId:'1338423709557272577',
+      communities: {},
+      communityId: '1338423709557272577',
       show: false,
       // 遮罩层
       loading: true,
@@ -184,7 +188,7 @@ export default {
       open: false,
       // 查询参数
       queryParams: {
-        communityId:'1338423709557272577',
+        communityId: '1338423709557272577',
         pageNum: 1,
         pageSize: 10,
         visitorName: null,
@@ -194,8 +198,7 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {
-      }
+      rules: {}
     };
   },
   created() {
@@ -208,7 +211,7 @@ export default {
     /** 修改小区id */
     changeCommunity(id) {
       this.communityId = id;
-      this.queryParams.communityId=id
+      this.queryParams.communityId = id
       this.getList();
     },
 //操作：是否允许进入小区
@@ -220,33 +223,33 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(async () => {
-        const {data: res} = await this.$http.put('zyVisitor/updateStatus',row);
+        const {data: res} = await this.$http.put('zyVisitor/updateStatus', row);
         if (res.meta.errorCode !== 200) {
           return this.$message.error(res.meta.errorMsg)
         }
         this.getUserList();
-        return  this.$message.success(text + "成功");
+        return this.$message.success(text + "成功");
       })
     },
 
     /** 查询访客邀请 列表 */
     async getList() {
       this.loading = true;
-       const {data:res} = await this.$http.get("zyVisitor/getVisitorList",{
-         params:{
-           communityId:this.queryParams.communityId,
-           pageNum: this.queryParams.pageNum,
-           pageSize: this.queryParams.pageSize,
-           visitorName: this.queryParams.visitorName,
-           visitorPhoneNumber: this.queryParams.visitorPhoneNumber,
-           visitorDate: this.queryParams.visitorDate,
-         }
-       });
-       console.log(res)
-       if (res.meta.errorCode !==200){
-         return res.$message.error(res.meta.errorMsg)
-       }
-       this.visitorList = res.data.visitorListDtos
+      const {data: res} = await this.$http.get("zyVisitor/getVisitorList", {
+        params: {
+          communityId: this.queryParams.communityId,
+          pageNum: this.queryParams.pageNum,
+          pageSize: this.queryParams.pageSize,
+          visitorName: this.queryParams.visitorName,
+          visitorPhoneNumber: this.queryParams.visitorPhoneNumber,
+          visitorDate: this.queryParams.visitorDate,
+        }
+      });
+      console.log(res)
+      if (res.meta.errorCode !== 200) {
+        return res.$message.error(res.meta.errorMsg)
+      }
+      this.visitorList = res.data.visitorListDtos
       this.total = res.data.pageable.total
       this.loading = false;
     },
@@ -295,7 +298,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.visitorId)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -338,15 +341,15 @@ export default {
     handleDelete(row) {
       const visitorIds = row.visitorId || this.ids;
       this.$confirm('是否确认删除访客邀请 编号为"' + visitorIds + '"的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
-          return delVisitor(visitorIds);
-        }).then(() => {
-          this.getList();
-          this.msgSuccess("删除成功");
-        })
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(function () {
+        return delVisitor(visitorIds);
+      }).then(() => {
+        this.getList();
+        this.msgSuccess("删除成功");
+      })
     },
     /** 获取小区列表 */
     async getCommunityList() {
@@ -372,22 +375,22 @@ export default {
       //设置全局配置信息
       const config = {
         method: 'get',
-        url: 'zyVisitor/getExcel?visitorIds=' + this.ids+"&communityId="+this.communityId,
+        url: 'zyVisitor/getExcel?visitorIds=' + this.ids + "&communityId=" + this.communityId,
         responseType: 'blob'
       };
       //发送请求
       // eslint-disable-next-line no-undef
       this.$http(config).then(response => {
-                const url = window.URL.createObjectURL(new Blob([response.data]));
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', '访客信息.xls');
-                document.body.appendChild(link);
-                link.click();
-                if (response.data !== null) {
-                  this.$message.success("导出成功");
-                }
-              }
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', '访客信息.xls');
+          document.body.appendChild(link);
+          link.click();
+          if (response.data !== null) {
+            this.$message.success("导出成功");
+          }
+        }
       )
     }
   }

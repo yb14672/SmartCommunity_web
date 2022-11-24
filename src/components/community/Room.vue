@@ -62,7 +62,7 @@
       <el-col :span="1.5" :offset="14">
         <el-select v-model="queryParams.communityId" @change="selectedCommunity(queryParams.communityId)"
                    style="border: 0;position: relative;" filterable placeholder="请选择小区"
-                   class="avatar-container right-menu-item hover-effect" value="">
+                   class="avatar-container right-menu-item hover-effect" size="mini" value="">
           <el-option
               v-for="item in options"
               :key="item.communityId"
