@@ -322,7 +322,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.ownerId)
+      this.ids = selection.map(item => item.ownerRoomId)
       this.single = selection.length !== 1
       this.multiple = !selection.length
     },
