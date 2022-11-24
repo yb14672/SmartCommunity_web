@@ -48,11 +48,10 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['system:visitor:export']"
         >导出</el-button>
       </el-col>
-	  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
+    <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
 
     <el-table  :data="visitorList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
@@ -99,7 +98,7 @@
 <!--        </template>-->
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
