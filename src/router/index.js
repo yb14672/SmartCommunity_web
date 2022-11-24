@@ -24,6 +24,7 @@ import Owner from "../components/community/Owner";
 import Swagger from "@/views/tool/swagger/index";
 import Visitor from "@/components/community/Visitor";
 import InterAction from "@/components/community/interaction/index";
+import Repair from "../components/repair/Repair";
 
 Vue.use(Router)
 
@@ -56,7 +57,9 @@ const router = new Router({
                 {path:'/bing/ownerRoom',component:OwnerRoom},
                 {path:'/bing/owner',component:Owner},
                 {path:'/interaction/interaction',component:InterAction},
-                {path:'/visitor/visitor',component:Visitor}
+                {path:'/visitor/visitor',component:Visitor},
+                {path:'/repair/repair',component:Repair},
+
             ]
         },
         {
