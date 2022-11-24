@@ -169,7 +169,7 @@ export default {
       // 是否显示弹出层
       open: false,
       //选中小区
-      communityId: '1338423709557272577',
+      communityId: '',
       // 查询参数
       queryParams: {
         pageNum: 1,
