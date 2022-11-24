@@ -88,7 +88,6 @@
                 <el-table-column label="审核人类型" align="center" prop="recordAuditType" :formatter="reviewerStatusFormat"/>
                 <el-table-column label="备注" align="center" prop="remark"/>
             </el-table>
-
         </el-dialog>
         <!-- 添加或修改房屋绑定 对话框 -->
         <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
