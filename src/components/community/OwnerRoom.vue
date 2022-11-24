@@ -283,13 +283,11 @@
                     }
                 });
                 this.recordList = res.data;
-                console.log(1,this.recordList)
                 this.title = "审核记录全过程 ";
             },
             /** 提交按钮  */
             submitForm(type) {
                 this.$refs["form"].validate(async valid => {
-                    console.log(this.form)
                     if (valid) {
                         if (this.form.ownerRoomId != null) {
                                 // 修改业主审核的状态为审核失败
@@ -316,13 +314,13 @@
                             //     roomStatus: type,
                             // };
                             // updateRoom(data).then(response => {
-                            //     this.msgSuccess("审核成功");
+                            //     this.$message("审核成功");
                             //     this.open = false;
                             //     this.getList();
                             // });
                         } else {
                             // addRoom(this.form).then(response => {
-                            //     this.msgSuccess("新增成功");
+                            //     this.$message("新增成功");
                             //     this.open = false;
                             //     this.getList();
                             // });
@@ -341,7 +339,7 @@
                     return delRoom(ownerRoomIds);
                 }).then(() => {
                     this.getList();
-                    this.msgSuccess("删除成功");
+                    this.$message("删除成功");
                 })
             },
             /** 导出按钮操作 */

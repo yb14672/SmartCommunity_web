@@ -34,9 +34,44 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
-    <!--搜索重置+小区选择-->
+    <!--搜索显示隐藏+重置-->
+    <el-row style="margin-bottom: 10px;margin-left: 6em">
+      <el-col :offset="22">
+        <RightToolbar :showSearch.sync="showSearch" @queryTable="getList"/>
+      </el-col>
+    </el-row>
+
     <el-row :gutter="10" class="mb8">
-      <RightToolbar :showSearch.sync="showSearch" @queryTable="getList"/>
+      <el-col :span="1.5">
+        <el-button
+          type="danger"
+          icon="el-icon-delete"
+          size="mini"
+          :disabled="multiple"
+          @click="handleDelete"
+        >删除
+        </el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="warning"
+          icon="el-icon-download"
+          size="mini"
+          @click="handleExport"
+        >导出
+        </el-button>
+      </el-col>
+      <el-col :span="1.5" :offset="16">
+        <!--下拉框，选小区的-->
+        <el-select size="mini" v-model="communityId" placeholder="请选择" @change="getList()">
+          <el-option
+            v-for="item in options"
+            :key="item.communityId"
+            :label="item.communityName"
+            :value="item.communityId">
+          </el-option>
+        </el-select>
+      </el-col>
     </el-row>
     <!--数据渲染表格-->
     <el-table v-loading="loading" :data="interactionList" @selection-change="handleSelectionChange">
@@ -53,13 +88,13 @@
       <el-table-column label="业主电话" align="center" prop="ownerPhoneNumber"/>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+          <span>{{ scope.row.createTime | moment }}</span>
         </template>
       </el-table-column>
       <el-table-column label="内容" align="center" prop="content"/>
       <el-table-column label="图片" align="center" prop="urlList">
         <template slot-scope="scope">
-          <el-image style="width: 30px; height: 30px" v-for="item in scope.row.urlList" :src="item"
+          <el-image style="width: 30px; height: 30px" :key="index" v-for="(item,index) in scope.row.urlList" :src="item"
                     :preview-src-list="scope.row.urlList">
             <div slot="error" class="image-slot">
               <i class="el-icon-picture-outline"></i>
@@ -75,7 +110,7 @@
             icon="el-icon-s-tools"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['wygl:interaction:edit']"
-          >更多操作
+          >查看详情
           </el-button>
           <el-button
             size="mini"
@@ -92,8 +127,8 @@
     <pagination
       v-show="total>0"
       :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
+      :page.sync="queryParams.current"
+      :limit.sync="queryParams.size"
       @pagination="getList"
     />
 
@@ -121,7 +156,10 @@
                 </div>
                 <div class="talk-box">
                   <p class="talk-box-new">
-                    <span>回复 {{ form.ownerName }}<span>{{ reply.passiveOwnerName }}</span>:</span>
+                    <span v-if="reply.passiveOwnerName!=null">
+                      回复 {{ form.ownerName }}
+                      <span>{{ reply.passiveOwnerName }}</span>:
+                    </span>
                     <span class="reply">{{ reply.content }}</span>
                   </p>
                 </div>
@@ -141,8 +179,8 @@
         </div>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
+<!--        <el-button type="primary" @click="submitForm">确 定</el-button>-->
+        <el-button @click="cancel">关 闭</el-button>
       </div>
     </el-dialog>
   </div>
@@ -156,6 +194,9 @@ export default {
   components: {Editor},
   data() {
     return {
+      //全局小区id
+      communityId: '',
+      //控制显示隐藏
       show: false,
       // 遮罩层
       loading: true,
@@ -177,8 +218,8 @@ export default {
       open: false,
       // 查询参数
       queryParams: {
-        pageNum: 1,
-        pageSize: 10,
+        current: 1,
+        size: 10,
         communityId: null,
         ownerNickname: null,
         ownerRealName: null,
@@ -187,20 +228,32 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {}
+      rules: {},
+      //小区列表
+      options: {},
     };
   },
   created() {
-    this.getList();
+    this.getCommunityList().then(() => {
+      this.getList();
+    });
   },
   methods: {
     /** 查询社区互动列表 */
-    getList() {
+    getList(page) {
       this.loading = true;
+      //判断是否有分页
+      if (page) {
+        this.queryParams.current = page.current;
+        this.queryParams.size = page.size;
+      }
+      this.queryParams.communityId = this.communityId;
       this.listInteraction(this.queryParams).then(res => {
-        console.log(res)
-        this.interactionList = res.rows;
-        this.total = res.total;
+        if (res.data.meta.errorCode != 200) {
+          return this.$message.error(res.data.meta.errorMsg);
+        }
+        this.interactionList = res.data.data.records;
+        this.total = res.data.data.pageable.total;
         this.loading = false;
       });
     },
@@ -226,7 +279,7 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1;
+      this.queryParams.current = 1;
       this.getList();
     },
     /** 重置按钮操作 */
@@ -246,12 +299,15 @@ export default {
       this.open = true;
       this.title = "添加社区互动";
     },
-    /** 修改按钮操作 */
+    /** 打开评论 */
     handleUpdate(row) {
       this.reset();
-      const interactionId = row.interactionId || this.ids
-      getInteraction(interactionId).then(response => {
-        this.form = response.data;
+      const interactionId = row.interactionId
+      this.getInteraction(interactionId).then(res => {
+        if (res.data.meta.errorCode !== 200) {
+          return this.$message.error(res.data.meta.errorMsg);
+        }
+        this.form = res.data.data;
         this.open = true;
         this.title = "社区互动详情";
       });
@@ -262,15 +318,16 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      }).then(function () {
-        return delComment(commentId);
-      }).then(() => {
-        //this.commentList(commentId);
-        console.log(commentId, interactionId);
-        getInteraction(interactionId).then(response => {
-          this.form = response.data;
+      }).then(async () => {
+        return this.delComment(commentId);
+      }).then(async res => {
+        if (res.data.meta.errorCode !== 200) {
+          return this.$message.error(res.data.meta.errorMsg);
+        }
+        this.$message.success("删除成功");
+        this.getInteraction(interactionId).then(response => {
+          this.form = response.data.data;
         });
-        this.msgSuccess("删除成功");
       })
     },
     /** 提交按钮 */
@@ -279,13 +336,13 @@ export default {
         if (valid) {
           if (this.form.interactionId != null) {
             updateInteraction(this.form).then(response => {
-              this.msgSuccess("修改成功");
+              this.$message("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
             addInteraction(this.form).then(response => {
-              this.msgSuccess("新增成功");
+              this.$message("新增成功");
               this.open = false;
               this.getList();
             });
@@ -300,25 +357,38 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      }).then(function () {
-        return delInteraction(interactionIds);
       }).then(() => {
+        return this.delInteraction(interactionIds);
+      }).then((res) => {
+        if (res.data.meta.errorCode !== 200) {
+          return this.$message.error(res.data.meta.errorMsg);
+        }
         this.getList();
-        this.msgSuccess("删除成功");
+        this.$message.success("删除成功");
       })
     },
     /** 导出按钮操作 */
     handleExport() {
-      const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有社区互动数据项?', "警告", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(function () {
-        return exportInteraction(queryParams);
-      }).then(response => {
-        this.download(response.msg);
-      })
+      //设置全局配置信息
+      const config = {
+        method: 'get',
+        url: '/system/interaction/export?ids=' + this.ids + "&communityId=" + this.communityId,
+        responseType: 'blob'
+      };
+      //发送请求
+      // eslint-disable-next-line no-undef
+      this.$http(config).then(response => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', '互动信息.xls');
+          document.body.appendChild(link);
+          link.click();
+          if (response.data !== null) {
+            this.$message.success("导出成功");
+          }
+        }
+      )
     },
     /** 获取所有社区互动信息 */
     listInteraction(query) {
@@ -326,6 +396,45 @@ export default {
         url: '/system/interaction/',
         method: 'get',
         params: query
+      })
+    },
+    /** 删除评论 */
+    delInteraction(interactionIds) {
+      return this.$http({
+        url: '/system/interaction/?ids=' + interactionIds,
+        method: 'delete'
+      })
+    },
+    /** 获取小区列表 */
+    async getCommunityList() {
+      this.loading = true;
+      const {data: res} = await this.$http.get('/zyCommunity/selectAll', {
+        params: {
+          pageNum: 0,
+          pageSize: 0,
+          communityName: '',
+        }
+      });
+      if (res.meta.errorCode !== 200) {
+        return this.$message.error(res.meta.errorMsg)
+      }
+      this.options = res.data.zyCommunityList;
+      this.communityId = this.options[0].communityId;
+      this.queryParams.communityId = this.options[0].communityId;
+      this.loading = false;
+    },
+    /** 获取互动文章详情 */
+    getInteraction(id) {
+      return this.$http({
+        url: '/system/interaction/' + id,
+        method: 'get'
+      })
+    },
+    /** 删除评论 */
+    delComment(commentId) {
+      return this.$http({
+        url: '/system/comment/' + commentId,
+        method: 'delete'
       })
     }
   }

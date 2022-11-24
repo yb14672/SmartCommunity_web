@@ -56,7 +56,7 @@
       </el-col>
       <el-col :span="1.5" :offset="14">
         <!--下拉框，选小区的-->
-        <el-select v-model="communityId" placeholder="请选择" @change="getList()">
+        <el-select size="mini" v-model="communityId" placeholder="请选择" @change="getList()">
           <el-option
               v-for="item in options"
               :key="item.communityId"

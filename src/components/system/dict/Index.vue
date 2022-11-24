@@ -382,7 +382,7 @@ export default {
           return this.$message.error(res.data.meta.errorMsg);
         }
         this.getList();
-        this.msgSuccess("删除成功");
+        this.$message("删除成功");
       })
     },
     /** 导出按钮操作 */
