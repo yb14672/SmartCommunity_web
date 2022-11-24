@@ -215,7 +215,7 @@ export default {
       //是否有电梯
       statusOptions: [],
       communities: {},
-      communityId: '1338423709557272577',
+      communityId: '',
       //楼栋数组
       options: {},
       // 查询参数

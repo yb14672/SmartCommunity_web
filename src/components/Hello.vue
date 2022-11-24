@@ -1,7 +1,7 @@
 <template>
   <div class="jianbian">
     <router-view></router-view>
-    <!-- 轮播区域 -->
+    <!-- 轮播区域  -->
     <div class="imgBox">
       <el-carousel :interval="4000" type="card" height="400px">
         <el-carousel-item v-for="item in imgList" :key="item.id">

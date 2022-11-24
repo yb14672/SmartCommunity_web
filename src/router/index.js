@@ -25,6 +25,7 @@ import Swagger from "@/views/tool/swagger/index";
 import Visitor from "@/components/community/Visitor";
 import InterAction from "@/components/community/interaction/index";
 import Repair from "../components/repair/Repair";
+import Suggest from "../components/community/suggest/Suggest";
 
 Vue.use(Router)
 
@@ -59,7 +60,7 @@ const router = new Router({
                 {path:'/interaction/interaction',component:InterAction},
                 {path:'/visitor/visitor',component:Visitor},
                 {path:'/repair/repair',component:Repair},
-
+                {path:'/suggest/suggest',component:Suggest},
             ]
         },
         {

@@ -277,7 +277,7 @@ export default {
         roomStatus: null,//房屋状态
         buildingId: null,//楼栋id
         unitId: null,//单元id
-        communityId: '1338423709557272577',//小区id
+        communityId: '',//小区id
       },
       // 显示搜索条件
       showSearch: true,
