@@ -348,13 +348,13 @@ export default {
     //         if (valid) {
     //             if (this.form.ownerId != null) {
     //                 updateOwner(this.form).then(response => {
-    //                     this.msgSuccess("修改成功");
+    //                     this.$message("修改成功");
     //                     this.open = false;
     //                     this.getList();
     //                 });
     //             } else {
     //                 addOwner(this.form).then(response => {
-    //                     this.msgSuccess("新增成功");
+    //                     this.$message("新增成功");
     //                     this.open = false;
     //                     this.getList();
     //                 });
@@ -374,11 +374,8 @@ export default {
         if (res.meta.errorCode !== 200) {
           return this.$message.error(res.meta.errorMsg)
         }
-
-        this.getList()
+        await this.getList()
         return this.$message.success(res.meta.errorMsg)
-
-
       })
     },
     /** 导出按钮操作 */

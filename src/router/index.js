@@ -23,6 +23,7 @@ import OwnerRoom from "@/components/community/OwnerRoom";
 import Owner from "../components/community/Owner";
 import Swagger from "@/views/tool/swagger/index";
 import Visitor from "@/components/community/Visitor";
+import InterAction from "@/components/community/interaction/index";
 
 Vue.use(Router)
 
@@ -54,6 +55,7 @@ const router = new Router({
                 {path:'/tool/swagger',component:Swagger},
                 {path:'/bing/ownerRoom',component:OwnerRoom},
                 {path:'/bing/owner',component:Owner},
+                {path:'/interaction/interaction',component:InterAction},
                 {path:'/visitor/visitor',component:Visitor}
             ]
         },

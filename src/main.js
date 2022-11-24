@@ -19,6 +19,11 @@ import Treeselect from '@riophae/vue-treeselect'
 import moment from '../node_modules/moment/moment.js';
 // 字典标签组件
 import DictTag from '@/components/DictTag'
+//自定义表格工具扩展
+import RightToolbar from "@/components/RightToolbar"
+//封装分页
+import Pagination from "@/components/Pagination";
+
 //element Ui
 import "./plugins/element"
 import './plugins/element.js'
@@ -44,7 +49,10 @@ Vue.component('VueCropper',VueCropper);
 Vue.component('breadcrumb',Breadcrumb);
 // 字典标签
 Vue.component('DictTag', DictTag)
-
+//表格增强
+Vue.component('RightToolbar', RightToolbar)
+//分页
+Vue.component('Pagination', Pagination)
 
 Vue.filter('moment', function (value, formatString) {
   formatString = formatString || 'YYYY-MM-DD HH:mm:ss';

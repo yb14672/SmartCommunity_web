@@ -64,7 +64,6 @@
 </template>
 
 <script>
-
 export default {
   name: "AuthRole",
   data() {
@@ -91,7 +90,10 @@ export default {
       this.loading = true;
       //获取当前用户信息、已有角色
       this.getAuthRole(userId).then((res) => {
-        if (res.data.meta.errorCode !== 200) {
+        if (res.data.meta.errorCode === 2022) {
+          this.$message.warning(res.data.meta.errorMsg);
+        }
+        if (res.data.meta.errorCode !== 200 && res.data.meta.errorCode !== 2022) {
           return this.$message.error(res.data.meta.errorMsg);
         }
         this.form = res.data.data;
@@ -105,15 +107,17 @@ export default {
         this.total = res.data.data.total;
         this.pageNum = res.data.data.current;
         this.pageSize = res.data.data.size;
-        this.$nextTick(() => {
-          this.roles.forEach((row) => {
-            for (let i = 0; i < this.form.roleList.length; i++) {
-              if(this.form.roleList[i].roleId==row.roleId){
-                this.$refs.table.toggleRowSelection(row,true);
+        if (this.form.roleList != null) {
+          this.$nextTick(() => {
+            this.roles.forEach((row) => {
+              for (let i = 0; i < this.form.roleList.length; i++) {
+                if (this.form.roleList[i].roleId == row.roleId) {
+                  this.$refs.table.toggleRowSelection(row, true);
+                }
               }
-            }
+            });
           });
-        });
+        }
       });
       this.loading = false;
     }
@@ -133,17 +137,17 @@ export default {
       })
     },
     /** 点击选择框切换 */
-    chooseInstance (val) {
+    chooseInstance(val) {
       if (val.length > 1) {
         this.$refs.table.clearSelection()
         this.$refs.table.toggleRowSelection(val.pop())
-        this.roleId=val[0].roleId;
+        this.roleId = val[0].roleId;
       }
     },
     /** 点击行就切换 */
     currentChange(currentRow, oldCurrentRow) {
       this.$refs.table.toggleRowSelection(currentRow)
-      this.roleId=currentRow.roleId;
+      this.roleId = currentRow.roleId;
     },
     /** 保存选中的数据编号 */
     getRowKey(row) {
@@ -159,9 +163,9 @@ export default {
         userId: userId,
         roleId: roleId
       });
-      if(res.meta.errorCode!==200){
+      if (res.meta.errorCode !== 200) {
         this.$message.error(res.meta.errorMsg);
-      }else{
+      } else {
         this.$message.success("分配成功");
         await this.$router.push('/system/user');
       }

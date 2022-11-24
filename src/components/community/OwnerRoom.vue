@@ -285,7 +285,7 @@
                 this.recordList = res.data;
                 this.title = "审核记录全过程 ";
             },
-            /** 提交按钮 */
+            /** 提交按钮  */
             submitForm(type) {
                 this.$refs["form"].validate(async valid => {
                     if (valid) {
@@ -295,7 +295,7 @@
                                     params:{
                                         status:type,
                                         recordAuditOpinion:this.form.recordAuditOpinion,
-
+                                        updateBy:this.form.updateBy,
                                     }
                                 });
                                 if (res.meta.errorCode !== 200) {
@@ -314,13 +314,13 @@
                             //     roomStatus: type,
                             // };
                             // updateRoom(data).then(response => {
-                            //     this.msgSuccess("审核成功");
+                            //     this.$message("审核成功");
                             //     this.open = false;
                             //     this.getList();
                             // });
                         } else {
                             // addRoom(this.form).then(response => {
-                            //     this.msgSuccess("新增成功");
+                            //     this.$message("新增成功");
                             //     this.open = false;
                             //     this.getList();
                             // });
@@ -339,7 +339,7 @@
                     return delRoom(ownerRoomIds);
                 }).then(() => {
                     this.getList();
-                    this.msgSuccess("删除成功");
+                    this.$message("删除成功");
                 })
             },
             /** 导出按钮操作 */
