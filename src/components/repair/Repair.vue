@@ -408,19 +408,17 @@ export default {
     },
     //每页条数改变时触发 选择一页显示多少行
     handleSizeChange(val) {
-      // console.log(`每页 ${val} 条`);
       this.queryParams.pageNum = 1;
       this.queryParams.pageSize = val;
     },
     //当前页改变时触发 跳转其他页
     handleCurrentChange(val) {
-      // console.log(`当前页: ${val}`);
       this.queryParams.pageNum = val;
       this.getlivestockInfo(val);
     },
     getlivestockInfo: async function (num1) {
       this.queryParams.pageNum = num1;
-      this.getList();
+      await this.getList();
     },
 
     // 类型翻译
@@ -578,7 +576,6 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const repairIds = row.repairId || this.ids;
-      console.log(repairIds)
       this.$confirm('是否确认删除报修信息编号为"' + repairIds + '"的数据项?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

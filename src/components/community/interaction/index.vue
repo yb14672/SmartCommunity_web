@@ -167,6 +167,14 @@
                   <el-button
                     size="mini"
                     type="text"
+                    icon="el-icon-edit"
+                    @click="handleAdd(reply)"
+                    v-hasPermi="['system:comment:add']"
+                  >回复
+                  </el-button>
+                  <el-button
+                    size="mini"
+                    type="text"
                     icon="el-icon-delete"
                     @click="commentDelete(reply.commentId,form.interactionId)"
                     v-hasPermi="['system:interaction:remove']"
@@ -178,11 +186,23 @@
           </div>
         </div>
       </el-form>
+      <el-card>
+        <div slot="header" class="clearfix">
+          评论回复
+        </div>
+        <Editor></Editor>
+        <el-button type="primary" style="margin-top: 10px">发表回复</el-button>
+      </el-card>
       <div slot="footer" class="dialog-footer">
-<!--        <el-button type="primary" @click="submitForm">确 定</el-button>-->
         <el-button @click="cancel">关 闭</el-button>
       </div>
     </el-dialog>
+    <!--用抽屉弹出编辑框-->
+    <el-drawer :visible.sync="drawer"
+               title="回复"
+               :direction="direction">
+
+    </el-drawer>
   </div>
 </template>
 
@@ -194,12 +214,16 @@ export default {
   components: {Editor},
   data() {
     return {
+      //抽屉打开方向
+      direction:'btt',
       //全局小区id
       communityId: '',
       //控制显示隐藏
       show: false,
       // 遮罩层
       loading: true,
+      //控制回复抽屉是否显示
+      drawer:false,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -294,10 +318,12 @@ export default {
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
-    handleAdd() {
-      this.reset();
-      this.open = true;
-      this.title = "添加社区互动";
+    handleAdd(reply) {
+      console.log(reply)
+      this.drawer=true;
+      // this.reset();
+      // this.open = true;
+      // this.title = "添加社区互动";
     },
     /** 打开评论 */
     openDetail(row) {
@@ -307,7 +333,6 @@ export default {
         if (res.data.meta.errorCode !== 200) {
           return this.$message.error(res.data.meta.errorMsg);
         }
-        console.log(res.data.data.ownerPortrait)
         this.form = res.data.data;
         this.open = true;
         this.title = "社区互动详情";

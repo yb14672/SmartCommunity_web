@@ -42,10 +42,7 @@
         >导出
         </el-button>
       </el-col>
-      <el-col :span="1.5" :offset="16">
-        <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
-      </el-col>
-      <el-col :span="1.5">
+      <el-col  :offset="18" :span="1.5">
         <el-select size="mini" v-model="communityId" placeholder="请选择" @change="changeCommunity">
           <el-option
             v-for="item in communities"
@@ -216,7 +213,6 @@ export default {
     },
 //操作：是否允许进入小区
     handleStatusChange(row) {
-      console.log(row)
       let text = row.status === "1" ? "允许" : "拒绝";
       this.$confirm('确认"' + text + '""' + row.visitorName + '"进入小区?"', "警告", {
         confirmButtonText: "确定",
@@ -245,7 +241,6 @@ export default {
           visitorDate: this.queryParams.visitorDate,
         }
       });
-      console.log(res)
       if (res.meta.errorCode !== 200) {
         return res.$message.error(res.meta.errorMsg)
       }
@@ -360,9 +355,7 @@ export default {
           pageNum: 0,
           pageSize: 0,
           communityName: '',
-        }
-      });
-      console.log(res)
+      }});
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
