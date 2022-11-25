@@ -164,14 +164,14 @@
                   </p>
                 </div>
                 <div class="reply-box">
-                  <el-button
-                    size="mini"
-                    type="text"
-                    icon="el-icon-edit"
-                    @click="handleAdd(reply)"
-                    v-hasPermi="['system:comment:add']"
-                  >回复
-                  </el-button>
+<!--                  <el-button-->
+<!--                    size="mini"-->
+<!--                    type="text"-->
+<!--                    icon="el-icon-edit"-->
+<!--                    @click="handleAdd(reply)"-->
+<!--                    v-hasPermi="['system:comment:add']"-->
+<!--                  >回复-->
+<!--                  </el-button>-->
                   <el-button
                     size="mini"
                     type="text"
@@ -186,23 +186,18 @@
           </div>
         </div>
       </el-form>
-      <el-card>
+      <el-card v-show="drawer">
         <div slot="header" class="clearfix">
           评论回复
         </div>
-        <Editor></Editor>
-        <el-button type="primary" style="margin-top: 10px">发表回复</el-button>
+        <Editor ref="editor" v-model="context"></Editor>
+        <el-button type="primary" style="margin-top: 10px" @click="submitForm">发表回复</el-button>
+        <el-button style="margin-top: 10px">取消</el-button>
       </el-card>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">关 闭</el-button>
       </div>
     </el-dialog>
-    <!--用抽屉弹出编辑框-->
-    <el-drawer :visible.sync="drawer"
-               title="回复"
-               :direction="direction">
-
-    </el-drawer>
   </div>
 </template>
 
@@ -214,8 +209,9 @@ export default {
   components: {Editor},
   data() {
     return {
+      context:'',
       //抽屉打开方向
-      direction:'btt',
+      direction: 'btt',
       //全局小区id
       communityId: '',
       //控制显示隐藏
@@ -223,7 +219,7 @@ export default {
       // 遮罩层
       loading: true,
       //控制回复抽屉是否显示
-      drawer:false,
+      drawer: false,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -320,7 +316,7 @@ export default {
     /** 新增按钮操作 */
     handleAdd(reply) {
       console.log(reply)
-      this.drawer=true;
+      this.drawer = true;
       // this.reset();
       // this.open = true;
       // this.title = "添加社区互动";
@@ -358,23 +354,16 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
-      this.$refs["form"].validate(valid => {
-        if (valid) {
-          if (this.form.interactionId != null) {
-            updateInteraction(this.form).then(response => {
-              this.$message("修改成功");
-              this.open = false;
-              this.getList();
-            });
-          } else {
-            addInteraction(this.form).then(response => {
-              this.$message("新增成功");
-              this.open = false;
-              this.getList();
-            });
-          }
-        }
-      });
+      console.log(this.$refs.editor.currentValue,this.context)
+      // this.$refs["form"].validate(valid => {
+      //   if (valid) {
+      //     addInteraction(this.form).then(response => {
+      //       this.$message("新增成功");
+      //       this.open = false;
+      //       this.getList();
+      //     });
+      //   }
+      // });
     },
     /** 删除按钮操作 */
     handleDelete(row) {

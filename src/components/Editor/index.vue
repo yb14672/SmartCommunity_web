@@ -93,7 +93,6 @@ export default {
       this.Quill = new Quill(editor, this.options);
       this.Quill.pasteHTML(this.currentValue);
       this.Quill.on("text-change", (delta, oldDelta, source) => {
-        console.log(delta,oldDelta,source)
         const html = this.$refs.editor.children[0].innerHTML;
         const text = this.Quill.getText();
         const quill = this.Quill;
