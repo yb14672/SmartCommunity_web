@@ -148,7 +148,7 @@ export default {
     return {
       // 选择小区
       options: [],
-      //
+      //是否显示
       show: false,
       // 遮罩层
       loading: true,
@@ -199,8 +199,8 @@ export default {
     };
   },
   created() {
-    this.getList();
     this.getCommunityList();
+    this.getList();
   },
   methods: {
     // 分页每页多少条数据
@@ -245,6 +245,7 @@ export default {
         return this.$message.error(res.meta.errorMsg)
       }
       this.options = res.data.zyCommunityList;
+      this.communityId = res.data.zyCommunityList[0].communityId;
       this.loading = false
     },
     // 取消按钮

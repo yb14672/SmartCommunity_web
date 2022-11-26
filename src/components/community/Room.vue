@@ -4,11 +4,11 @@
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="楼栋/单元" label-width="85px">
         <el-cascader
-            :v-model="toOptions"
-            :prop="cascaderProps"
-            :options="options1"
-            @change="handleChange"
-            clearable
+          :v-model="toOptions"
+          :prop="cascaderProps"
+          :options="options1"
+          @change="handleChange"
+          clearable
         />
       </el-form-item>
       <el-form-item label="房屋状态" prop="roomStatus">
@@ -16,10 +16,10 @@
                    @clear="statusChange()"
                    size="small">
           <el-option
-              v-for="dict in roomStatusOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
+            v-for="dict in roomStatusOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
@@ -33,29 +33,29 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-            type="primary"
-            icon="el-icon-plus"
-            size="mini"
-            @click="handleAdd"
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAdd"
         >新增
         </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
-            type="danger"
-            icon="el-icon-delete"
-            size="mini"
-            :disabled="multiple"
-            @click="handleDelete"
+          type="danger"
+          icon="el-icon-delete"
+          size="mini"
+          :disabled="multiple"
+          @click="handleDelete"
         >删除
         </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
-            type="warning"
-            icon="el-icon-download"
-            size="mini"
-            @click="handleExport"
+          type="warning"
+          icon="el-icon-download"
+          size="mini"
+          @click="handleExport"
         >导出
         </el-button>
       </el-col>
@@ -64,10 +64,10 @@
                    style="border: 0;position: relative;" filterable placeholder="请选择小区"
                    class="avatar-container right-menu-item hover-effect" size="mini" value="">
           <el-option
-              v-for="item in options"
-              :key="item.communityId"
-              :label="item.communityName"
-              :value="item.communityId">
+            v-for="item in options"
+            :key="item.communityId"
+            :label="item.communityName"
+            :value="item.communityId">
           </el-option>
         </el-select>
       </el-col>
@@ -78,10 +78,10 @@
     <el-table v-loading="loading" :data="roomList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column
-          label="序号"
-          type="index"
-          width="50"
-          align="center">
+        label="序号"
+        type="index"
+        width="50"
+        align="center">
       </el-table-column>
       <el-table-column label="房间id" v-if="show" align="center" prop="zyRoom.roomId"/>
       <el-table-column label="小区名称" align="center" prop="zyCommunity.communityName"/>
@@ -121,17 +121,17 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-edit"
-              @click="handleUpdate(scope.row)"
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
           >修改
           </el-button>
           <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-delete"
-              @click="handleDelete(scope.row)"
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.row)"
           >删除
           </el-button>
         </template>
@@ -141,13 +141,13 @@
     <!-- 分页器 -->
     <div class="block" style="margin-top:15px;float: right;">
       <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="queryParams.pageNum"
-          :page-sizes="[1, 2, 5, 10]"
-          :page-size="queryParams.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total">
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="queryParams.pageNum"
+        :page-sizes="[1, 2, 5, 10]"
+        :page-size="queryParams.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total">
       </el-pagination>
     </div>
 
@@ -156,8 +156,8 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="楼栋/单元" prop="unitId" label-width="85px">
           <el-cascader
-              v-model="value1"
-              :options="options1"
+            v-model="value1"
+            :options="options1"
           />
         </el-form-item>
         <el-form-item label="楼层" prop="roomLevel">
@@ -175,19 +175,19 @@
         <el-form-item label="房屋状态" prop="roomStatus">
           <el-select v-model="form.roomStatus" placeholder="请选择房屋状态">
             <el-option
-                v-for="dict in roomStatusOptions"
-                :key="dict.dictValue"
-                :label="dict.dictLabel"
-                :value="dict.dictValue"
+              v-for="dict in roomStatusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
             ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="是否商铺">
           <el-radio-group v-model="form.roomIsShop">
             <el-radio
-                v-for="dict in roomIsShops"
-                :key="dict.dictValue"
-                :label="dict.dictValue"
+              v-for="dict in roomIsShops"
+              :key="dict.dictValue"
+              :label="dict.dictValue"
             >{{ dict.dictLabel }}
             </el-radio>
           </el-radio-group>
@@ -195,9 +195,9 @@
         <el-form-item label="是否商品房" label-width="82px">
           <el-radio-group v-model="form.roomSCommercialHouse">
             <el-radio
-                v-for="dict in roomIsShops"
-                :key="dict.dictValue"
-                :label="dict.dictValue"
+              v-for="dict in roomIsShops"
+              :key="dict.dictValue"
+              :label="dict.dictValue"
             >{{ dict.dictLabel }}
             </el-radio>
           </el-radio-group>
@@ -205,10 +205,10 @@
         <el-form-item label="房屋户型" prop="roomHouseType">
           <el-select v-model="form.roomHouseType" placeholder="请选择房屋户型">
             <el-option
-                v-for="dict in roomHouseTypeOptions"
-                :key="dict.dictValue"
-                :label="dict.dictLabel"
-                :value="dict.dictValue"
+              v-for="dict in roomHouseTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -334,6 +334,8 @@ export default {
   created() {
     this.getCommunities().then(() => {
       this.getList();
+    }).then(() => {
+      this.getBuildingAndUnitListByCommunityId();
     });
     //查询需要使用的字典
     this.getDicts("zy_room_state").then(response => {
@@ -343,12 +345,11 @@ export default {
     this.getDicts("zy_house_state").then(response => {
       this.roomHouseTypeOptions = response.data.data;
     });
-    this.getBuildingAndUnitListByCommunityId();
   },
   methods: {
     /** 过滤树形结构 */
     getTreeData(data) {
-      if(data!=null){
+      if (data != null) {
         for (let i = 0; i < data.length; i++) {
           if (data[i].children.length < 1) {
             // children若为空数组，则将children设为undefined
@@ -411,8 +412,8 @@ export default {
         params: {
           communityName: this.queryParams.communityName,
           communityCode: this.queryParams.communityCode,
-          pageNum:0,
-          pageSize:0,
+          pageNum: 0,
+          pageSize: 0,
         }
       });
       if (com.meta.errorCode !== 200) {
@@ -579,16 +580,16 @@ export default {
       };
       //发送请求
       this.$http(config).then(response => {
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', '房屋信息.xls');
-            document.body.appendChild(link);
-            link.click();
-            if (response.data !== null) {
-              this.$message.success("导出成功");
-            }
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', '房屋信息.xls');
+          document.body.appendChild(link);
+          link.click();
+          if (response.data !== null) {
+            this.$message.success("导出成功");
           }
+        }
       )
     },
   },

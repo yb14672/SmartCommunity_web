@@ -256,8 +256,9 @@ export default {
     this.getDicts("sys_yes_no").then(response => {
       this.statusOptions = response.data.data;
     });
-    this.getCommunityList();
-    this.getBuildingList();
+    this.getCommunityList().then(()=>{
+      this.getBuildingList();
+    });
   },
   methods: {
     /** 修改小区id */
@@ -331,6 +332,7 @@ export default {
         return this.$message.error(res.meta.errorMsg)
       }
       this.communities = res.data.zyCommunityList;
+      this.communityId=res.data.zyCommunityList[0].communityId;
       this.loading = false
     },
     /** 取消按钮 */

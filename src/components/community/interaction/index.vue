@@ -315,7 +315,6 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd(reply) {
-      console.log(reply)
       this.drawer = true;
       // this.reset();
       // this.open = true;

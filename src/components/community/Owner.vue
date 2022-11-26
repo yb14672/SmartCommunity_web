@@ -98,74 +98,6 @@
       </el-table-column>
     </el-table>
 
-    <!-- 添加或修改业主 对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="昵称" prop="ownerNickname">
-          <el-input v-model="form.ownerNickname" placeholder="请输入昵称"/>
-        </el-form-item>
-        <el-form-item label="真实姓名" prop="ownerRealName">
-          <el-input v-model="form.ownerRealName" placeholder="请输入真实姓名"/>
-        </el-form-item>
-        <el-form-item label="性别0默认1男2女" prop="ownerGender">
-          <el-input v-model="form.ownerGender" placeholder="请输入性别0默认1男2女"/>
-        </el-form-item>
-        <el-form-item label="年龄" prop="ownerAge">
-          <el-input v-model="form.ownerAge" placeholder="请输入年龄"/>
-        </el-form-item>
-        <el-form-item label="身份证号码" prop="ownerIdCard">
-          <el-input v-model="form.ownerIdCard" placeholder="请输入身份证号码"/>
-        </el-form-item>
-        <el-form-item label="手机号码" prop="ownerPhoneNumber">
-          <el-input v-model="form.ownerPhoneNumber" placeholder="请输入手机号码"/>
-        </el-form-item>
-        <el-form-item label="openid" prop="ownerOpenId">
-          <el-input v-model="form.ownerOpenId" placeholder="请输入openid"/>
-        </el-form-item>
-        <el-form-item label="微信号" prop="ownerWechatId">
-          <el-input v-model="form.ownerWechatId" placeholder="请输入微信号"/>
-        </el-form-item>
-        <el-form-item label="qq号码" prop="ownerQqNumber">
-          <el-input v-model="form.ownerQqNumber" placeholder="请输入qq号码"/>
-        </el-form-item>
-        <el-form-item label="出生日期" prop="ownerBirthday">
-          <el-date-picker clearable size="small" style="width: 200px"
-                          v-model="form.ownerBirthday"
-                          type="date"
-                          value-format="yyyy-MM-dd"
-                          placeholder="选择出生日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="头像" prop="ownerPortrait">
-          <el-input v-model="form.ownerPortrait" placeholder="请输入头像"/>
-        </el-form-item>
-        <el-form-item label="个性签名" prop="ownerSignature">
-          <el-input v-model="form.ownerSignature" placeholder="请输入个性签名"/>
-        </el-form-item>
-        <el-form-item label="禁用状态enable启用-disable禁用">
-          <el-radio-group v-model="form.ownerStatus">
-            <el-radio label="1">请选择字典生成</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="注册方式" prop="ownerLogonMode">
-          <el-input v-model="form.ownerLogonMode" placeholder="请输入注册方式"/>
-        </el-form-item>
-        <el-form-item label="业主类型" prop="ownerType">
-          <el-select v-model="form.ownerType" placeholder="请选择业主类型">
-            <el-option label="请选择字典生成" value=""/>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
-
     <el-pagination
         style="float: right"
         :current-page="queryParams.pageNum"
@@ -186,7 +118,7 @@ export default {
   name: "Owner",
   data() {
     return {
-      ownerTypeOptions: {},
+      ownerTypeOptions: [],
       show: false,
       // 遮罩层
       loading: true,
@@ -223,7 +155,9 @@ export default {
   },
   created() {
     this.getList();
-    this.getOwenType("zy_owner_state")
+    this.getDicts("zy_owner_state").then(response => {
+      this.ownerTypeOptions = response.data.data;
+    });
   },
   methods: {
     // 业主类型字典翻译
@@ -331,36 +265,6 @@ export default {
       this.open = true;
       this.title = "添加业主 ";
     },
-    // /** 修改按钮操作 */
-    // handleUpdate(row) {
-    //     this.reset();
-    //     const ownerId = row.ownerId || this.ids
-    //     getOwner(ownerId).then(response => {
-    //         this.form = response.data;
-    //         this.open = true;
-    //         this.title = "修改业主 ";
-    //     });
-    // },
-    // /** 提交按钮 */
-    // submitForm() {
-    //     this.$refs["form"].validate(valid => {
-    //         if (valid) {
-    //             if (this.form.ownerId != null) {
-    //                 updateOwner(this.form).then(response => {
-    //                     this.$message("修改成功");
-    //                     this.open = false;
-    //                     this.getList();
-    //                 });
-    //             } else {
-    //                 addOwner(this.form).then(response => {
-    //                     this.$message("新增成功");
-    //                     this.open = false;
-    //                     this.getList();
-    //                 });
-    //             }
-    //         }
-    //     });
-    // },
     /** 删除按钮操作 */
     handleDelete(row) {
       const ownerRoomId = row.ownerRoomId;
