@@ -11,7 +11,7 @@
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="报修状态" prop="repairState">
         <el-select v-model="queryParams.repairState" placeholder="请选择报修状态" clearable size="small"
-                   @clear="getList">
+                   @clear="getRepairList">
           <el-option
             v-for="item in repairOption"
             :key="item.value"
@@ -26,7 +26,7 @@
           placeholder="请输入业主姓名"
           clearable
           size="small"
-          @clear="getList"
+          @clear="getRepairList"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -36,7 +36,7 @@
           placeholder="请输入业主姓名"
           clearable
           size="small"
-          @clear="getList"
+          @clear="getRepairList"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -384,7 +384,7 @@ export default {
   },
   created() {
     this.getCommunities();
-    this.getList();
+    this.getRepairList();
   },
   methods: {
     //时间格式化的方法
@@ -418,7 +418,7 @@ export default {
     },
     getlivestockInfo: async function (num1) {
       this.queryParams.pageNum = num1;
-      await this.getList();
+      await this.getRepairList();
     },
 
     // 类型翻译
@@ -455,7 +455,7 @@ export default {
       this.communityId = this.options[0].communityId
     },
     /** 查询报修信息列表 */
-    async getList() {
+    async getRepairList() {
       this.loading = true;
       //获取页面数据
       const {data: res} = await this.$http.get('zyRepair/getAllRepairs', {
@@ -477,7 +477,7 @@ export default {
     //获取选中的小区
     selectedCommunity(value) {
       this.queryParams.communityId = value
-      this.getList();
+      this.getRepairList();
       this.communityId = value
     },
     // 取消按钮
@@ -516,7 +516,7 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
-      this.getList();
+      this.getRepairList();
     },
     /** 重置按钮操作 */
     resetQuery() {
@@ -568,10 +568,10 @@ export default {
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg);
       }
+      await this.getRepairList();
       this.reset();
       this.open = false;
       this.$message.success("修改成功");
-      await this.getList();
     },
     /** 删除按钮操作 */
     handleDelete(row) {
@@ -583,7 +583,7 @@ export default {
       }).then(() => {
         return this.$http.delete("/zyRepair/deleteRepair", {data: repairIds})
       }).then(() => {
-        this.getList();
+        this.getRepairList();
         this.$message.success("删除成功")
       })
     },

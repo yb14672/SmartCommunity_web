@@ -201,7 +201,6 @@ export default {
   created() {
     this.getCommunityList();
     this.getList();
-
   },
   methods: {
 
@@ -359,7 +358,7 @@ export default {
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
-      // this.communityId=res.data.zyCommunityList[0].communityId
+      this.communityId=res.data.zyCommunityList[0].communityId
       this.communities = res.data.zyCommunityList;
       this.loading = false
     },
