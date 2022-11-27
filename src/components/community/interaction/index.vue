@@ -151,7 +151,7 @@
               <div v-for="(reply,j) in form.zyCommentList" :key="j" class="author-title">
                 <el-avatar class="header-img" :size="40" :src="reply.ownerPortrait"></el-avatar>
                 <div class="author-info">
-                  <span class="author-name">{{ reply.passiveOwnerName }}</span>
+                  <span class="author-name">{{ reply.ownerNickName }}</span>
                   <span class="author-time">{{ reply.createTime }}</span>
                 </div>
                 <div class="talk-box">
