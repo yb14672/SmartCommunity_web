@@ -363,7 +363,6 @@ export default {
         this.loading = false
         this.dialogVisible = true
         this.fileName=file.name;
-
       })
     },
     // 放大/缩小
