@@ -51,8 +51,6 @@
         width="50"
         align="center">
       </el-table-column>
-      <el-table-column label="类型" align="center" prop="complaintSuggestType" :formatter="suggestStatusFormat"/>
-      <el-table-column label="内容" align="center" prop="complaintSuggestContent" />
       <el-table-column label="创建者名称" align="center" prop="ownerRealName" />
       <el-table-column label="创建者电话" align="center" prop="ownerPhoneNumber" />
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
@@ -70,6 +68,8 @@
         </template>
       </el-table-column >
       <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column label="类型" align="center" prop="complaintSuggestType" :formatter="suggestStatusFormat"/>
+      <el-table-column label="内容" align="center" prop="complaintSuggestContent" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -78,6 +78,13 @@
             icon="el-icon-picture"
             @click="handleMsg(scope.row)"
           >详细信息
+          </el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-picture"
+            @click="showReply(scope.row)"
+          >回复投诉/建议
           </el-button>
         </template>
       </el-table-column>
@@ -133,6 +140,7 @@
         <el-table-column label="修改人" align="center" prop="updateBy" />
         <el-table-column label="修改时间" align="center" prop="updateTime" />
         <el-table-column label="投诉人id" align="center" prop="userId" />
+        <el-table-column label="回复投诉/建议信息" align="center" prop="reply" />
         <el-table-column label="创建者名称" align="center" prop="ownerRealName" />
         <el-table-column label="创建者电话" align="center" prop="ownerPhoneNumber" />
         <el-table-column label="创建时间" align="center" prop="createTime" width="180">
@@ -142,6 +150,18 @@
         </el-table-column>
         <el-table-column label="备注" align="center" prop="remark" />
       </el-table>
+    </el-dialog>
+    <!--回复投诉-->
+    <el-dialog :title="title" :visible.sync="dialogVisibleReply" width="40%" append-to-body>
+      <el-form ref="form" :model="replyForm" label-width="120px">
+        <el-form-item label="回复投诉/建议">
+          <el-input type="textarea" v-model="replyForm.replyContent"></el-input>
+        </el-form-item>
+      </el-form>
+          <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisibleReply = false">取 消</el-button>
+        <el-button type="primary" @click="reply">确 定</el-button>
+      </span>
     </el-dialog>
   </div>
 
@@ -154,10 +174,15 @@ export default {
   // components: { Editor },
   data() {
     return {
+        replyForm:{
+            replyContent:""
+        },
       communities: {},
       communityId: '',
       //详细信息
       dialogVisibleMsg:false,
+      //回复投诉
+      dialogVisibleReply:false,
       //绑定状态
       suggestOption: [{
         value: 'Complaint',
@@ -197,7 +222,10 @@ export default {
       form: {},
       // 表单校验
       rules: {
-      }
+      },
+        currentSuggestId: "",
+        complaintSuggestType:"",
+        currentInfo:{}
     };
   },
   created() {
@@ -220,6 +248,27 @@ export default {
       this.dialogVisibleMsg = true;
       this.getAll(row);
     },
+      showReply(row){
+        this.dialogVisibleReply = true;
+          this.currentSuggestId = row.complaintSuggestId
+          this.complaintSuggestType = row.complaintSuggestType
+      },
+      //回复投诉
+      async reply(){
+        const {data:res} =  await this.$http.put('/zyComplaintSuggest/updateSuggest',{
+              complaintSuggestId: this.currentSuggestId,
+              reply: this.replyForm.replyContent
+          })
+          // console.log(data)
+          if (res.meta.errorCode !== 200) {
+              return this.$message.error(res.meta.errorMsg)
+          }
+          this.$message({
+              type: 'success',
+              message: '修改成功!'
+          });
+          this.dialogVisibleReply = false;
+      },
     // 分页每页多少条数据
     handleSizeChange(val) {
       this.queryParams.pageSize = val;
@@ -253,6 +302,7 @@ export default {
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
+      console.log(res)
       this.suggestList = res.data.records;
       this.total = res.data.pageable.total;
       this.loading = false
@@ -268,6 +318,7 @@ export default {
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
+      this.currentInfo = res.data
       this.suggestListAll =[res.data];
       this.loading = false
     },
