@@ -12,7 +12,9 @@
 </script>
 
 <style>
-  body::-webkit-scrollbar {
-    display: none;
+
+
+  #app{
+    -webkit-overflow-scrolling: touch;
   }
 </style>

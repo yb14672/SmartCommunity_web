@@ -187,7 +187,6 @@
 </template>
 
 <script>
-import axios from "axios";
 
 export default {
   name: "Role",
@@ -457,7 +456,14 @@ export default {
             return this.$message.success("修改成功！")
           } else {
             this.form.menuIds = this.getMenuAllCheckedKeys();
-            const {data: res} = await this.$http.post('sysRole/addRole', this.form)
+            const {data: res} = await this.$http.post('sysRole/addRole', {
+              roleName:this.form.roleName,
+              roleKey:this.form.roleKey,
+              roleSort:this.form.roleSort,
+              status:this.form.status,
+              remark:this.form.remark,
+              menuIds:this.form.menuIds,
+            })
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg)
             }
@@ -489,14 +495,13 @@ export default {
     handleExport() {
       //设置全局配置信息
       const config = {
-        method: 'post',
-        url: 'sysRole/getExcel',
-        data: this.ids,
+        method: 'get',
+        url: 'sysRole/getExcel?roleIds='+this.ids,
         responseType: 'blob'
       };
       //发送请求
       // eslint-disable-next-line no-undef
-      axios(config).then(response => {
+      this.$http(config).then(response => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;

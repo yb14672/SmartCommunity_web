@@ -12,7 +12,7 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.visible" placeholder="菜单状态" clearable size="small">
+        <el-select v-model="queryParams.status" placeholder="菜单状态" clearable size="small">
           <el-option
               v-for="dict in statusOptions"
               :key="dict.dictValue"
@@ -61,7 +61,11 @@
       <el-table-column prop="orderNum" label="排序" width="60"></el-table-column>
       <el-table-column prop="perms" label="权限标识" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="component" label="组件路径" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="status" label="状态" :formatter="statusFormat" width="80"></el-table-column>
+      <el-table-column prop="status" label="状态" :formatter="statusFormat" width="80">
+        <template slot-scope="scope">
+          <DictTag :options="statusOptions" :value="scope.row.status"/>
+        </template>
+      </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime">
         <template slot-scope="scope">
           <span>{{ scope.row.createTime }}</span>
@@ -227,6 +231,8 @@ export default {
   components: {Treeselect},
   data() {
     return {
+      //用来存储修改之前的数据
+      originalForm: {},
       // 遮罩层
       loading: true,
       // 显示搜索条件
@@ -252,7 +258,7 @@ export default {
       // 查询参数
       queryParams: {
         menuName: undefined,
-        visible: undefined
+        status: undefined
       },
       // 表单参数
       form: {},
@@ -281,31 +287,24 @@ export default {
         children: 'children',
         label: 'menuName'
       },
-
     };
   },
   created() {
     this.getList();
-    this.visibleOptions = this.getDict('sys_show_hide')
-    this.statusOptions = this.getDict('sys_normal_disable')
+    this.getDicts("sys_show_hide").then(response => {
+      this.visibleOptions = response.data.data;
+    });
+    this.getDicts("sys_normal_disable").then(response => {
+      this.statusOptions = response.data.data;
+    });
   },
   methods: {
-    /**获取字典列表*/
-    async getDict(deptType) {
-      if (deptType === 'sys_show_hide') {
-        const {data: res} = await this.$http.get(`sysDictData/getDict?dictType=${deptType}`);
-        this.visibleOptions = res.data
-      } else {
-        const {data: res} = await this.$http.get(`sysDictData/getDict?dictType=${deptType}`);
-        this.statusOptions = res.data
-      }
-    },
     /** 查询菜单列表 */
     async getList() {
       const {data: res} = await this.$http.get('sysMenu/queryMenus', {
         params: {
           menuName: this.queryParams.menuName,
-          visible: this.queryParams.visible
+          status: this.queryParams.status
         }
       });
       if (res.meta.errorCode !== 200) {
@@ -362,8 +361,8 @@ export default {
         icon: undefined,
         menuType: "M",
         orderNum: undefined,
-        isFrame: "1",
-        isCache: "0",
+        isFrame: 1,
+        isCache: 0,
         visible: "0",
         status: "0"
       };
@@ -376,7 +375,7 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.queryParams.menuName = undefined
-      this.queryParams.visible = undefined
+      this.queryParams.status = undefined
       this.handleQuery();
     },
     /** 新增按钮操作 */
@@ -396,12 +395,9 @@ export default {
     async handleUpdate(row) {
       this.reset();
       await this.getTreeselect();
-      const {data: res} = await this.$http.get(`sysMenu/${row.menuId}`);
-      if (res.code !== 0) {
-        return this.$message.error("获取失败！")
-      }
       this.open = true;
-      this.form = res.data;
+      this.form = JSON.parse(JSON.stringify(row));
+      this.originalForm = JSON.parse(JSON.stringify(row));
     },
     /** 提交按钮 */
     submitForm: function () {

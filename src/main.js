@@ -3,8 +3,6 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import axios from 'axios'
-import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree } from "@/utils/zhiyu";
-import { getDicts } from "@/utils/data";
 //动态背景
 import VueParticles from 'vue-particles'
 //图片裁剪
@@ -19,25 +17,45 @@ import iconPicker from 'vue-fontawesome-elementui-icon-picker';
 import Treeselect from '@riophae/vue-treeselect'
 //日期处理
 import moment from '../node_modules/moment/moment.js';
+// 字典标签组件
+import DictTag from '@/components/DictTag'
+//自定义表格工具扩展
+import RightToolbar from "@/components/RightToolbar"
+//封装分页
+import Pagination from "@/components/Pagination";
 
 //element Ui
 import "./plugins/element"
 import './plugins/element.js'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import "@/assets/css/scrollbar.css"
+//工具类
+import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree } from "@/utils/zhiyu";
+import { getDicts } from "@/utils/data";
+
 //图标选择器
 Vue.use(iconPicker);
 //粒子效果
 Vue.use(VueParticles)
-//将图片裁剪全局挂载
-Vue.component('VueCropper',VueCropper);
-Vue.component('breadcrumb',Breadcrumb);
 //滑块验证
 Vue.use(SlideVerify);
 //树状选择器
 Vue.use(Treeselect)
 
+
+// 将图片裁剪全局挂载
+Vue.component('VueCropper',VueCropper);
+// 面包屑
+Vue.component('breadcrumb',Breadcrumb);
+// 字典标签
+Vue.component('DictTag', DictTag)
+//表格增强
+Vue.component('RightToolbar', RightToolbar)
+//分页
+Vue.component('Pagination', Pagination)
+
 Vue.filter('moment', function (value, formatString) {
-  formatString = formatString || 'YYYY-MM-DD hh:mm:ss';
+  formatString = formatString || 'YYYY-MM-DD HH:mm:ss';
   return moment(value).format(formatString);
 });
 
@@ -50,6 +68,9 @@ Vue.prototype.selectDictLabel = selectDictLabel
 Vue.prototype.selectDictLabels = selectDictLabels
 Vue.prototype.download = download
 Vue.prototype.handleTree = handleTree
+
+Vue.prototype.$http = axios
+Vue.config.productionTip = false
 //接口前缀
 axios.defaults.baseURL = 'http://localhost:8080/'
 //请求在到达服务器之前，先会调用use中的这个回调函数来添加请求头信息
@@ -59,17 +80,28 @@ axios.interceptors.request.use(config=>{
   return config
 })
 
-Vue.prototype.$http = axios
-Vue.config.productionTip = false
-
-
 const myInterceptor = axios.interceptors.response.use(res => {
-  if(res.data.jsonResult.errorCode !==undefined && res.data.jsonResult.errorCode === 2013){
+  // console.log("myInterceptor",res)
+  let code='';
+  if(res.data.meta==undefined){
+    if(res.meta==undefined){
+      if(res.status==undefined){
+        code=200
+      }else{
+        code=res.status
+      }
+    }else{
+      code=res.meta.errorCode
+    }
+  }else{
+    code=res.data.meta.errorCode
+  }
+  if(code !==undefined && code === 2013 || code === 2014){
     //移除拦截器
     axios.interceptors.request.eject(myInterceptor);
     // 从 sessionStorage 删除所有保存的数据
     window.sessionStorage.clear();
-    localStorage.setItem("msg",res.data.jsonResult.errorMsg)
+    localStorage.setItem("msg",res.data.meta.errorMsg)
     window.location.reload();
   }else{
     localStorage.clear()

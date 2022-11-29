@@ -20,14 +20,18 @@
     <!--分配角色的显示表格-->
     <h4 class="form-header h4">角色信息</h4>
     <hr/>
-    <el-table v-loading="loading" :row-key="getRowKey" @row-click="clickRow" ref="table"
-              @selection-change="handleSelectionChange" :data="roles">
+    <el-table v-loading="loading"
+              :row-key="getRowKey"
+              ref="table"
+              :data="roles"
+              @current-change="currentChange"
+              @selection-change="chooseInstance">
       <el-table-column label="序号" type="index" align="center">
         <template slot-scope="scope">
           <span>{{ (pageNum - 1) * pageSize + scope.$index + 1 }}</span>
         </template>
       </el-table-column>
-      <el-table-column type="selection" :reserve-selection="true" width="55"></el-table-column>
+      <el-table-column type="selection" label="选择" width="55"></el-table-column>
       <el-table-column label="角色编号" align="center" prop="roleId"/>
       <el-table-column label="角色名称" align="center" prop="roleName"/>
       <el-table-column label="权限字符" align="center" prop="roleKey"/>
@@ -60,7 +64,6 @@
 </template>
 
 <script>
-
 export default {
   name: "AuthRole",
   data() {
@@ -72,7 +75,7 @@ export default {
       pageNum: 1,
       pageSize: 10,
       // 选中角色编号
-      roleIds: [],
+      roleId: '',
       // 角色信息
       roles: [],
       // 用户信息
@@ -87,7 +90,10 @@ export default {
       this.loading = true;
       //获取当前用户信息、已有角色
       this.getAuthRole(userId).then((res) => {
-        if (res.data.meta.errorCode !== 200) {
+        if (res.data.meta.errorCode === 2022) {
+          this.$message.warning(res.data.meta.errorMsg);
+        }
+        if (res.data.meta.errorCode !== 200 && res.data.meta.errorCode !== 2022) {
           return this.$message.error(res.data.meta.errorMsg);
         }
         this.form = res.data.data;
@@ -101,15 +107,17 @@ export default {
         this.total = res.data.data.total;
         this.pageNum = res.data.data.current;
         this.pageSize = res.data.data.size;
-        this.$nextTick(() => {
-          this.roles.forEach((row) => {
-            for (let i = 0; i < this.form.roleList.length; i++) {
-              if(this.form.roleList[i].roleId==row.roleId){
-                this.$refs.table.toggleRowSelection(row,true);
+        if (this.form.roleList != null) {
+          this.$nextTick(() => {
+            this.roles.forEach((row) => {
+              for (let i = 0; i < this.form.roleList.length; i++) {
+                if (this.form.roleList[i].roleId == row.roleId) {
+                  this.$refs.table.toggleRowSelection(row, true);
+                }
               }
-            }
+            });
           });
-        });
+        }
       });
       this.loading = false;
     }
@@ -128,13 +136,18 @@ export default {
         }
       })
     },
-    /** 单击选中行数据 */
-    clickRow(row) {
-      this.$refs.table.toggleRowSelection(row);
+    /** 点击选择框切换 */
+    chooseInstance(val) {
+      if (val.length > 1) {
+        this.$refs.table.clearSelection()
+        this.$refs.table.toggleRowSelection(val.pop())
+        this.roleId = val[0].roleId;
+      }
     },
-    /** 多选框选中数据 */
-    handleSelectionChange(selection) {
-      this.roleIds = selection.map((item) => item.roleId);
+    /** 点击行就切换 */
+    currentChange(currentRow, oldCurrentRow) {
+      this.$refs.table.toggleRowSelection(currentRow)
+      this.roleId = currentRow.roleId;
     },
     /** 保存选中的数据编号 */
     getRowKey(row) {
@@ -145,14 +158,14 @@ export default {
       //当前的用户id
       const userId = this.form.userId;
       //修改后的角色id列表
-      const roleIds = this.roleIds.join(",");
+      const roleId = this.roleId;
       const {data: res} = await this.$http.put('sysUser/authRole', {
-          userId: userId,
-          roleIds: roleIds
+        userId: userId,
+        roleId: roleId
       });
-      if(res.meta.errorCode!==200){
+      if (res.meta.errorCode !== 200) {
         this.$message.error(res.meta.errorMsg);
-      }else{
+      } else {
         this.$message.success("分配成功");
         await this.$router.push('/system/user');
       }
@@ -190,3 +203,14 @@ export default {
   },
 };
 </script>
+<style scoped lang="less">
+::v-deep .el-table .has-gutter .el-checkbox .el-checkbox__inner {
+  display: none;
+}
+
+::v-deep .el-table .cell::before {
+  content: '';
+  text-align: center;
+  line-height: 37px;
+}
+</style>
