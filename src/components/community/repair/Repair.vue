@@ -609,7 +609,6 @@ export default {
       const config = {
         method: 'get',
         url: 'zyRepair/getExcel?repairIds=' + this.ids,
-        data: this.ids,
         responseType: 'blob'
       };
       //发送请求
