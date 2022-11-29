@@ -181,16 +181,17 @@
           </el-col>
         </el-row>
         <el-row class="mb8">
-          <!--          <el-col :span="1.5">-->
-          <!--            <el-form-item label="派单时间" prop="assignmentTime" label-width="98px">-->
-          <!--              <el-date-picker clearable size="small" style="width: 200px"-->
-          <!--                              v-model="form.assignmentTime"-->
-          <!--                              type="datetime"-->
-          <!--                              value-format="yyyy-MM-dd HH:mm:ss"-->
-          <!--              >-->
-          <!--              </el-date-picker>-->
-          <!--            </el-form-item>-->
-          <!--          </el-col>-->
+          <el-col :span="12">
+            <el-form-item label="派单时间" prop="assignmentTime">
+              <el-date-picker
+                disabled
+                v-model="form.assignmentTime"
+                type="datetime"
+                clearable
+                placeholder="选择派单时间">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
           <el-col :span="1.5">
             <el-form-item label="接单时间" prop="receivingOrdersTime" label-width="98px">
               <el-date-picker clearable size="small" style="width: 200px"
@@ -202,6 +203,8 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="1.5">
             <el-form-item label="处理完成时间" prop="completeTime" label-width="98px">
               <el-date-picker clearable size="small" style="width: 200px"
@@ -212,8 +215,6 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="1.5">
             <el-form-item label="取消时间" prop="cancelTime" label-width="98px">
               <el-date-picker clearable size="small" style="width: 200px"
@@ -224,6 +225,8 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="1.5">
             <el-form-item label="期待上门时间" prop="doorTime" label-width="98px">
               <el-date-picker clearable size="small" style="width: 200px"
@@ -235,25 +238,10 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <!--        <el-col :span="1.5">-->
-          <!--          <el-form-item label="分派人id" prop="assignmentId" label-width="98px">-->
-          <!--            <el-input v-model="form.assignmentId" style="width: 200px"/>-->
-          <!--          </el-form-item>-->
-          <!--        </el-col>-->
-        </el-row>
-        <el-row>
-          <!--          <el-col :span="1.5">-->
-          <!--            <el-form-item label="处理人姓名" prop="completeName" label-width="98px">-->
-          <!--              <el-input v-model="form.completeName" style="width: 200px"/>-->
-          <!--            </el-form-item>-->
-          <!--          </el-col>-->
           <el-col :span="1.5">
             <el-form-item label="处理人" prop="completeName" label-width="98px">
-              <!--              <el-input v-model="form.repairState" style="width: 200px" :formatter="repairStatusFormat"/>-->
               <template>
-                <el-select v-model="complete" placeholder="请选择">
+                <el-select size="small" v-model="complete" style="width:200px " placeholder="请选择">
                   <el-option
                     v-for="(item,index) in DeptPersons"
                     :key="index"
@@ -264,30 +252,26 @@
               </template>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="1.5">
             <el-form-item label="报修内容" label-width="98px">
               <el-input v-model="form.repairContent" :disabled="true" :min-height="192" style="width: 200px"/>
             </el-form-item>
           </el-col>
-          <!--          <el-col :span="1.5">-->
-          <!--            <el-form-item label="处理人电话" prop="completePhone" label-width="98px">-->
-          <!--              <el-input v-model="form.completePhone" style="width: 200px"/>-->
-          <!--            </el-form-item>-->
-          <!--          </el-col>-->
-        </el-row>
-        <el-row>
+
           <el-col :span="1.5">
             <el-form-item label="详细地址" prop="address" label-width="98px">
               <el-input v-model="form.address" :disabled="true" style="width: 200px"/>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="1.5">
             <el-form-item label="备注" prop="remark" label-width="98px">
               <el-input v-model="form.remark" style="width: 200px"/>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="1.5">
             <el-form-item label="小区ID" prop="communityId" label-width="98px">
               <el-input v-model="form.communityId" :disabled="true" style="width: 200px"/>
