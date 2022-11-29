@@ -142,16 +142,16 @@
     </el-dialog>
 
 
-    <el-pagination
-      style="float: right"
-      :current-page="queryParams.pageNum"
-      :page-size="queryParams.pageSize"
-      :page-sizes="[1, 2, 5, 10]"
-      :total="total"
-      layout="total, sizes, prev, pager, next, jumper"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange">
-    </el-pagination>
+<!--    <el-pagination-->
+<!--      style="float: right"-->
+<!--      :current-page="queryParams.pageNum"-->
+<!--      :page-size="queryParams.pageSize"-->
+<!--      :page-sizes="[1, 2, 5, 10]"-->
+<!--      :total="total"-->
+<!--      layout="total, sizes, prev, pager, next, jumper"-->
+<!--      @size-change="handleSizeChange"-->
+<!--      @current-change="handleCurrentChange">-->
+<!--    </el-pagination>-->
   </div>
 </template>
 
