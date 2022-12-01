@@ -347,6 +347,19 @@ export default {
     });
   },
   methods: {
+    /** 去除空树 */
+    clearTree(data){
+      if(data!=null){
+        let tree = this.getTreeData(data);
+        let tree1=[];
+        for (let i = 0; i < tree.length; i++) {
+          if(tree[i].children!==undefined){
+            tree1.push(tree[i]);
+          }
+        }
+        return tree1;
+      }
+    },
     /** 过滤树形结构 */
     getTreeData(data) {
       if (data != null) {
@@ -365,7 +378,7 @@ export default {
     /** 获取楼栋单元下拉框 */
     async getBuildingAndUnitListByCommunityId() {
       const {data: res} = await this.$http.get("/zyBuilding/buildingList/" + this.queryParams.communityId);
-      this.options1 = this.getTreeData(res.data);
+      this.options1 = this.clearTree(res.data);
     },
     /** 表单重置*/
     reset() {
@@ -446,6 +459,9 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
+      this.queryParams.buildingId='';
+      this.queryParams.unitId='';
+      this.toOptions=[];
       this.getList();
     },
     /** 重置按钮操作 */

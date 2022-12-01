@@ -199,8 +199,9 @@ export default {
     };
   },
   created() {
-    this.getCommunityList();
-    this.getList();
+    this.getCommunityList().then(()=>{
+      this.getList();
+    });
   },
   methods: {
     // 分页每页多少条数据

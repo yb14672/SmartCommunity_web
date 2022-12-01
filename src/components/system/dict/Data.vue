@@ -232,6 +232,9 @@ export default {
         ],
         dictSort: [
           {required: true, message: "数据顺序不能为空", trigger: "blur"}
+        ],
+        listClass: [
+          {required: true, message: "回显样式不能为空", trigger: "blur"}
         ]
       },
       //导出列表
@@ -380,7 +383,6 @@ export default {
       this.open = true;
       this.title = "添加字典数据";
       this.form.dictType = this.queryParams.dictType;
-      this.form.listClass = 'default';
     },
     /** 多选框选中数据 */
     handleSelectionChange(selection) {

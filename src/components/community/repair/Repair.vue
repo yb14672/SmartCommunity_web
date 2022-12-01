@@ -142,14 +142,14 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="120px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="报修编号" prop="repairNum" >
-              <el-input v-model="form.repairNum" :disabled="true"  style="width: 200px"/>
+            <el-form-item label="报修编号" prop="repairNum">
+              <el-input v-model="form.repairNum" :disabled="true" style="width: 200px"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="报修状态" prop="repairState">
               <!--              <el-input v-model="form.repairState" style="width: 200px" :formatter="repairStatusFormat"/>-->
-              <el-select v-model="value" placeholder="请选择"  style="width: 200px">
+              <el-select v-model="value" placeholder="请选择" style="width: 200px">
                 <el-option
                   v-for="item in Coptions"
                   :key="item.value"
@@ -163,7 +163,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="业主姓名" prop="ownerRealName" >
+            <el-form-item label="业主姓名" prop="ownerRealName">
               <el-input v-model="form.ownerRealName" :disabled="true" style="width: 200px"/>
             </el-form-item>
           </el-col>
@@ -207,7 +207,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="处理完成时间" prop="completeTime" >
+            <el-form-item label="处理完成时间" prop="completeTime">
               <el-date-picker clearable style="width: 200px"
                               v-model="form.completeTime"
                               type="datetime"
@@ -217,7 +217,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="取消时间" prop="cancelTime" >
+            <el-form-item label="取消时间" prop="cancelTime">
               <el-date-picker clearable style="width: 200px"
                               v-model="form.cancelTime"
                               type="datetime"
@@ -229,7 +229,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="期待上门时间" prop="doorTime" >
+            <el-form-item label="期待上门时间" prop="doorTime">
               <el-date-picker clearable style="width: 200px"
                               v-model="form.doorTime"
                               type="datetime"
@@ -240,7 +240,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="处理人" prop="completeName" >
+            <el-form-item label="处理人" prop="completeName">
               <template>
                 <el-select v-model="complete" style="width:200px " placeholder="请选择">
                   <el-option
@@ -257,24 +257,24 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="报修内容" >
+            <el-form-item label="报修内容">
               <el-input v-model="form.repairContent" :disabled="true" :min-height="192" style="width: 200px"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="详细地址" prop="address" >
+            <el-form-item label="详细地址" prop="address">
               <el-input v-model="form.address" :disabled="true" style="width: 200px"/>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="备注" prop="remark" >
+            <el-form-item label="备注" prop="remark">
               <el-input v-model="form.remark" style="width: 200px"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="小区ID" prop="communityId" >
+            <el-form-item label="小区ID" prop="communityId">
               <el-input v-model="form.communityId" :disabled="true" style="width: 200px"/>
             </el-form-item>
           </el-col>
@@ -386,8 +386,9 @@ export default {
     };
   },
   created() {
-    this.getCommunities();
-    this.getRepairList();
+    this.getCommunities().then(()=>{
+      this.getRepairList();
+    });
   },
   methods: {
     //根据小区ID查询对应物业的维修人员列表
@@ -576,10 +577,12 @@ export default {
     /** 提交按钮 */
     saveForm: async function () {
       this.form.repairState = this.value
-      const person = this.DeptPersons[this.complete];
-      this.form.completeId = person.userId;
-      this.form.completeName = person.userName;
-      this.form.completePhone = person.phonenumber;
+      if (this.form.repairState === 'Allocated' || this.form.repairState === 'Processing') {
+        const person = this.DeptPersons[this.complete];
+        this.form.completeId = person.userId;
+        this.form.completeName = person.userName;
+        this.form.completePhone = person.phonenumber;
+      }
       const {data: res} = await this.$http.put('zyRepair/updateRepair', this.form);
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg);

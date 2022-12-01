@@ -393,6 +393,7 @@ export default {
     },
     /** 修改按钮操作 */
     async handleUpdate(row) {
+      this.title = "修改菜单";
       this.reset();
       await this.getTreeselect();
       this.open = true;

@@ -103,27 +103,6 @@
         :total="total">
       </el-pagination>
     </div>
-
-    <!-- 添加或修改投诉建议 对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="类型" prop="complaintSuggestType">
-          <el-select v-model="form.complaintSuggestType" placeholder="请选择类型(投诉、建议)">
-            <el-option label="请选择字典生成" value=""/>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="内容">
-          <editor v-model="form.complaintSuggestContent" :min-height="192"/>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
     <!--详细信息-->
     <el-dialog :title="title" :visible.sync="dialogVisibleMsg" width="1200px" append-to-body>
       <el-table v-loading="loading" :data="suggestListAll" @selection-change="handleSelectionChange">
@@ -137,13 +116,13 @@
         <el-table-column label="内容" align="center" prop="complaintSuggestContent"/>
         <el-table-column label="小区id" align="center" prop="communityId"/>
         <el-table-column label="投诉或建议的id" align="center" prop="complaintSuggestId"/>
-        <el-table-column label="创建者" align="center" prop="createBy"/>
+        <el-table-column label="业主昵称" align="center" prop="createBy"/>
         <el-table-column label="修改人" align="center" prop="updateBy"/>
         <el-table-column label="修改时间" align="center" prop="updateTime"/>
         <el-table-column label="投诉人id" align="center" prop="userId"/>
         <el-table-column label="回复投诉/建议信息" align="center" prop="reply"/>
-        <el-table-column label="创建者名称" align="center" prop="ownerRealName"/>
-        <el-table-column label="创建者电话" align="center" prop="ownerPhoneNumber"/>
+        <el-table-column label="业主真名" align="center" prop="ownerRealName"/>
+        <el-table-column label="业主电话" align="center" prop="ownerPhoneNumber"/>
         <el-table-column label="创建时间" align="center" prop="createTime" width="180">
           <template slot-scope="scope">
             <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
@@ -209,8 +188,6 @@ export default {
       suggestListAll: [],
       // 弹出层标题
       title: "",
-      // 是否显示弹出层
-      open: false,
       // 查询参数
       queryParams: {
         communityId: '1338423709557272577',
@@ -225,12 +202,12 @@ export default {
       rules: {},
       currentSuggestId: "",
       complaintSuggestType: "",
-      currentInfo: {}
     };
   },
   created() {
-    this.getList();
-    this.getCommunityList();
+    this.getCommunityList().then(()=>{
+      this.getList();
+    });
   },
   methods: {
     /** 修改小区id */
@@ -259,7 +236,6 @@ export default {
         complaintSuggestId: this.currentSuggestId,
         reply: this.replyForm.replyContent
       })
-      // console.log(res)
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
@@ -302,7 +278,6 @@ export default {
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
-      console.log(res)
       this.suggestList = res.data.records;
       this.total = res.data.pageable.total;
       this.loading = false
@@ -315,17 +290,12 @@ export default {
           suggestId: row.complaintSuggestId,
         }
       });
+      console.log(res)
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
-      this.currentInfo = res.data
       this.suggestListAll = [res.data];
       this.loading = false
-    },
-    // 取消按钮
-    cancel() {
-      this.open = false;
-      this.reset();
     },
     // 表单重置
     reset() {
@@ -356,56 +326,6 @@ export default {
       this.ids = selection.map(item => item.complaintSuggestId)
       this.single = selection.length !== 1
       this.multiple = !selection.length
-    },
-    /** 新增按钮操作 */
-    handleAdd() {
-      this.reset();
-      this.open = true;
-      this.title = "添加投诉建议 ";
-    },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
-      this.reset();
-      const complaintSuggestId = row.complaintSuggestId || this.ids
-      getSuggest(complaintSuggestId).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "修改投诉建议 ";
-      });
-    },
-    /** 提交按钮 */
-    submitForm() {
-      this.$refs["form"].validate(valid => {
-        if (valid) {
-          if (this.form.complaintSuggestId != null) {
-            updateSuggest(this.form).then(response => {
-              this.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
-          } else {
-            addSuggest(this.form).then(response => {
-              this.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
-            });
-          }
-        }
-      });
-    },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const complaintSuggestIds = row.complaintSuggestId || this.ids;
-      this.$confirm('是否确认删除投诉建议 编号为"' + complaintSuggestIds + '"的数据项?', "警告", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(function () {
-        return delSuggest(complaintSuggestIds);
-      }).then(() => {
-        this.getList();
-        this.msgSuccess("删除成功");
-      })
     },
     /** 获取小区列表 */
     async getCommunityList() {
