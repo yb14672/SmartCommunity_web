@@ -164,14 +164,14 @@
                   </p>
                 </div>
                 <div class="reply-box">
-<!--                  <el-button-->
-<!--                    size="mini"-->
-<!--                    type="text"-->
-<!--                    icon="el-icon-edit"-->
-<!--                    @click="handleAdd(reply)"-->
-<!--                    v-hasPermi="['system:comment:add']"-->
-<!--                  >回复-->
-<!--                  </el-button>-->
+                  <!--                  <el-button-->
+                  <!--                    size="mini"-->
+                  <!--                    type="text"-->
+                  <!--                    icon="el-icon-edit"-->
+                  <!--                    @click="handleAdd(reply)"-->
+                  <!--                    v-hasPermi="['system:comment:add']"-->
+                  <!--                  >回复-->
+                  <!--                  </el-button>-->
                   <el-button
                     size="mini"
                     type="text"
@@ -209,7 +209,7 @@ export default {
   components: {Editor},
   data() {
     return {
-      context:'',
+      context: '',
       //抽屉打开方向
       direction: 'btt',
       //全局小区id
@@ -239,7 +239,7 @@ export default {
       // 查询参数
       queryParams: {
         current: 1,
-        size: 10,
+        size: 2,
         communityId: null,
         ownerNickname: null,
         ownerRealName: null,
@@ -269,6 +269,12 @@ export default {
       }
       this.queryParams.communityId = this.communityId;
       this.listInteraction(this.queryParams).then(res => {
+        if (res.data.data === "没有符合条件的数据") {
+          this.interactionList = res.data.data.records;
+          this.total = 0;
+          this.loading = false;
+          return this.$message.warning("没有符合条件的数据");
+        }
         if (res.data.meta.errorCode != 200) {
           return this.$message.error(res.data.meta.errorMsg);
         }
@@ -353,7 +359,7 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
-      console.log(this.$refs.editor.currentValue,this.context)
+      console.log(this.$refs.editor.currentValue, this.context)
       // this.$refs["form"].validate(valid => {
       //   if (valid) {
       //     addInteraction(this.form).then(response => {
