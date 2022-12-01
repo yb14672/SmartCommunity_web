@@ -138,39 +138,38 @@
     </div>
 
     <!-- 添加或修改报修信息对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="700px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules">
-        <el-row class="mb8">
-          <el-col :span="1.5">
-            <el-form-item label="报修编号" prop="repairNum" label-width="98px">
-              <el-input v-model="form.repairNum" :disabled="true" style="width: 200px"/>
+    <el-dialog title="报修详情信息" :visible.sync="open" width="700px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="报修编号" prop="repairNum" >
+              <el-input v-model="form.repairNum" :disabled="true"  style="width: 200px"/>
             </el-form-item>
           </el-col>
-          <el-col :span="1.5">
-            <el-form-item label="报修状态" prop="repairState" label-width="98px">
+          <el-col :span="12">
+            <el-form-item label="报修状态" prop="repairState">
               <!--              <el-input v-model="form.repairState" style="width: 200px" :formatter="repairStatusFormat"/>-->
-              <template>
-                <el-select v-model="value" placeholder="请选择">
-                  <el-option
-                    v-for="item in Coptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-              </template>
+              <el-select v-model="value" placeholder="请选择"  style="width: 200px">
+                <el-option
+                  v-for="item in Coptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="form.repairState!='Pending'">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row class="mb8">
-          <el-col :span="1.5">
-            <el-form-item label="业主姓名" prop="ownerRealName" label-width="98px">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="业主姓名" prop="ownerRealName" >
               <el-input v-model="form.ownerRealName" :disabled="true" style="width: 200px"/>
             </el-form-item>
           </el-col>
-          <el-col :span="1.5">
-            <el-form-item label="创建时间" prop="createTime" label-width="98px">
-              <el-date-picker clearable size="small" style="width: 200px"
+          <el-col :span="12">
+            <el-form-item label="创建时间" prop="createTime">
+              <el-date-picker clearable style="width: 200px"
                               v-model="form.createTime"
                               type="datetime"
                               :disabled="true"
@@ -180,10 +179,11 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row class="mb8">
+        <el-row>
           <el-col :span="12">
             <el-form-item label="派单时间" prop="assignmentTime">
               <el-date-picker
+                style="width: 200px"
                 disabled
                 v-model="form.assignmentTime"
                 type="datetime"
@@ -192,9 +192,10 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col :span="1.5">
-            <el-form-item label="接单时间" prop="receivingOrdersTime" label-width="98px">
-              <el-date-picker clearable size="small" style="width: 200px"
+          <el-col :span="12">
+            <el-form-item label="接单时间" prop="receivingOrdersTime">
+              <el-date-picker clearable
+                              style="width: 200px"
                               v-model="form.receivingOrdersTime"
                               type="datetime"
                               :disabled="true"
@@ -205,9 +206,9 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="1.5">
-            <el-form-item label="处理完成时间" prop="completeTime" label-width="98px">
-              <el-date-picker clearable size="small" style="width: 200px"
+          <el-col :span="12">
+            <el-form-item label="处理完成时间" prop="completeTime" >
+              <el-date-picker clearable style="width: 200px"
                               v-model="form.completeTime"
                               type="datetime"
                               value-format="yyyy-MM-dd HH:mm:ss"
@@ -215,9 +216,9 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col :span="1.5">
-            <el-form-item label="取消时间" prop="cancelTime" label-width="98px">
-              <el-date-picker clearable size="small" style="width: 200px"
+          <el-col :span="12">
+            <el-form-item label="取消时间" prop="cancelTime" >
+              <el-date-picker clearable style="width: 200px"
                               v-model="form.cancelTime"
                               type="datetime"
                               value-format="yyyy-MM-dd HH:mm:ss"
@@ -227,9 +228,9 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="1.5">
-            <el-form-item label="期待上门时间" prop="doorTime" label-width="98px">
-              <el-date-picker clearable size="small" style="width: 200px"
+          <el-col :span="12">
+            <el-form-item label="期待上门时间" prop="doorTime" >
+              <el-date-picker clearable style="width: 200px"
                               v-model="form.doorTime"
                               type="datetime"
                               :disabled="true"
@@ -238,15 +239,16 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col :span="1.5">
-            <el-form-item label="处理人" prop="completeName" label-width="98px">
+          <el-col :span="12">
+            <el-form-item label="处理人" prop="completeName" >
               <template>
-                <el-select size="small" v-model="complete" style="width:200px " placeholder="请选择">
+                <el-select v-model="complete" style="width:200px " placeholder="请选择">
                   <el-option
                     v-for="(item,index) in DeptPersons"
                     :key="index"
                     :label="item.userName"
-                    :value="index">
+                    :value="index"
+                    :disabled="item.status===0">
                   </el-option>
                 </el-select>
               </template>
@@ -254,26 +256,25 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="1.5">
-            <el-form-item label="报修内容" label-width="98px">
+          <el-col :span="12">
+            <el-form-item label="报修内容" >
               <el-input v-model="form.repairContent" :disabled="true" :min-height="192" style="width: 200px"/>
             </el-form-item>
           </el-col>
-
-          <el-col :span="1.5">
-            <el-form-item label="详细地址" prop="address" label-width="98px">
+          <el-col :span="12">
+            <el-form-item label="详细地址" prop="address" >
               <el-input v-model="form.address" :disabled="true" style="width: 200px"/>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="1.5">
-            <el-form-item label="备注" prop="remark" label-width="98px">
+          <el-col :span="12">
+            <el-form-item label="备注" prop="remark" >
               <el-input v-model="form.remark" style="width: 200px"/>
             </el-form-item>
           </el-col>
-          <el-col :span="1.5">
-            <el-form-item label="小区ID" prop="communityId" label-width="98px">
+          <el-col :span="12">
+            <el-form-item label="小区ID" prop="communityId" >
               <el-input v-model="form.communityId" :disabled="true" style="width: 200px"/>
             </el-form-item>
           </el-col>

@@ -24,7 +24,8 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-        >导出</el-button>
+        >导出
+        </el-button>
       </el-col>
       <el-col :span="1.5" :offset="16">
         <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
@@ -42,17 +43,16 @@
     </el-row>
 
 
-
     <el-table v-loading="loading" :data="suggestList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column type="selection" width="55" align="center"/>
       <el-table-column
         label="序号"
         type="index"
         width="50"
         align="center">
       </el-table-column>
-      <el-table-column label="创建者名称" align="center" prop="ownerRealName" />
-      <el-table-column label="创建者电话" align="center" prop="ownerPhoneNumber" />
+      <el-table-column label="创建者名称" align="center" prop="ownerRealName"/>
+      <el-table-column label="创建者电话" align="center" prop="ownerPhoneNumber"/>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
@@ -60,16 +60,17 @@
       </el-table-column>
       <el-table-column label="图片" align="center" prop="filesUrl">
         <template slot-scope="scope">
-          <el-image style="width: 30px; height: 30px" v-for="(item,index) in scope.row.filesUrl" :key="index" :src="item" :preview-src-list="scope.row.filesUrl">
+          <el-image style="width: 30px; height: 30px" v-for="(item,index) in scope.row.filesUrl" :key="index"
+                    :src="item" :preview-src-list="scope.row.filesUrl">
             <div slot="error" class="image-slot">
               <i class="el-icon-picture-outline"></i>
             </div>
           </el-image>
         </template>
-      </el-table-column >
-      <el-table-column label="备注" align="center" prop="remark" />
+      </el-table-column>
+      <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column label="类型" align="center" prop="complaintSuggestType" :formatter="suggestStatusFormat"/>
-      <el-table-column label="内容" align="center" prop="complaintSuggestContent" />
+      <el-table-column label="内容" align="center" prop="complaintSuggestContent"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -108,14 +109,14 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="类型" prop="complaintSuggestType">
           <el-select v-model="form.complaintSuggestType" placeholder="请选择类型(投诉、建议)">
-            <el-option label="请选择字典生成" value="" />
+            <el-option label="请选择字典生成" value=""/>
           </el-select>
         </el-form-item>
         <el-form-item label="内容">
           <editor v-model="form.complaintSuggestContent" :min-height="192"/>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -133,22 +134,22 @@
           align="center">
         </el-table-column>
         <el-table-column label="类型" align="center" prop="complaintSuggestType" :formatter="suggestStatusFormat"/>
-        <el-table-column label="内容" align="center" prop="complaintSuggestContent" />
-        <el-table-column label="小区id" align="center" prop="communityId" />
-        <el-table-column label="投诉或建议的id" align="center" prop="complaintSuggestId" />
-        <el-table-column label="创建者" align="center" prop="createBy" />
-        <el-table-column label="修改人" align="center" prop="updateBy" />
-        <el-table-column label="修改时间" align="center" prop="updateTime" />
-        <el-table-column label="投诉人id" align="center" prop="userId" />
-        <el-table-column label="回复投诉/建议信息" align="center" prop="reply" />
-        <el-table-column label="创建者名称" align="center" prop="ownerRealName" />
-        <el-table-column label="创建者电话" align="center" prop="ownerPhoneNumber" />
+        <el-table-column label="内容" align="center" prop="complaintSuggestContent"/>
+        <el-table-column label="小区id" align="center" prop="communityId"/>
+        <el-table-column label="投诉或建议的id" align="center" prop="complaintSuggestId"/>
+        <el-table-column label="创建者" align="center" prop="createBy"/>
+        <el-table-column label="修改人" align="center" prop="updateBy"/>
+        <el-table-column label="修改时间" align="center" prop="updateTime"/>
+        <el-table-column label="投诉人id" align="center" prop="userId"/>
+        <el-table-column label="回复投诉/建议信息" align="center" prop="reply"/>
+        <el-table-column label="创建者名称" align="center" prop="ownerRealName"/>
+        <el-table-column label="创建者电话" align="center" prop="ownerPhoneNumber"/>
         <el-table-column label="创建时间" align="center" prop="createTime" width="180">
           <template slot-scope="scope">
             <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="备注" align="center" prop="remark" />
+        <el-table-column label="备注" align="center" prop="remark"/>
       </el-table>
     </el-dialog>
     <!--回复投诉-->
@@ -158,7 +159,7 @@
           <el-input type="textarea" v-model="replyForm.replyContent"></el-input>
         </el-form-item>
       </el-form>
-          <span slot="footer" class="dialog-footer">
+      <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisibleReply = false">取 消</el-button>
         <el-button type="primary" @click="reply">确 定</el-button>
       </span>
@@ -174,20 +175,20 @@ export default {
   // components: { Editor },
   data() {
     return {
-        replyForm:{
-            replyContent:""
-        },
+      replyForm: {
+        replyContent: ""
+      },
       communities: {},
       communityId: '',
       //详细信息
-      dialogVisibleMsg:false,
+      dialogVisibleMsg: false,
       //回复投诉
-      dialogVisibleReply:false,
+      dialogVisibleReply: false,
       //绑定状态
       suggestOption: [{
         value: 'Complaint',
         label: '投诉'
-      },{
+      }, {
         value: 'Suggest',
         label: '建议'
       }],
@@ -221,11 +222,10 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {
-      },
-        currentSuggestId: "",
-        complaintSuggestType:"",
-        currentInfo:{}
+      rules: {},
+      currentSuggestId: "",
+      complaintSuggestType: "",
+      currentInfo: {}
     };
   },
   created() {
@@ -244,31 +244,31 @@ export default {
       this.dialogVisiblePic = true;
     },
     //详细信息
-    handleMsg(row){
+    handleMsg(row) {
       this.dialogVisibleMsg = true;
       this.getAll(row);
     },
-      showReply(row){
-        this.dialogVisibleReply = true;
-          this.currentSuggestId = row.complaintSuggestId
-          this.complaintSuggestType = row.complaintSuggestType
-      },
-      //回复投诉
-      async reply(){
-        const {data:res} =  await this.$http.put('/zyComplaintSuggest/updateSuggest',{
-              complaintSuggestId: this.currentSuggestId,
-              reply: this.replyForm.replyContent
-          })
-          // console.log(data)
-          if (res.meta.errorCode !== 200) {
-              return this.$message.error(res.meta.errorMsg)
-          }
-          this.$message({
-              type: 'success',
-              message: '修改成功!'
-          });
-          this.dialogVisibleReply = false;
-      },
+    showReply(row) {
+      this.dialogVisibleReply = true;
+      this.currentSuggestId = row.complaintSuggestId
+      this.complaintSuggestType = row.complaintSuggestType
+    },
+    //回复投诉
+    async reply() {
+      const {data: res} = await this.$http.put('/zyComplaintSuggest/updateSuggest', {
+        complaintSuggestId: this.currentSuggestId,
+        reply: this.replyForm.replyContent
+      })
+      // console.log(res)
+      if (res.meta.errorCode !== 200) {
+        return this.$message.error(res.meta.errorMsg)
+      }
+      this.$message({
+        type: 'success',
+        message: '修改成功!'
+      });
+      this.dialogVisibleReply = false;
+    },
     // 分页每页多少条数据
     handleSizeChange(val) {
       this.queryParams.pageSize = val;
@@ -280,9 +280,9 @@ export default {
     },
     // 状态翻译
     suggestStatusFormat(row, column) {
-      if(row.complaintSuggestType == 'Suggest'){
+      if (row.complaintSuggestType == 'Suggest') {
         return '建议';
-      }else if(row.complaintSuggestType == 'Complaint'){
+      } else if (row.complaintSuggestType == 'Complaint') {
         return '投诉';
       }
     },
@@ -319,7 +319,7 @@ export default {
         return this.$message.error(res.meta.errorMsg)
       }
       this.currentInfo = res.data
-      this.suggestListAll =[res.data];
+      this.suggestListAll = [res.data];
       this.loading = false
     },
     // 取消按钮
@@ -354,7 +354,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.complaintSuggestId)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -400,7 +400,7 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      }).then(function() {
+      }).then(function () {
         return delSuggest(complaintSuggestIds);
       }).then(() => {
         this.getList();
