@@ -249,7 +249,7 @@ export default {
       this.getList();
     },
     // 房屋状态字典翻译
-    bindingStatusFormat(row, column) {
+    bindingStatusFormat(row,column) {
       if (row.parkOwnerStatus == 'Auditing') {
         return '审核中';
       } else if (row.parkOwnerStatus == 'Binding') {
