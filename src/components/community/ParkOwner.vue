@@ -102,7 +102,7 @@
                 </el-table-column>
                 <el-table-column label="审核人" align="center" prop="recordAuditType" :formatter="reviewerStatusFormat"/>
                 <el-table-column label="审核时间" align="center" prop="updateTime"/>
-                <el-table-column label="绑定状态" align="center" prop="parkBundingStatus"/>
+                <el-table-column label="绑定状态" align="center" prop="parkBundingStatus"  :formatter="bindingStatusFormat"/>
                 <el-table-column label="记录审计意见" align="center" prop="recordAuditOpinion"/>
                 <el-table-column label="备注" align="center" prop="remark"/>
             </el-table>
@@ -214,7 +214,16 @@
                     return '已拒绝';
                 } else if (row.parkOwnerStatus == 'Unbind') {
                     return '已解绑';
+                }else if (row.parkBundingStatus == 'Auditing') {
+                    return '审核中';
+                } else if (row.parkBundingStatus == 'Binding') {
+                    return '已绑定';
+                } else if (row.parkBundingStatus == 'Reject') {
+                    return '已拒绝';
+                } else if (row.parkBundingStatus == 'Unbind') {
+                    return '已解绑';
                 }
+
             },
             reviewerStatusFormat(row, column) {
                 if (row.recordAuditType == 'Web') {
