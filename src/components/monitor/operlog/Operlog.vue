@@ -303,7 +303,7 @@ export default {
         }
       });
       if (res.meta.errorCode !== 200) {
-        return res.$message.error("获取列表失败")
+        return this.$message.error("获取列表失败")
       }
       this.list = res.data.sysOperLogs;
       this.total = res.data.pageable.total;

@@ -53,6 +53,18 @@
         >导出
         </el-button>
       </el-col>
+      <el-col :span="1.5" :offset="18">
+        <el-select v-model="queryParams.communityId" @change="selectedCommunity(queryParams.communityId)"
+                   style="border: 0;position: relative;" filterable placeholder="请选择小区"
+                   class="avatar-container right-menu-item hover-effect" size="mini" value="">
+          <el-option
+            v-for="item in options"
+            :key="item.communityId"
+            :label="item.communityName"
+            :value="item.communityId">
+          </el-option>
+        </el-select>
+      </el-col>
     </el-row>
 
     <el-table :data="ownerList" @selection-change="handleSelectionChange">
@@ -118,7 +130,13 @@ export default {
   name: "Owner",
   data() {
     return {
+      //选中的小区id
+      communityId: "",
+      // 小区列表
+      options: [],
+      //业主类型列表
       ownerTypeOptions: [],
+      //控制是否显示
       show: false,
       // 遮罩层
       loading: true,
@@ -146,6 +164,7 @@ export default {
         ownerRealName: null,
         ownerIdCard: null,
         ownerPhoneNumber: null,
+        communityId:'',
       },
       // 表单参数
       form: {},
@@ -154,12 +173,36 @@ export default {
     };
   },
   created() {
-    this.getList();
+    this.getCommunities().then(()=>{
+      this.getList();
+    })
     this.getDicts("zy_owner_state").then(response => {
       this.ownerTypeOptions = response.data.data;
     });
   },
   methods: {
+    /**变换查询小区时触发*/
+    selectedCommunity(value) {
+      this.queryParams.communityId = value
+      this.queryParams.pageNum = 1
+      this.communityId = value
+      this.getList();
+    },
+    /**查询所有小区*/
+    async getCommunities() {
+      const {data: com} = await this.$http.get('/zyCommunity/selectAll', {
+        params: {
+          pageNum: 0,
+          pageSize: 0,
+        }
+      });
+      if (com.meta.errorCode !== 200) {
+        return this.$message.error(com.meta.errorMsg)
+      }
+      this.options = com.data.zyCommunityList;
+      this.queryParams.communityId = this.options[0].communityId;
+      this.communityId = this.options[0].communityId
+    },
     // 业主类型字典翻译
     ownerTypeFormat(row) {
       return this.selectDictLabel(this.ownerTypeOptions, row.ownerType);
@@ -189,6 +232,7 @@ export default {
           ownerRealName: this.queryParams.ownerRealName,
           ownerIdCard: this.queryParams.ownerIdCard,
           ownerPhoneNumber: this.queryParams.ownerPhoneNumber,
+          communityId:this.queryParams.communityId,
         }
       });
       if (res.meta.errorCode !== 200) {

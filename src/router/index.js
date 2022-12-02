@@ -26,6 +26,7 @@ import Visitor from "@/components/community/Visitor";
 import InterAction from "@/components/community/interaction/index";
 import Repair from "../components/community/repair/Repair";
 import Suggest from "../components/community/suggest/Suggest";
+import Server from "../components/server/index";
 import ParkOwner from "@/components/community/ParkOwner";
 
 Vue.use(Router)
@@ -62,6 +63,7 @@ const router = new Router({
                 {path:'/visitor/visitor',component:Visitor},
                 {path:'/repair/repair',component:Repair},
                 {path:'/suggest/suggest',component:Suggest},
+              {path:'/monitor/server',component:Server},
                 {path:'/park/parkOwner',component:ParkOwner},
             ]
         },

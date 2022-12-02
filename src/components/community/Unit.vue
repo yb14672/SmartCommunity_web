@@ -221,7 +221,7 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 1,
+        pageSize: 5,
         unitId: null,
         communityId: null,
         buildingId: null,
@@ -252,12 +252,13 @@ export default {
     };
   },
   created() {
-    this.getList();
     this.getDicts("sys_yes_no").then(response => {
       this.statusOptions = response.data.data;
     });
     this.getCommunityList().then(()=>{
       this.getBuildingList();
+    }).then(()=>{
+      this.getList();
     });
   },
   methods: {
@@ -299,7 +300,7 @@ export default {
         }
       });
       if (res.meta.errorCode !== 200) {
-        return res.$message.error(res.meta.errorMsg)
+        return this.$message.error(res.meta.errorMsg)
       }
       this.unitList = res.data.unitListDtos;
       this.total = res.data.pageable.total;
@@ -313,7 +314,7 @@ export default {
         params: {communityId: this.communityId}
       })
       if (res.meta.errorCode !== 200) {
-        return res.$message.error(res.meta.errorMsg)
+        return this.$message.error(res.meta.errorMsg)
       }
       this.options = res.data;
       this.loading = false;

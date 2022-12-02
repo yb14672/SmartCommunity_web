@@ -108,7 +108,7 @@
     <el-pagination @size-change="handleSizeChange"
                    @current-change="handleCurrentChange"
                    :current-page="queryParams.pageNum"
-                   :page-sizes="[10, 20, 50, 80]"
+                   :page-sizes="[1, 2, 5, 10]"
                    :page-size="queryParams.pageSize" layout="total, sizes, prev, pager, next, jumper"
                    :total="total">
     </el-pagination>
@@ -460,8 +460,11 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(async () => {
-        await this.$http.delete("/zyCommunity/deleteCommunity", {data: communityIds})
-      }).then(() => {
+        return await this.$http.delete("/zyCommunity/deleteCommunity", {data: communityIds})
+      }).then((res) => {
+        if(res.data.meta.errorCode!==200){
+          return this.$message.error(res.data.meta.errorMsg)
+        }
         this.getList();
         this.$message.success("删除成功")
       })

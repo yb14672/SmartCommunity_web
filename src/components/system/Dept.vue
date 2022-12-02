@@ -3,20 +3,20 @@
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch">
       <el-form-item label="部门名称" prop="deptName">
         <el-input
-            v-model="queryParams.deptName"
-            placeholder="请输入部门名称"
-            clearable
-            size="small"
-            @keyup.enter.native="handleQuery"
+          v-model="queryParams.deptName"
+          placeholder="请输入部门名称"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="部门状态" clearable size="small">
           <el-option
-              v-for="dict in statusOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
+            v-for="dict in statusOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
@@ -29,21 +29,21 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-            type="primary"
-            icon="el-icon-plus"
-            size="mini"
-            @click="handleAdd"
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAdd"
         >新增
         </el-button>
       </el-col>
     </el-row>
 
     <el-table
-        v-loading="loading"
-        :data="deptList"
-        row-key="deptId"
-        default-expand-all
-        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+      v-loading="loading"
+      :data="deptList"
+      row-key="deptId"
+      default-expand-all
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
       <el-table-column prop="deptName" label="部门名称" width="260"></el-table-column>
       <el-table-column prop="orderNum" label="排序" width="200"></el-table-column>
@@ -56,26 +56,26 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-edit"
-              @click="handleUpdate(scope.row)"
-              v-hasPermi="['system:dept:edit']"
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['system:dept:edit']"
           >修改
           </el-button>
           <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-plus"
-              @click="handleAdd(scope.row)"
+            size="mini"
+            type="text"
+            icon="el-icon-plus"
+            @click="handleAdd(scope.row)"
           >新增
           </el-button>
           <el-button
-              v-if="scope.row.parentId !== 0"
-              size="mini"
-              type="text"
-              icon="el-icon-delete"
-              @click="handleDelete(scope.row)"
+            v-if="scope.row.parentId !== 0"
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.row)"
           >删除
           </el-button>
         </template>
@@ -86,7 +86,7 @@
     <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
-          <el-col :span="24">
+          <el-col :span="24" v-if="form.parentId!=0">
             <el-form-item label="上级部门" prop="parentId">
               <treeselect v-model="form.parentId" :options="deptOptions" :normalizer="normalizer"
                           placeholder="选择上级部门"/>
@@ -121,9 +121,9 @@
             <el-form-item label="部门状态">
               <el-radio-group v-model="form.status">
                 <el-radio
-                    v-for="dict in statusOptions"
-                    :key="dict.dictValue"
-                    :label="dict.dictValue"
+                  v-for="dict in statusOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictValue"
                 >{{ dict.dictLabel }}
                 </el-radio>
               </el-radio-group>
@@ -346,15 +346,15 @@ export default {
       }).then(() => {
         // 通过方法？带参
         this.$http.delete("/sysDept/deleteDept?idList=" + row.deptId)
-            .then((res) => {
-              if (res.data.meta.errorCode === 200) {
-                // 重新获取页面
-                this.getList();
-                this.$message.success("删除成功");
-              } else {
-                this.$message.warning(res.data.meta.errorMsg);
-              }
-            })
+          .then((res) => {
+            if (res.data.meta.errorCode === 200) {
+              // 重新获取页面
+              this.getList();
+              this.$message.success("删除成功");
+            } else {
+              this.$message.warning(res.data.meta.errorMsg);
+            }
+          })
       })
     },
   }
