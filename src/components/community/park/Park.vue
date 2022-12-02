@@ -75,10 +75,10 @@
       <el-table-column label="车位编号" align="center" prop="parkCode"/>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.ownerBirthday, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="车位类型" align="center" prop="parkType" :formatter="ownerTypeFormat">
+      <el-table-column label="车位类型" align="center" prop="parkType" :formatter="parkTypeFormat">
         <template slot-scope="scope">
           <DictTag :options="parkTypeOptions" :value="scope.row.parkType"/>
         </template>
@@ -99,8 +99,8 @@
 
     <el-pagination
       style="float: right"
-      :current-page="queryParams.pageNum"
-      :page-size="queryParams.pageSize"
+      :current-page="queryParams.current"
+      :page-size="queryParams.size"
       :page-sizes="[1, 2, 5, 10]"
       :total="total"
       layout="total, sizes, prev, pager, next, jumper"
@@ -139,8 +139,8 @@
                 open: false,
                 // 查询参数
                 queryParams: {
-                    pageNum: 1,
-                    pageSize: 10,
+                    pages: 1,
+                    Size: 10,
                     ownerNickname: null,
                     ownerRealName: null,
                     ownerIdCard: null,
@@ -154,18 +154,18 @@
         },
         created() {
             this.getList();
-            this.getDicts("zy_owner_state").then(response => {
-                this.ownerTypeOptions = response.data.data;
+            this.getDicts("zy_parking_type").then(response => {
+                this.parkTypeOptions = response.data.data;
             });
         },
         methods: {
             // 业主类型字典翻译
-            ownerTypeFormat(row) {
-                return this.selectDictLabel(this.ownerTypeOptions, row.ownerType);
+            parkTypeFormat(row) {
+                return this.selectDictLabel(this.parkTypeOptions, row.parkType);
             },
             async getOwenType(deptType) {
                 const {data: res} = await this.$http.get(`sysDictData/getDict?dictType=${deptType}`);
-                this.ownerTypeOptions = res.data;
+                this.parkTypeOptions = res.data;
             },
 
             //性别
@@ -182,20 +182,19 @@
             async getList() {
                 const {data: res} = await this.$http.get("zyOwnerPark/getOwnerParkList", {
                     params: {
-                        pageNum: this.queryParams.pageNum,
-                        pageSize: this.queryParams.pageSize,
+                        current: this.queryParams.current,
+                        size: this.queryParams.size,
                         ownerNickname: this.queryParams.ownerNickname,
                         ownerRealName: this.queryParams.ownerRealName,
                         ownerIdCard: this.queryParams.ownerIdCard,
                         ownerPhoneNumber: this.queryParams.ownerPhoneNumber,
                     }
                 });
-                console.log(res.data.records)
                 if (res.meta.errorCode !== 200) {
                     return this.$message.error(res.meta.errorMsg)
                 }
                 this.parkList = res.data.records;
-                this.total = res.data.data.total;
+                this.total = res.data.total;
 
             },
             // 取消按钮
@@ -232,19 +231,20 @@
                 this.resetForm("form");
             },
 
+
             /** 分页每页多少条数据 */
             handleSizeChange(val) {
-                this.queryParams.pageSize = val;
+                this.queryParams.size = val;
                 this.getList();
             },
             /** 点击切换上下页 */
             handleCurrentChange(val) {
-                this.queryParams.pageNum = val;
+                this.queryParams.current = val;
                 this.getList();
             },
             /** 搜索按钮操作 */
             handleQuery() {
-                this.queryParams.pageNum = 1;
+                this.queryParams.pages = 1;
                 this.getList();
             },
             /** 重置按钮操作 */
@@ -266,13 +266,13 @@
             },
             /** 删除按钮操作 */
             handleDelete(row) {
-                const ownerRoomId = row.ownerRoomId;
+                const ownerParkId = row.ownerParkId;
                 this.$confirm('是否确认解绑该业主?', "警告", {
                     confirmButtonText: "确定",
                     cancelButtonText: "取消",
                     type: "warning"
                 }).then(async () => {
-                    const {data: res} = await this.$http.delete('/zyOwner/deleteOwner?ownerRoomId=' + ownerRoomId)
+                    const {data: res} = await this.$http.delete('zyOwnerPark/deleteOwnerPark?ownerParkId='+ownerParkId);
                     if (res.meta.errorCode !== 200) {
                         return this.$message.error(res.meta.errorMsg)
                     }
