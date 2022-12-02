@@ -29,6 +29,7 @@ import Suggest from "../components/community/suggest/Suggest";
 import park from "@/components/community/park/Park";
 import Server from "../components/server/index";
 import ParkOwner from "@/components/community/park/ParkOwner";
+import ParkInfo from "@/components/community/park/ParkInfo";
 
 Vue.use(Router)
 
@@ -67,6 +68,7 @@ const router = new Router({
         {path: '/Park/park', component: park},
         {path: '/monitor/server', component: Server},
         {path: '/park/parkOwner', component: ParkOwner},
+        {path: '/community/parkInfo', component: ParkInfo},
       ]
     },
     {
