@@ -17,6 +17,21 @@
       </el-form-item>
     </el-form>
 
+    <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5" :offset="20">
+        <el-select v-model="queryParams.communityId" @change="selectedCommunity(queryParams.communityId)"
+                   style="border: 0;position: relative;" filterable placeholder="请选择小区"
+                   class="avatar-container right-menu-item hover-effect" size="mini" value="">
+          <el-option
+            v-for="item in options"
+            :key="item.communityId"
+            :label="item.communityName"
+            :value="item.communityId">
+          </el-option>
+        </el-select>
+      </el-col>
+    </el-row>
+
     <el-table v-loading="loading" :data="parkList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column
@@ -141,7 +156,8 @@ export default {
         value: 'Reject',
         label: '已拒绝'
       }],
-
+      // 小区列表
+      options: [],
       show: false,
       // 遮罩层
       loading: true,
@@ -195,8 +211,34 @@ export default {
     this.getDicts("sys_normal_disable").then(response => {
       this.parkingStatusOptions = response.data.data;
     });
+    // 查询所有小区
+    this.getCommunities().then(()=>{
+        this.getList();
+    });
   },
   methods: {
+      /**查询所有小区*/
+      async getCommunities() {
+          const {data: com} = await this.$http.get('/zyCommunity/selectAll', {
+              params: {
+                  pageNum: 0,
+                  pageSize: 0,
+              }
+          });
+          if (com.meta.errorCode !== 200) {
+              return this.$message.error(com.meta.errorMsg)
+          }
+          this.options = com.data.zyCommunityList;
+          this.queryParams.communityId = this.options[0].communityId;
+          this.communityId = this.options[0].communityId
+      },
+      /**变换查询小区时触发*/
+      selectedCommunity(value) {
+          this.queryParams.communityId = value
+          this.queryParams.pageNum = 1
+          this.communityId = value
+          this.getList();
+      },
     // 分页每页多少条数据
     handleSizeChange(val) {
       this.queryParams.pageSize = val;
@@ -234,6 +276,7 @@ export default {
           size: this.queryParams.pageSize,
           //搜索
           parkOwnerStatus: this.queryParams.parkOwnerStatus,
+          communityId:this.queryParams.communityId
         }
       });
       if (res.data === "没有符合条件的数据") {
