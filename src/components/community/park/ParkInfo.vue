@@ -332,18 +332,12 @@ export default {
     /** 查小区的信息 */
     async getCommunityList() {
       this.loading = true;
-      const {data: res} = await this.$http.get('/zyCommunity/selectAll', {
-        params: {
-          pageNum: 0,
-          pageSize: 0,
-          communityName: '',
-        }
-      });
+      const {data: res} = await this.$http.get('/zyCommunity/getCommunityIdByUserId');
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
-      this.options = res.data.zyCommunityList;
-      this.communityId = res.data.zyCommunityList[0].communityId;
+      this.options = res.data;
+      this.communityId = res.data[0].communityId;
       this.loading = false
     },
     /** 取消按钮 */
