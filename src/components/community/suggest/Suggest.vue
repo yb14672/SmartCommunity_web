@@ -259,7 +259,6 @@ export default {
               complaintSuggestId: this.currentSuggestId,
               reply: this.replyForm.replyContent
           })
-          // console.log(data)
           if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg)
           }
@@ -302,7 +301,6 @@ export default {
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
-      console.log(res)
       this.suggestList = res.data.records;
       this.total = res.data.pageable.total;
       this.loading = false
