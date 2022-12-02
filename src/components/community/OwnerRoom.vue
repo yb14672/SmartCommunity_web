@@ -230,7 +230,7 @@ export default {
       } else if (row.roomStatus == 'Reject') {
         return '已拒绝';
       } else if (row.roomStatus == 'Unbind') {
-        return '已揭榜';
+        return '已解绑';
       }
     },
     reviewerStatusFormat(row, column) {
