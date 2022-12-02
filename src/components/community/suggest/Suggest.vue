@@ -290,7 +290,6 @@ export default {
           suggestId: row.complaintSuggestId,
         }
       });
-      console.log(res)
       if (res.meta.errorCode !== 200) {
         return this.$message.error(res.meta.errorMsg)
       }
