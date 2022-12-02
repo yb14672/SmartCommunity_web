@@ -39,6 +39,7 @@
         </template>
       </el-table-column>
       <el-table-column label="创建者" align="center" prop="createBy"/>
+      <el-table-column label="车牌号" align="center" prop="carNumber"/>
       <el-table-column label="绑定状态" align="center" prop="parkOwnerStatus" :formatter="bindingStatusFormat"/>
       <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -101,6 +102,7 @@
           </template>
         </el-table-column>
         <el-table-column label="审核人" align="center" prop="updateBy"/>
+        <el-table-column label="车牌号" align="center" prop="carNumber"/>
         <el-table-column label="审核时间" align="center" prop="updateTime"/>
         <el-table-column label="绑定状态" align="center" prop="parkBundingStatus" :formatter="bindingStatusFormat"/>
         <el-table-column label="记录审计意见" align="center" prop="recordAuditOpinion"/>

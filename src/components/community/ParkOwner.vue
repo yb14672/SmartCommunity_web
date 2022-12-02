@@ -39,6 +39,7 @@
               </template>
             </el-table-column>
             <el-table-column label="创建者" align="center" prop="createBy"/>
+            <el-table-column label="车牌号" align="center" prop="carNumber"/>
             <el-table-column label="绑定状态" align="center" prop="parkOwnerStatus" :formatter="bindingStatusFormat"/>
             <el-table-column label="备注" align="center" prop="remark"/>
             <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -238,16 +239,14 @@
                     params: {
                             current:this.queryParams.pageNum,
                             size:this.queryParams.pageSize,
-                       //搜索
-                        parkOwnerStatus: this.queryParams.parkOwnerStatus,
+                            //搜索
+                            parkOwnerStatus: this.queryParams.parkOwnerStatus,
                     }
                 });
-                console.log(res)
-
                 if(res.data==="没有符合条件的数据"){
                     this.parkList=[];
                     this.total=0;
-                    this.loading = false
+                    this.loading = false;
                     return this.$message.warning("没有符合条件的数据")
                 }
                 if (res.meta.errorCode !== 200) {
@@ -255,7 +254,8 @@
                 }
                 this.parkList = res.data.records;
                 this.total = res.data.total;
-                this.loading = false
+                this.loading = false;
+                console.log(res.data.records)
             },
             // 业主类型字典翻译
             ownerTypeFormat(row, column) {
