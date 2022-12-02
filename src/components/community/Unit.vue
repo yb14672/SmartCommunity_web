@@ -300,7 +300,7 @@ export default {
         }
       });
       if (res.meta.errorCode !== 200) {
-        return res.$message.error(res.meta.errorMsg)
+        return this.$message.error(res.meta.errorMsg)
       }
       this.unitList = res.data.unitListDtos;
       this.total = res.data.pageable.total;
@@ -314,7 +314,7 @@ export default {
         params: {communityId: this.communityId}
       })
       if (res.meta.errorCode !== 200) {
-        return res.$message.error(res.meta.errorMsg)
+        return this.$message.error(res.meta.errorMsg)
       }
       this.options = res.data;
       this.loading = false;

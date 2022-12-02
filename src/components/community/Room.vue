@@ -449,8 +449,14 @@ export default {
           communityId: this.queryParams.communityId,
         }
       });
+      if (res.meta.errorCode === 1006) {
+        this.roomList = [];
+        this.total = 0;
+        this.loading = false;
+        return this.$message.warning(res.meta.errorMsg)
+      }
       if (res.meta.errorCode !== 200) {
-        return res.$message.error("获取列表失败")
+        return this.$message.error(res.meta.errorMsg)
       }
       this.roomList = res.data.records;
       this.total = res.data.total;
@@ -459,9 +465,9 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
-      this.queryParams.buildingId='';
-      this.queryParams.unitId='';
-      this.toOptions=[];
+      this.queryParams.buildingId = '';
+      this.queryParams.unitId = '';
+      this.toOptions = [];
       this.getList();
     },
     /** 重置按钮操作 */

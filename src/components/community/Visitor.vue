@@ -187,7 +187,7 @@ export default {
         }
       });
       if (res.meta.errorCode !== 200) {
-        return res.$message.error(res.meta.errorMsg)
+        return this.$message.error(res.meta.errorMsg)
       }
       this.visitorList = res.data.visitorListDtos
       this.total = res.data.pageable.total
