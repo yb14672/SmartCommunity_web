@@ -45,6 +45,15 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAdd"
+        >新增
+        </el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
           type="warning"
           icon="el-icon-download"
           size="mini"
@@ -107,6 +116,59 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange">
     </el-pagination>
+
+    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="小区" prop="communityId" label-width="85px">
+          <el-select v-model="form.communityId" placeholder="选择小区">
+          <el-option
+            v-for="item in options"
+            :key="item.communityId"
+            :label="item.communityName"
+            :value="item.communityId">
+          </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车位类型" prop="parkType">
+          <el-select v-model="form.parkType" placeholder="车位类型">
+            <el-option
+              v-for="dict in parkTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="车位状态">
+          <el-radio-group v-model="form.parkStatus">
+            <el-radio
+              v-for="dict in parkStatusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictValue"
+            >{{ dict.dictLabel }}
+            </el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item label="是否是公共车位">
+          <el-radio-group v-model="form.parkIsPublic">
+            <el-radio
+              v-for="dict in parkIsPublics"
+              :key="dict.dictValue"
+              :label="dict.dictValue"
+            >{{ dict.dictLabel }}
+            </el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 
 </template>
@@ -117,7 +179,10 @@
         name: "Owner",
         data() {
             return {
+                options:[],
+                parkStatusOptions:[],
                 parkTypeOptions: [],
+                parkIsPublics:[],
                 show: false,
                 // 遮罩层
                 loading: true,
@@ -153,10 +218,18 @@
             };
         },
         created() {
+            this.getCommunityList();
             this.getList();
             this.getDicts("zy_parking_type").then(response => {
                 this.parkTypeOptions = response.data.data;
             });
+            this.getDicts("zy_public_parking").then(response => {
+                this.parkIsPublics = response.data.data;
+            });
+            this.getDicts("sys_normal_disable").then(response => {
+                this.parkStatusOptions = response.data.data;
+            });
+
         },
         methods: {
             // 业主类型字典翻译
@@ -196,6 +269,23 @@
                 this.parkList = res.data.records;
                 this.total = res.data.total;
 
+            },
+
+            async getCommunityList() {
+                this.loading = true;
+                const {data: res} = await this.$http.get('/zyCommunity/selectAll', {
+                    params: {
+                        pageNum: 0,
+                        pageSize: 0,
+                        communityName: '',
+                    }
+                });
+                if (res.meta.errorCode !== 200) {
+                    return this.$message.error(res.meta.errorMsg)
+                }
+                this.options = res.data.zyCommunityList;
+                this.communityId = res.data.zyCommunityList[0].communityId;
+                this.loading = false
             },
             // 取消按钮
             cancel() {
@@ -262,7 +352,7 @@
             handleAdd() {
                 this.reset();
                 this.open = true;
-                this.title = "添加业主 ";
+                this.title = "添加车位 ";
             },
             /** 删除按钮操作 */
             handleDelete(row) {
