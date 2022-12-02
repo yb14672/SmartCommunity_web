@@ -20,7 +20,7 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜 索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
@@ -460,8 +460,11 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(async () => {
-        await this.$http.delete("/zyCommunity/deleteCommunity", {data: communityIds})
-      }).then(() => {
+        return await this.$http.delete("/zyCommunity/deleteCommunity", {data: communityIds})
+      }).then((res) => {
+        if(res.data.meta.errorCode!==200){
+          return this.$message.error(res.data.meta.errorMsg)
+        }
         this.getList();
         this.$message.success("删除成功")
       })

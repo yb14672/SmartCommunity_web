@@ -27,78 +27,82 @@ import InterAction from "@/components/community/interaction/index";
 import Repair from "../components/community/repair/Repair";
 import Suggest from "../components/community/suggest/Suggest";
 import park from "@/components/community/park/Park";
+import Server from "../components/server/index";
+import ParkOwner from "@/components/community/ParkOwner";
 
 Vue.use(Router)
 
 const router = new Router({
-    routes: [
-        {path: '/', name: 'Hello', component: Hello},
-        {path: '/login', component: Login},
-        {
-            path: '/home',
-            component: Home,
-            redirect: '/welcome',
-            children: [
-                {path: '/welcome', component: Welcome},
-                {path: '/system/user', component: User},
-                {path: '/system/user-auth/role/:userId(\\d+)', component: AuthRole},
-                {path: '/user/profile', component: Profile},
-                {path: '/system/role', component: Role},
-                {path: '/system/menu', component: Menu},
-                {path: '/system/dept', component: Dept},
-                {path: '/system/post', component: Post},
-                {path: '/system/dict', component: Dict},
-                {path: '/dict/type/data/:dictId(\\d+)', component: DataData},
-                {path: '/system/log/operlog', component: Operlog},
-                {path: '/system/log/logininfor', component: LoginInfo},
-                {path: '/community/community',component: Community},
-                {path: '/community/building', component: Building},
-                {path:'/community/unit',component:Unit},
-                {path:'/community/room',component:Room},
-                {path:'/tool/swagger',component:Swagger},
-                {path:'/bing/ownerRoom',component:OwnerRoom},
-                {path:'/bing/owner',component:Owner},
-                {path:'/interaction/interaction',component:InterAction},
-                {path:'/visitor/visitor',component:Visitor},
-                {path:'/repair/repair',component:Repair},
-                {path:'/suggest/suggest',component:Suggest},
-                {path: '/Park/park',component:park}
-            ]
-        },
-        {
-            path: "/404",
-            name: "NotFound",
-            component: () => import("@/views/error/404.vue"),
-        }, {
-            path: "/500",
-            name: "ServerError",
-            component: () => import("@/views/error/500.vue"),
-        }
-    ]
+  routes: [
+    {path: '/', name: 'Hello', component: Hello},
+    {path: '/login', component: Login},
+    {
+      path: '/home',
+      component: Home,
+      redirect: '/welcome',
+      children: [
+        {path: '/welcome', component: Welcome},
+        {path: '/system/user', component: User},
+        {path: '/system/user-auth/role/:userId(\\d+)', component: AuthRole},
+        {path: '/user/profile', component: Profile},
+        {path: '/system/role', component: Role},
+        {path: '/system/menu', component: Menu},
+        {path: '/system/dept', component: Dept},
+        {path: '/system/post', component: Post},
+        {path: '/system/dict', component: Dict},
+        {path: '/dict/type/data/:dictId(\\d+)', component: DataData},
+        {path: '/system/log/operlog', component: Operlog},
+        {path: '/system/log/logininfor', component: LoginInfo},
+        {path: '/community/community', component: Community},
+        {path: '/community/building', component: Building},
+        {path: '/community/unit', component: Unit},
+        {path: '/community/room', component: Room},
+        {path: '/tool/swagger', component: Swagger},
+        {path: '/bing/ownerRoom', component: OwnerRoom},
+        {path: '/bing/owner', component: Owner},
+        {path: '/interaction/interaction', component: InterAction},
+        {path: '/visitor/visitor', component: Visitor},
+        {path: '/repair/repair', component: Repair},
+        {path: '/suggest/suggest', component: Suggest},
+        {path: '/Park/park', component: park},
+        {path: '/monitor/server', component: Server},
+        {path: '/park/parkOwner', component: ParkOwner},
+      ]
+    },
+    {
+      path: "/404",
+      name: "NotFound",
+      component: () => import("@/views/error/404.vue"),
+    }, {
+      path: "/500",
+      name: "ServerError",
+      component: () => import("@/views/error/500.vue"),
+    }
+  ]
 })
 
 //挂载路由导航守卫,to表示将要访问的路径，from表示从哪里来，next是下一个要做的操作
 router.beforeEach((to, from, next) => {
-    if (to.path === '/login') {
-        return next();
+  if (to.path === '/login') {
+    return next();
+  }
+  //获取token
+  const tokenStr = window.sessionStorage.getItem('token');
+  //未找到路由
+  if (!to.matched.length) {
+    //判断是否有token
+    if (tokenStr) {
+      next("/404");
+    } else {
+      //如果没有token，说明还没有登录过
+      next('/login');
     }
-    //获取token
-    const tokenStr = window.sessionStorage.getItem('token');
-    //未找到路由
-    if (!to.matched.length) {
-        //判断是否有token
-        if (tokenStr) {
-            next("/404");
-        } else {
-            //如果没有token，说明还没有登录过
-            next('/login');
-        }
-        next(true);
-    }
+    next(true);
+  }
 
-    if (!tokenStr)
-        return next('/login');
-    next();
+  if (!tokenStr)
+    return next('/login');
+  next();
 })
 
 export default router
