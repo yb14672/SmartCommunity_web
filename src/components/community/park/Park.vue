@@ -113,196 +113,195 @@
 
 <script>
 
-    export default {
-        name: "Owner",
-        data() {
-            return {
-                parkTypeOptions: [],
-                show: false,
-                // 遮罩层
-                loading: true,
-                // 选中数组
-                ids: [],
-                // 非单个禁用
-                single: true,
-                // 非多个禁用
-                multiple: true,
-                // 显示搜索条件
-                showSearch: true,
-                // 总条数
-                total: 0,
-                // 业主 表格数据
-                parkList: [],
-                // 弹出层标题
-                title: "",
-                // 是否显示弹出层
-                open: false,
-                // 查询参数
-                queryParams: {
-                    pages: 1,
-                    Size: 10,
-                    ownerNickname: null,
-                    ownerRealName: null,
-                    ownerIdCard: null,
-                    ownerPhoneNumber: null,
-                },
-                // 表单参数
-                form: {},
-                // 表单校验
-                rules: {}
-            };
-        },
-        created() {
-            this.getList();
-            this.getDicts("zy_parking_type").then(response => {
-                this.parkTypeOptions = response.data.data;
-            });
-        },
-        methods: {
-            // 业主类型字典翻译
-            parkTypeFormat(row) {
-                return this.selectDictLabel(this.parkTypeOptions, row.parkType);
-            },
-            async getOwenType(deptType) {
-                const {data: res} = await this.$http.get(`sysDictData/getDict?dictType=${deptType}`);
-                this.parkTypeOptions = res.data;
-            },
-
-            //性别
-            genderStatusFormat(row) {
-                if (row.ownerGender == 'UnKnown') {
-                    return '未知';
-                } else if (row.ownerGender == 'Male') {
-                    return '男';
-                } else if (row.ownerGender == 'Female') {
-                    return '女';
-                }
-            },
-            /** 查询业主 列表 */
-            async getList() {
-                const {data: res} = await this.$http.get("zyOwnerPark/getOwnerParkList", {
-                    params: {
-                        current: this.queryParams.current,
-                        size: this.queryParams.size,
-                        ownerNickname: this.queryParams.ownerNickname,
-                        ownerRealName: this.queryParams.ownerRealName,
-                        ownerIdCard: this.queryParams.ownerIdCard,
-                        ownerPhoneNumber: this.queryParams.ownerPhoneNumber,
-                    }
-                });
-                if (res.meta.errorCode !== 200) {
-                    return this.$message.error(res.meta.errorMsg)
-                }
-                this.parkList = res.data.records;
-                this.total = res.data.total;
-
-            },
-            // 取消按钮
-            cancel() {
-                this.open = false;
-                this.reset();
-            },
-            // 表单重置
-            reset() {
-                this.form = {
-                    ownerId: null,
-                    ownerNickname: null,
-                    ownerRealName: null,
-                    ownerGender: null,
-                    ownerAge: null,
-                    ownerIdCard: null,
-                    ownerPhoneNumber: null,
-                    ownerOpenId: null,
-                    ownerWechatId: null,
-                    ownerQqNumber: null,
-                    ownerBirthday: null,
-                    ownerPortrait: null,
-                    ownerSignature: null,
-                    ownerStatus: "0",
-                    ownerLogonMode: null,
-                    ownerType: null,
-                    ownerPassword: null,
-                    createBy: null,
-                    createTime: null,
-                    updateBy: null,
-                    updateTime: null,
-                    remark: null
-                };
-                this.resetForm("form");
-            },
-
-
-            /** 分页每页多少条数据 */
-            handleSizeChange(val) {
-                this.queryParams.size = val;
-                this.getList();
-            },
-            /** 点击切换上下页 */
-            handleCurrentChange(val) {
-                this.queryParams.current = val;
-                this.getList();
-            },
-            /** 搜索按钮操作 */
-            handleQuery() {
-                this.queryParams.pages = 1;
-                this.getList();
-            },
-            /** 重置按钮操作 */
-            resetQuery() {
-                this.resetForm("queryForm");
-                this.handleQuery();
-            },
-            // 多选框选中数据
-            handleSelectionChange(selection) {
-                this.ids = selection.map(item => item.ownerRoomId)
-                this.single = selection.length !== 1
-                this.multiple = !selection.length
-            },
-            /** 新增按钮操作 */
-            handleAdd() {
-                this.reset();
-                this.open = true;
-                this.title = "添加业主 ";
-            },
-            /** 删除按钮操作 */
-            handleDelete(row) {
-                const ownerParkId = row.ownerParkId;
-                this.$confirm('是否确认解绑该业主?', "警告", {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning"
-                }).then(async () => {
-                    const {data: res} = await this.$http.delete('zyOwnerPark/deleteOwnerPark?ownerParkId='+ownerParkId);
-                    if (res.meta.errorCode !== 200) {
-                        return this.$message.error(res.meta.errorMsg)
-                    }
-                    await this.getList()
-                    return this.$message.success(res.meta.errorMsg)
-                })
-            },
-            /** 导出按钮操作 */
-            handleExport() {
-                //设置全局配置信息
-                const config = {
-                    method: 'get',
-                    url: 'zyOwner/getExcel?ownerIds=' + this.ids,
-                    responseType: 'blob'
-                };
-                //发送请求
-                // eslint-disable-next-line no-undef
-                this.$http(config).then(response => {
-                        const url = window.URL.createObjectURL(new Blob([response.data]));
-                        const link = document.createElement('a');
-                        link.href = url;
-                        link.setAttribute('download', '房主信息.xls');
-                        document.body.appendChild(link);
-                        link.click();
-                        if (response.data !== null) {
-                            this.$message.success("导出成功");
-                        }
-                    }
-                )
-            }
-        }
+export default {
+  name: "Owner",
+  data() {
+    return {
+      parkTypeOptions: [],
+      show: false,
+      // 遮罩层
+      loading: true,
+      // 选中数组
+      ids: [],
+      // 非单个禁用
+      single: true,
+      // 非多个禁用
+      multiple: true,
+      // 显示搜索条件
+      showSearch: true,
+      // 总条数
+      total: 0,
+      // 业主 表格数据
+      parkList: [],
+      // 弹出层标题
+      title: "",
+      // 是否显示弹出层
+      open: false,
+      // 查询参数
+      queryParams: {
+        pages: 1,
+        Size: 10,
+        ownerNickname: null,
+        ownerRealName: null,
+        ownerIdCard: null,
+        ownerPhoneNumber: null,
+      },
+      // 表单参数
+      form: {},
+      // 表单校验
+      rules: {}
     };
+  },
+  created() {
+    this.getList();
+    this.getDicts("zy_parking_type").then(response => {
+      this.parkTypeOptions = response.data.data;
+    });
+  },
+  methods: {
+    // 业主类型字典翻译
+    parkTypeFormat(row) {
+      return this.selectDictLabel(this.parkTypeOptions, row.parkType);
+    },
+    async getOwenType(deptType) {
+      const {data: res} = await this.$http.get(`sysDictData/getDict?dictType=${deptType}`);
+      this.parkTypeOptions = res.data;
+    },
+    //性别
+    genderStatusFormat(row) {
+      if (row.ownerGender == 'UnKnown') {
+        return '未知';
+      } else if (row.ownerGender == 'Male') {
+        return '男';
+      } else if (row.ownerGender == 'Female') {
+        return '女';
+      }
+    },
+    /** 查询业主 列表 */
+    async getList() {
+      const {data: res} = await this.$http.get("zyOwnerPark/getOwnerParkList", {
+        params: {
+          current: this.queryParams.current,
+          size: this.queryParams.size,
+          ownerNickname: this.queryParams.ownerNickname,
+          ownerRealName: this.queryParams.ownerRealName,
+          ownerIdCard: this.queryParams.ownerIdCard,
+          ownerPhoneNumber: this.queryParams.ownerPhoneNumber,
+        }
+      });
+      if (res.meta.errorCode !== 200) {
+        return this.$message.error(res.meta.errorMsg)
+      }
+      this.parkList = res.data.records;
+      this.total = res.data.total;
+
+    },
+    // 取消按钮
+    cancel() {
+      this.open = false;
+      this.reset();
+    },
+    // 表单重置
+    reset() {
+      this.form = {
+        ownerId: null,
+        ownerNickname: null,
+        ownerRealName: null,
+        ownerGender: null,
+        ownerAge: null,
+        ownerIdCard: null,
+        ownerPhoneNumber: null,
+        ownerOpenId: null,
+        ownerWechatId: null,
+        ownerQqNumber: null,
+        ownerBirthday: null,
+        ownerPortrait: null,
+        ownerSignature: null,
+        ownerStatus: "0",
+        ownerLogonMode: null,
+        ownerType: null,
+        ownerPassword: null,
+        createBy: null,
+        createTime: null,
+        updateBy: null,
+        updateTime: null,
+        remark: null
+      };
+      this.resetForm("form");
+    },
+
+
+    /** 分页每页多少条数据 */
+    handleSizeChange(val) {
+      this.queryParams.size = val;
+      this.getList();
+    },
+    /** 点击切换上下页 */
+    handleCurrentChange(val) {
+      this.queryParams.current = val;
+      this.getList();
+    },
+    /** 搜索按钮操作 */
+    handleQuery() {
+      this.queryParams.pages = 1;
+      this.getList();
+    },
+    /** 重置按钮操作 */
+    resetQuery() {
+      this.resetForm("queryForm");
+      this.handleQuery();
+    },
+    // 多选框选中数据
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.ownerRoomId)
+      this.single = selection.length !== 1
+      this.multiple = !selection.length
+    },
+    /** 新增按钮操作 */
+    handleAdd() {
+      this.reset();
+      this.open = true;
+      this.title = "添加业主 ";
+    },
+    /** 删除按钮操作 */
+    handleDelete(row) {
+      const ownerParkId = row.ownerParkId;
+      this.$confirm('是否确认解绑该业主?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(async () => {
+        const {data: res} = await this.$http.delete('zyOwnerPark/deleteOwnerPark?ownerParkId=' + ownerParkId);
+        if (res.meta.errorCode !== 200) {
+          return this.$message.error(res.meta.errorMsg)
+        }
+        await this.getList()
+        return this.$message.success(res.meta.errorMsg)
+      })
+    },
+    /** 导出按钮操作 */
+    handleExport() {
+      //设置全局配置信息
+      const config = {
+        method: 'get',
+        url: 'zyOwner/getExcel?ownerIds=' + this.ids,
+        responseType: 'blob'
+      };
+      //发送请求
+      // eslint-disable-next-line no-undef
+      this.$http(config).then(response => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', '房主信息.xls');
+          document.body.appendChild(link);
+          link.click();
+          if (response.data !== null) {
+            this.$message.success("导出成功");
+          }
+        }
+      )
+    }
+  }
+};
 </script>

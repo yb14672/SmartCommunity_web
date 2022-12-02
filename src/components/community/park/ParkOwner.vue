@@ -102,7 +102,7 @@
         </el-table-column>
         <el-table-column label="审核人" align="center" prop="updateBy"/>
         <el-table-column label="审核时间" align="center" prop="updateTime"/>
-        <el-table-column label="绑定状态" align="center" prop="parkBundingStatus"  :formatter="bindingStatusFormat"/>
+        <el-table-column label="绑定状态" align="center" prop="parkBundingStatus" :formatter="bindingStatusFormat"/>
         <el-table-column label="记录审计意见" align="center" prop="recordAuditOpinion"/>
         <el-table-column label="备注" align="center" prop="remark"/>
       </el-table>
@@ -214,7 +214,7 @@ export default {
         return '已拒绝';
       } else if (row.parkOwnerStatus == 'Unbind') {
         return '已解绑';
-      }else if (row.parkBundingStatus == 'Auditing') {
+      } else if (row.parkBundingStatus == 'Auditing') {
         return '审核中';
       } else if (row.parkBundingStatus == 'Binding') {
         return '已绑定';
@@ -228,15 +228,15 @@ export default {
       this.loading = true;
       const {data: res} = await this.$http.get('/zyOwnerPark/selectAllParkLimit', {
         params: {
-          current:this.queryParams.pageNum,
-          size:this.queryParams.pageSize,
+          current: this.queryParams.pageNum,
+          size: this.queryParams.pageSize,
           //搜索
           parkOwnerStatus: this.queryParams.parkOwnerStatus,
         }
       });
-      if(res.data==="没有符合条件的数据"){
-        this.parkList=[];
-        this.total=0;
+      if (res.data === "没有符合条件的数据") {
+        this.parkList = [];
+        this.total = 0;
         this.loading = false
         return this.$message.warning("没有符合条件的数据")
       }
@@ -307,10 +307,10 @@ export default {
       this.reset();
       this.form = row;
       this.examineRecord = true;
-      const {data:res}=await this.$http.get("zyOwnerParkRecord/selectOwnerParkById",{
-        params:{
+      const {data: res} = await this.$http.get("zyOwnerParkRecord/selectOwnerParkById", {
+        params: {
           //把id带给后端查询字段
-          ownerParkId:row.ownerParkId,
+          ownerParkId: row.ownerParkId,
         }
       });
       this.recordList = res.data;
@@ -322,11 +322,11 @@ export default {
         if (valid) {
           if (this.form.ownerParkId != null) {
             // 修改业主审核的状态为审核失败
-            const {data: res} = await this.$http.put('zyOwnerPark/updateOwnerParkStatus',this.form,{
-              params:{
-                status:type,
-                recordAuditOpinion:this.form.recordAuditOpinion,
-                updateBy:this.form.updateBy,
+            const {data: res} = await this.$http.put('zyOwnerPark/updateOwnerParkStatus', this.form, {
+              params: {
+                status: type,
+                recordAuditOpinion: this.form.recordAuditOpinion,
+                updateBy: this.form.updateBy,
               }
             });
             if (res.meta.errorCode !== 200) {
