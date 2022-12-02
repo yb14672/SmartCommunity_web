@@ -4,6 +4,7 @@
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="楼栋/单元" label-width="85px">
         <el-cascader
+          ref="cascade"
           :v-model="toOptions"
           :prop="cascaderProps"
           :options="options1"
@@ -465,13 +466,21 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
-      this.queryParams.buildingId = '';
-      this.queryParams.unitId = '';
-      this.toOptions = [];
       this.getList();
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.reset()
+      this.toOptions = null;
+      this.queryParams.buildingId = null;
+      this.queryParams.unitId = null;
+      this.options = null;
+      this.$nextTick(() => {
+        // 清空级联选择器选中状态
+        this.$refs.cascade.$refs.panel.clearCheckedNodes()
+        // 清除⾼亮
+        this.$refs.cascade.$refs.panel.activePath = []
+      });
       this.resetForm("queryForm");
       this.handleQuery();
     },

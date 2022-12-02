@@ -102,7 +102,7 @@
         </el-table-column>
         <el-table-column label="审核人" align="center" prop="updateBy"/>
         <el-table-column label="审核时间" align="center" prop="updateTime"/>
-        <el-table-column label="绑定状态" align="center" prop="parkBundingStatus"/>
+        <el-table-column label="绑定状态" align="center" prop="parkBundingStatus" :formatter="bindingStatusFormat"/>
         <el-table-column label="记录审计意见" align="center" prop="recordAuditOpinion"/>
         <el-table-column label="备注" align="center" prop="remark"/>
       </el-table>
@@ -214,6 +214,14 @@ export default {
         return '已拒绝';
       } else if (row.parkOwnerStatus == 'Unbind') {
         return '已解绑';
+      } else if (row.parkBundingStatus == 'Auditing') {
+        return '审核中';
+      } else if (row.parkBundingStatus == 'Binding') {
+        return '已绑定';
+      } else if (row.parkBundingStatus == 'Reject') {
+        return '已拒绝';
+      } else if (row.parkBundingStatus == 'Unbind') {
+        return '已解绑';
       }
     },
     async getList() {
@@ -238,6 +246,10 @@ export default {
       this.parkList = res.data.records;
       this.total = res.data.total;
       this.loading = false
+    },
+    // 业主类型字典翻译
+    ownerTypeFormat(row, column) {
+      return this.selectDictLabel(this.parkingTypeOptions, row.ownerType);
     },
     // 取消按钮
     cancel() {
@@ -281,14 +293,14 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加房屋绑定 ";
+      this.title = "添加房屋绑定";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       this.form = row;
       this.open = true;
-      this.title = "审核 ";
+      this.title = "审核";
     },
     /** 审核记录按钮操作 */
     async handleLook(row) {
@@ -302,7 +314,6 @@ export default {
         }
       });
       this.recordList = res.data;
-      console.log(this.recordList)
       this.title = "审核车位记录全过程 ";
     },
     /** 提交按钮  */
@@ -328,19 +339,6 @@ export default {
         }
       });
     },
-    /** 导出按钮操作 */
-    handleExport() {
-      const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有房屋绑定 数据项?', "警告", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(function () {
-        return exportRoom(queryParams);
-      }).then(response => {
-        this.download(response.msg);
-      })
-    }
   }
 };
 </script>
