@@ -422,7 +422,11 @@ export default {
             return this.$message.success("修改成功！")
           } else {
             this.form.communityId = this.communityId;
-            const {data: res} = await this.$http.post('zyPark/batchInsert', this.form)
+            const {data: res} = await this.$http.post('zyPark/batchInsert', this.form,{
+                params:{
+                    number:this.form.number
+                }
+            })
             if (res.meta.errorCode !== 200) {
               return this.$message.error(res.meta.errorMsg)
             }
