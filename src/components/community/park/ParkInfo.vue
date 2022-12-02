@@ -455,7 +455,7 @@ export default {
       //设置全局配置信息
       const config = {
         method: 'get',
-        url: 'zyBuilding/getExcel?buildingIds=' + this.ids + "&communityId=" + this.communityId,
+        url: 'zyPark/export?ids=' + this.ids + "&communityId=" + this.communityId,
         responseType: 'blob'
       };
       //发送请求
