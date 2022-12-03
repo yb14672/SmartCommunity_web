@@ -42,6 +42,22 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
+
+    <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5" :offset="20">
+        <el-select v-model="queryParams.communityId" @change="selectedCommunity(queryParams.communityId)"
+                   style="border: 0;position: relative;" filterable placeholder="请选择小区"
+                   class="avatar-container right-menu-item hover-effect" size="mini" value="">
+          <el-option
+            v-for="item in options"
+            :key="item.communityId"
+            :label="item.communityName"
+            :value="item.communityId">
+          </el-option>
+        </el-select>
+      </el-col>
+    </el-row>
+
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
@@ -117,6 +133,8 @@
         name: "Owner",
         data() {
             return {
+                // 小区列表
+                options: [],
                 parkTypeOptions: [],
                 show: false,
                 // 遮罩层
@@ -157,8 +175,35 @@
             this.getDicts("zy_parking_type").then(response => {
                 this.parkTypeOptions = response.data.data;
             });
+            // 查询所有小区
+            this.getCommunities().then(()=>{
+                this.getList();
+            });
         },
         methods: {
+            /**查询所有小区*/
+            async getCommunities() {
+                const {data: com} = await this.$http.get('/zyCommunity/selectAll', {
+                    params: {
+                        pageNum: 0,
+                        pageSize: 0,
+                    }
+                });
+                if (com.meta.errorCode !== 200) {
+                    return this.$message.error(com.meta.errorMsg)
+                }
+                this.options = com.data.zyCommunityList;
+                console.log(this.options)
+                this.queryParams.communityId = this.options[0].communityId;
+                this.communityId = this.options[0].communityId
+            },
+            /**变换查询小区时触发*/
+            selectedCommunity(value) {
+                this.queryParams.communityId = value
+                this.queryParams.pageNum = 1
+                this.communityId = value
+                this.getList();
+            },
             // 业主类型字典翻译
             parkTypeFormat(row) {
                 return this.selectDictLabel(this.parkTypeOptions, row.parkType);
@@ -188,12 +233,14 @@
                         ownerRealName: this.queryParams.ownerRealName,
                         ownerIdCard: this.queryParams.ownerIdCard,
                         ownerPhoneNumber: this.queryParams.ownerPhoneNumber,
+                        communityId:this.queryParams.communityId
                     }
                 });
                 if (res.meta.errorCode !== 200) {
                     return this.$message.error(res.meta.errorMsg)
                 }
                 this.parkList = res.data.records;
+                console.log(this.parkList)
                 this.total = res.data.total;
 
             },
@@ -254,7 +301,7 @@
             },
             // 多选框选中数据
             handleSelectionChange(selection) {
-                this.ids = selection.map(item => item.ownerRoomId)
+                this.ids = selection.map(item => item.ownerParkId)
                 this.single = selection.length !== 1
                 this.multiple = !selection.length
             },
@@ -285,7 +332,7 @@
                 //设置全局配置信息
                 const config = {
                     method: 'get',
-                    url: 'zyOwner/getExcel?ownerIds=' + this.ids,
+                    url: 'zyOwnerPark/export?ids=' + this.ids + "&communityId=" + this.communityId,
                     responseType: 'blob'
                 };
                 //发送请求
@@ -294,7 +341,7 @@
                         const url = window.URL.createObjectURL(new Blob([response.data]));
                         const link = document.createElement('a');
                         link.href = url;
-                        link.setAttribute('download', '房主信息.xls');
+                        link.setAttribute('download', '车位信息.xls');
                         document.body.appendChild(link);
                         link.click();
                         if (response.data !== null) {

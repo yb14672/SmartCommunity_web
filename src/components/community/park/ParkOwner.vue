@@ -264,8 +264,10 @@ export default {
         return '已绑定';
       } else if (row.parkBundingStatus == 'Reject') {
         return '已拒绝';
-      } else if (row.parkBundingStatus == 'Unbind') {
+      } else if (row.parkOwnerStatus == 'Unbinding') {
         return '已解绑';
+      } else if (row.parkBundingStatus == 'Unbinding') {
+          return '已解绑';
       }
     },
     async getList() {
