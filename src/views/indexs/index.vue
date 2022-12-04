@@ -40,7 +40,7 @@
       </ItemWrap>
       <ItemWrap
         class="content_left-bottom content_lr-item"
-        title="互动"
+        title="最新互动"
         style="padding: 0 10px 16px 10px"
       >
         <RightBottom />

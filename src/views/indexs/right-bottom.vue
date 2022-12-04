@@ -9,44 +9,40 @@
   <div v-if="pageflag" class="right_center_wrap beautify-scroll-def" :class="{ 'overflow-y-auto': !sbtxSwiperFlag }">
     <component :is="components" :data="list" :class-option="defaultOption">
       <ul class="right_center ">
-        <li class="right_center_item" v-for="(item, i) in list" :key="i">
-          <span class="orderNum">{{ i + 1 }}</span>
+        <li class="right_center_item" v-for="(item, index) in list" :key="index">
+          <span class="orderNum">{{ index + 1 }}</span>
           <div class="inner_right">
             <div class="dibu"></div>
             <div class="flex">
               <div class="info">
-                <span class="labels ">设备ID：</span>
-                <span class="contents zhuyao"> {{ item.gatewayno }}</span>
+                <span class="labels ">互动ID：</span>
+                <span class="contents zhuyao"> {{ item.interactionId }}</span>
               </div>
               <div class="info">
-                <span class="labels">型号：</span>
-                <span class="contents "> {{ item.terminalno }}</span>
-              </div>
-              <div class="info">
-                <span class="labels">告警值：</span>
-                <span class="contents warning"> {{ item.alertvalue | montionFilter }}</span>
+                <span class="labels">发布人：</span>
+                <span class="contents "> {{ item.ownerNickname }}</span>
               </div>
             </div>
-
-
             <div class="flex">
-
               <div class="info">
-                <span class="labels"> 地址：</span>
-                <span class="contents ciyao" style="font-size:12px"> {{ item.provinceName }}/{{ item.cityName }}/{{ item.countyName }}</span>
+                <span class="labels"> 所在小区：</span>
+                <span class="contents ciyao" style="font-size:12px"> {{ item.communityName }}</span>
               </div>
               <div class="info time">
                 <span class="labels">时间：</span>
-                <span class="contents" style="font-size:12px"> {{ item.createtime }}</span>
+                <span class="contents" style="font-size:12px"> {{ item.createTime }}</span>
               </div>
 
             </div>
             <div class="flex">
-
               <div class="info">
-                <span class="labels">报警内容：</span>
-                <span class="contents ciyao" :class="{ warning: item.alertdetail }"> {{ item.alertdetail || '无'
-                }}</span>
+                <span class="labels">预览内容：</span>
+                <span v-if="item.content.length<10" class="contents ciyao" :class="{ warning: item.content }">
+                  {{item.content || '无'}}
+                </span>
+                <span v-else class="contents ciyao" :class="{ warning: item.content }">
+                  {{item.content.slice(0,9)}}...
+                </span>
               </div>
             </div>
           </div>
@@ -54,16 +50,17 @@
       </ul>
     </component>
   </div>
-  <Reacquire v-else @onclick="getData" style="line-height:200px" />
+  <Reacquire v-else @onclick="getData" style="line-height:200px"/>
 
 </template>
 
 <script>
-import { currentGET } from '@/api/modules'
-import vueSeamlessScroll from 'vue-seamless-scroll'  // vue2引入方式
+import {currentGET} from '@/api/modules'
+import vueSeamlessScroll from 'vue-seamless-scroll' // vue2引入方式
 import Kong from '../../components/kong.vue'
+
 export default {
-  components: { vueSeamlessScroll, Kong },
+  components: {vueSeamlessScroll, Kong},
 
   data() {
     return {
@@ -73,7 +70,7 @@ export default {
         ...this.$store.state.setting.defaultOption,
         limitMoveNum: 3,
         singleHeight: 250,
-        step:0,
+        step: 0,
       }
 
     };
@@ -93,22 +90,23 @@ export default {
     this.getData()
   },
 
-  mounted() { },
+  mounted() {
+  },
   methods: {
     getData() {
       this.pageflag = true
       // this.pageflag =false
-      currentGET('big5', { limitNum: 20 }).then(res => {
+      currentGET('big5', {limitNum: 20}).then(res => {
         console.log('实时预警', res);
-        if (res.success) {
-          this.list = res.data.list
+        if (res.data.meta.errorCode === 200) {
+          this.list = res.data.data
           let timer = setTimeout(() => {
-              clearTimeout(timer)
-              this.defaultOption.step=this.$store.state.setting.defaultOption.step
+            clearTimeout(timer)
+            this.defaultOption.step = this.$store.state.setting.defaultOption.step
           }, this.$store.state.setting.defaultOption.waitTime);
         } else {
           this.pageflag = false
-          this.$Messages.warning(res.msg)
+          this.$Messages.warning(res.data.data)
         }
       })
     },
@@ -118,6 +116,7 @@ export default {
 </script>
 <style lang='scss' scoped>
 @import "src/assets/css/variable";
+
 .right_center {
   width: 100%;
   height: 100%;
