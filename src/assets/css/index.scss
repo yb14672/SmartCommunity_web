@@ -36,9 +36,11 @@
 }
 
 .contents {
+  background-color: #04070f;
   width: 100%;
+  height: 100%;
   display: flex;
-  min-height: calc(100% - 60px);
+  min-height: calc(100% - 20px);
   justify-content: space-between;
 }
 

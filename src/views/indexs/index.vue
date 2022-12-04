@@ -7,52 +7,50 @@
 -->
 <template>
   <div class="contents">
-    <div class="contetn_left">
+    <div class="content_left">
       <div class="pagetab">
         <!-- <div class="item">实时监测</div> -->
-
       </div>
-      <ItemWrap class="contetn_left-top contetn_lr-item" title="设备总览">
-        <LeftTop/>
-
-      </ItemWrap>
-      <ItemWrap class="contetn_left-center contetn_lr-item" title="用户总览">
-        <LeftCenter />
-      </ItemWrap>
-      <ItemWrap
-        class="contetn_left-bottom contetn_lr-item"
-        title="设备提醒"
-        style="padding: 0 10px 16px 10px"
-      >
-        <LeftBottom />
-      </ItemWrap>
-    </div>
-    <div class="contetn_center">
-      <CenterMap class="contetn_center_top" />
-      <ItemWrap class="contetn_center-bottom" title="安装计划">
+      <ItemWrap class="content_left-top content_lr-item" title="人员分类">
         <CenterBottom />
       </ItemWrap>
+      <ItemWrap class="content_left-center content_lr-item" title="报修信息">
+        <LeftBottom />
+      </ItemWrap>
+<!--      <ItemWrap-->
+<!--        class="content_left-bottom content_lr-item"-->
+<!--        title="设备提醒"-->
+<!--        style="padding: 0 10px 16px 10px"-->
+<!--      >-->
+<!--        <LeftCenter />-->
+<!--      </ItemWrap>-->
     </div>
-    <div class="contetn_right">
+    <div class="content_center">
+      <CenterMap class="content_center_top" />
+<!--      <ItemWrap class="content_center-bottom" title="安装计划">-->
+<!--        <LeftTop/>-->
+<!--      </ItemWrap>-->
+    </div>
+    <div class="content_right">
       <ItemWrap
-        class="contetn_left-bottom contetn_lr-item"
+        class="content_left-bottom content_lr-item"
         title="报警次数"
       >
         <RightTop />
       </ItemWrap>
       <ItemWrap
-        class="contetn_left-bottom contetn_lr-item"
-        title="报警排名(TOP8)"
+        class="content_left-bottom content_lr-item"
+        title="互动"
         style="padding: 0 10px 16px 10px"
-      >
-        <RightCenter />
-      </ItemWrap>
-      <ItemWrap
-        class="contetn_left-bottom contetn_lr-item"
-        title="数据统计图 "
       >
         <RightBottom />
       </ItemWrap>
+<!--      <ItemWrap-->
+<!--        class="content_left-bottom content_lr-item"-->
+<!--        title="数据统计图 "-->
+<!--      >-->
+<!--        <RightCenter />-->
+<!--      </ItemWrap>-->
     </div>
   </div>
 </template>
@@ -100,41 +98,40 @@ export default {
 <style lang="scss" scoped>
 // 内容
 .contents {
-  background-color: #04070f;
-  .contetn_left,
-  .contetn_right {
+  .content_left,
+  .content_right {
     width: 540px;
     box-sizing: border-box;
     // padding: 16px 0;
   }
 
-  .contetn_center {
+  .content_center {
     width: 720px;
   }
 
   //左右两侧 三个块
-  .contetn_lr-item {
+  .content_lr-item {
     height: 310px;
   }
 
-  .contetn_center_top {
+  .content_center_top {
     width: 100%;
   }
 
   // 中间
-  .contetn_center {
+  .content_center {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
   }
 
-  .contetn_center-bottom {
+  .content_center-bottom {
     height: 315px;
   }
 
   //左边 右边 结构一样
-  .contetn_left,
-  .contetn_right {
+  .content_left,
+  .content_right {
     display: flex;
     flex-direction: column;
     justify-content: space-around;

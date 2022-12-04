@@ -2,7 +2,6 @@
     <transition name="yh-setting-fade">
         <div class="setting" :class="{ settingShow: settingShow }" v-show="settingShow">
             <div class="setting_dislog" @click="settingShow = false">
-
             </div>
             <div class="setting_inner">
                 <div class="setting_header">
@@ -10,10 +9,10 @@
                 </div>
                 <div class="setting_body">
                     <!-- <div class="left_shu"> 实时监测</div> -->
-                    <div class="left_shu"> 全局设置</div> 
+                    <div class="left_shu"> 全局设置</div>
                       <div class="setting_item">
                         <span class="setting_label">
-                            是否进行自动适配<span class="setting_label_tip">(默认分辨率1920*1080)</span>: 
+                            是否进行自动适配<span class="setting_label_tip">(默认分辨率1920*1080)</span>:
                         </span>
                         <div class="setting_content">
                             <el-radio-group v-model="isScaleradio" @change="(val) => radiochange(val, 'isScale')">

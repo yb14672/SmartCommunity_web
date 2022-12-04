@@ -32,7 +32,7 @@ import { GETNOBASE } from "@/api";
 export default {
   data() {
     return {
-      maptitle: "设备分布图",
+      maptitle: "小区分布图",
       options: {},
       code: "china", //china 代表中国 其他地市是行政编码
       echartBindClick: false,

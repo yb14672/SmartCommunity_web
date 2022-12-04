@@ -35,10 +35,7 @@
             ></i>
           </div>
         </div>
-        <!-- 头部 e-->
-        <!-- 内容  s-->
-        <router-view></router-view>
-        <!-- 内容 e -->
+        <index/>
       </div>
     </div>
     <Setting ref="setting" />
@@ -47,11 +44,12 @@
 </template>
 
 <script>
+import index from "./indexs/index"
 import { formatTime } from "../utils/index.js";
 import Setting from "./setting.vue";
 import ScaleScreen from "@/components/scale-screen/scale-screen.vue";
 export default {
-  components: { Setting, ScaleScreen },
+  components: { Setting, ScaleScreen,index },
   data() {
     return {
       timing: null,

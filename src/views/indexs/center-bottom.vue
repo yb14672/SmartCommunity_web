@@ -76,7 +76,7 @@ export default {
           },
         },
         legend: {
-          data: ["已安装", "计划安装", "安装率"],
+          data: ["已绑定", "总人数", "绑定率"],
           textStyle: {
             color: "#B4B4B4",
           },

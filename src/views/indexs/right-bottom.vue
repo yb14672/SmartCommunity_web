@@ -98,7 +98,7 @@ export default {
     getData() {
       this.pageflag = true
       // this.pageflag =false
-      currentGET('big5', { limitNum: 50 }).then(res => {
+      currentGET('big5', { limitNum: 20 }).then(res => {
         console.log('实时预警', res);
         if (res.success) {
           this.list = res.data.list
