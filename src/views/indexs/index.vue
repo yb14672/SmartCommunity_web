@@ -11,8 +11,8 @@
       <div class="pagetab">
         <!-- <div class="item">实时监测</div> -->
       </div>
-      <ItemWrap class="content_left-top content_lr-item" title="人员分类">
-        <CenterBottom />
+      <ItemWrap class="content_left-top content_lr-item" title="房屋总览">
+        <LeftTop/>
       </ItemWrap>
       <ItemWrap class="content_left-center content_lr-item" title="报修信息">
         <LeftBottom />
@@ -28,15 +28,15 @@
     <div class="content_center">
       <CenterMap class="content_center_top" />
 <!--      <ItemWrap class="content_center-bottom" title="安装计划">-->
-<!--        <LeftTop/>-->
+<!--          <RightTop/>-->
 <!--      </ItemWrap>-->
     </div>
     <div class="content_right">
       <ItemWrap
         class="content_left-bottom content_lr-item"
-        title="报警次数"
+        title="人员分类"
       >
-        <RightTop />
+        <CenterBottom/>
       </ItemWrap>
       <ItemWrap
         class="content_left-bottom content_lr-item"
