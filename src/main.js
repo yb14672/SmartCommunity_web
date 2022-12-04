@@ -23,7 +23,8 @@ import DictTag from '@/components/DictTag'
 import RightToolbar from "@/components/RightToolbar"
 //封装分页
 import Pagination from "@/components/Pagination";
-
+// 将自动注册所有组件为全局组件
+import dataV from '@jiaminghi/data-view'
 //element Ui
 import "./plugins/element"
 import './plugins/element.js'
@@ -41,7 +42,7 @@ Vue.use(VueParticles)
 Vue.use(SlideVerify);
 //树状选择器
 Vue.use(Treeselect)
-
+Vue.use(dataV)
 
 // 将图片裁剪全局挂载
 Vue.component('VueCropper',VueCropper);
