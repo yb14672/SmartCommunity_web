@@ -11,11 +11,8 @@ export const paramType ={
     'big1':"/bigScreen/countUserNum", //房屋总览
     'big2':"/bigScreen/getSuggestInMonth", //投诉建议
     'big3':"/bigScreen/sbtx", //小区分布
-    'big4':"/bigScreen/alarmNum", //人员分类
+    'big4':"/bigScreen/getTheNumberOfHouseBindings", //房屋绑定率
     'big5':'/bigScreen/getInteractionInMonth',//获取互动
-    'big6':'/bigScreen/installationPlan',// 安装计划
-    'big7':'/bigScreen/ranking',// 报警排名
-    'big8':'/bigScreen/centermap',// //中间地图
 }
 /******************      通用增删改查       ********************* */
 /**

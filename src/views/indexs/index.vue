@@ -30,7 +30,7 @@
     <div class="content_right">
       <ItemWrap
         class="content_left-bottom content_lr-item"
-        title="人员分类"
+        title="房屋绑定率"
       >
         <CenterBottom/>
       </ItemWrap>

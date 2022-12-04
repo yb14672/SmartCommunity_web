@@ -24,14 +24,14 @@ export default {
   methods: {
     getData() {
       this.pageflag = true;
-      currentGET("big4", { companyName: this.companyName }).then((res) => {
-        console.log("人员分类", res);
-        if (res.success) {
-          this.init(res.data);
+      currentGET("big4").then((res) => {
+        console.log("房屋绑定率", res);
+        if (res.data.meta.errorCode === 200) {
+          this.init(res.data.data);
         } else {
           this.pageflag = false;
           this.$Messages({
-            text: res.msg,
+            text: res.data.data,
             type: "warning",
           });
         }
@@ -51,7 +51,7 @@ export default {
             var result = params[0].name + "<br>";
             params.forEach(function (item) {
               if (item.value) {
-                if (item.seriesName == "安装率") {
+                if (item.seriesName == "绑定率") {
                   result +=
                     item.marker +
                     " " +
@@ -76,7 +76,7 @@ export default {
           },
         },
         legend: {
-          data: ["已绑定", "总人数", "绑定率"],
+          data: ["已绑定", "房间数", "绑定率"],
           textStyle: {
             color: "#B4B4B4",
           },
@@ -89,7 +89,7 @@ export default {
           top: "20px",
         },
         xAxis: {
-          data: newData.category,
+          data: newData.communityName,
           axisLine: {
             lineStyle: {
               color: "#B4B4B4",
@@ -126,7 +126,7 @@ export default {
         ],
         series: [
           {
-            name: "已安装",
+            name: "已绑定",
             type: "bar",
             barWidth: 10,
             itemStyle: {
@@ -136,10 +136,10 @@ export default {
                 { offset: 1, color: "#3EACE5" },
               ]),
             },
-            data: newData.barData,
+            data: newData.bingingNum,
           },
           {
-            name: "计划安装",
+            name: "房间数",
             type: "bar",
             barGap: "-100%",
             barWidth: 10,
@@ -152,10 +152,10 @@ export default {
               ]),
             },
             z: -12,
-            data: newData.lineData,
+            data: newData.roomNum,
           },
           {
-            name: "安装率",
+            name: "绑定率",
             type: "line",
             smooth: true,
             showAllSymbol: true,
@@ -165,7 +165,7 @@ export default {
             itemStyle: {
               color: "#F02FC2",
             },
-            data: newData.rateData,
+            data: newData.bindingRate,
           },
         ],
       };

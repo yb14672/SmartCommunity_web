@@ -38,7 +38,7 @@
                   typeRed: item.complaintSuggestType == 'Complaint',
                   typeGreen: item.complaintSuggestType == 'Suggest',
                 }"
-                >{{ item.complaintSuggestType == Complaint ? "投诉" : "建议" }}</span
+                >{{ item.complaintSuggestType == 'Complaint' ? "投诉" : "建议" }}</span
               >
             <div class="info addresswrap">
               <span class="labels">投诉预览：</span>
