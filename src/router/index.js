@@ -30,6 +30,7 @@ import park from "@/components/community/park/Park";
 import Server from "../components/server/index";
 import ParkOwner from "@/components/community/park/ParkOwner";
 import ParkInfo from "@/components/community/park/ParkInfo";
+import HomeInfo from "../views/indexs/index.vue";
 
 Vue.use(Router)
 
@@ -42,7 +43,7 @@ const router = new Router({
       component: Home,
       redirect: '/welcome',
       children: [
-        {path: '/welcome', component: Welcome},
+        {path: '/welcome', component: HomeInfo},
         {path: '/system/user', component: User},
         {path: '/system/user-auth/role/:userId(\\d+)', component: AuthRole},
         {path: '/user/profile', component: Profile},

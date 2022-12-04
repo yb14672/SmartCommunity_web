@@ -33,7 +33,15 @@ import "@/assets/css/scrollbar.css"
 //工具类
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree } from "@/utils/zhiyu";
 import { getDicts } from "@/utils/data";
-
+//首页数据大屏相关
+import Echart from './components/echart/index.vue'
+import ItemWrap from './components/item-wrap/item-wrap.vue'
+import Message from './components/message/message.vue'
+import Reacquire from './components/reacquire/reacquire.vue'
+import Messages from './components/message/message'
+import "vue-easytable/libs/theme-default/index.css";
+import  '@/assets/css/public.scss'
+import "@/assets/css/index.scss"
 //图标选择器
 Vue.use(iconPicker);
 //粒子效果
@@ -54,7 +62,14 @@ Vue.component('DictTag', DictTag)
 Vue.component('RightToolbar', RightToolbar)
 //分页
 Vue.component('Pagination', Pagination)
+// 自定义组件
+Vue.component("Echart",Echart)
+Vue.component("ItemWrap",ItemWrap)
+Vue.component("Message",Message)
+Vue.component("Reacquire",Reacquire)
+Vue.prototype.$Messages =  Messages
 
+// require('./mock/mock')//是否使用mock
 Vue.filter('moment', function (value, formatString) {
   formatString = formatString || 'YYYY-MM-DD HH:mm:ss';
   return moment(value).format(formatString);
