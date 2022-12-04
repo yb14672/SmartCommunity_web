@@ -17,7 +17,6 @@
         <div class="quanguo" @click="getData('china')" v-if="code !== 'china'">
           中国
         </div>
-
         <Echart id="CenterMap" :options="options" ref="CenterMap" />
       </dv-border-box-13>
     </div>
@@ -47,8 +46,8 @@ export default {
   },
   methods: {
     getData(code) {
-      currentGET("big8", { regionCode: code }).then((res) => {
-        console.log("设备分布", res);
+      currentGET("big3", { regionCode: code }).then((res) => {
+        console.log("小区分布", res);
         if (res.success) {
           this.getGeojson(res.data.regionCode, res.data.dataList);
           this.mapclick();

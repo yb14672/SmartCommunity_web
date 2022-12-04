@@ -24,8 +24,8 @@ export default {
   methods: {
     getData() {
       this.pageflag = true;
-      currentGET("big6", { companyName: this.companyName }).then((res) => {
-        console.log("安装计划", res);
+      currentGET("big4", { companyName: this.companyName }).then((res) => {
+        console.log("人员分类", res);
         if (res.success) {
           this.init(res.data);
         } else {

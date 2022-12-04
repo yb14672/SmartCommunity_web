@@ -97,7 +97,7 @@ export default {
       this.pageflag = true
       // this.pageflag =false
       currentGET('big5', {limitNum: 20}).then(res => {
-        console.log('实时预警', res);
+        console.log('互动信息', res);
         if (res.data.meta.errorCode === 200) {
           this.list = res.data.data
           let timer = setTimeout(() => {
@@ -145,7 +145,7 @@ export default {
       .dibu {
         position: absolute;
         height: 2px;
-        width: 104%;
+        width: 100%;
         background-image: url("../../assets/img/zuo_xuxian.png");
         bottom: -12px;
         left: -2%;

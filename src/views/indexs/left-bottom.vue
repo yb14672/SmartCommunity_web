@@ -19,9 +19,9 @@
             <div class="dibu"></div>
             <div class="flex">
               <div class="info">
-                <span class="labels">设备ID：</span>
-                <span class="contents zhuyao doudong wangguan">
-                  {{ item.gatewayno }}</span
+                <span class="labels">建议ID：</span>
+                <span class="contents zhuyao doudong wangguan" style="font-size: 12px">
+                  {{ item.complaintSuggestId }}</span
                 >
               </div>
               <div class="info">
@@ -35,24 +35,25 @@
               <span
                 class="types doudong"
                 :class="{
-                  typeRed: item.onlineState == 0,
-                  typeGreen: item.onlineState == 1,
+                  typeRed: item.complaintSuggestType == 'Complaint',
+                  typeGreen: item.complaintSuggestType == 'Suggest',
                 }"
-                >{{ item.onlineState == 1 ? "上线" : "下线" }}</span
+                >{{ item.complaintSuggestType == Complaint ? "投诉" : "建议" }}</span
               >
-
             <div class="info addresswrap">
-              <span class="labels">地址：</span>
-              <span class="contents ciyao" style="font-size: 12px">
-                {{ addressHandle(item) }}</span
-              >
+              <span class="labels">投诉预览：</span>
+              <span v-if="item.complaintSuggestContent.length<10" class="contents ciyao" style="font-size: 12px">
+                {{ item.complaintSuggestContent }}
+              </span>
+              <span v-else class="contents ciyao" style="font-size: 12px">
+                {{ item.complaintSuggestContent.slice(0,9)}}...
+              </span>
             </div>
           </div>
         </li>
       </ul>
     </component>
   </div>
-
   <Reacquire v-else @onclick="getData" style="line-height: 200px" />
 </template>
 
@@ -107,11 +108,11 @@ export default {
     getData() {
       this.pageflag = true;
       // this.pageflag =false
-      currentGET("big3", { limitNum: 20 }).then((res) => {
-        console.log("设备提醒", res);
-        if (res.success) {
+      currentGET("big2", { limitNum: 20 }).then((res) => {
+        console.log("投诉建议", res);
+        if (res.data.meta.errorCode === 200) {
           this.countUserNumData = res.data;
-          this.list = res.data.list;
+          this.list = res.data.data;
           let timer = setTimeout(() => {
             clearTimeout(timer);
             this.defaultOption.step =
@@ -120,7 +121,7 @@ export default {
         } else {
           this.pageflag = false;
           this.$Messages({
-            text: res.msg,
+            text: res.data.data,
             type: "warning",
           });
         }
@@ -205,7 +206,7 @@ export default {
       .dibu {
         position: absolute;
         height: 2px;
-        width: 104%;
+        width: 100%;
         background-image: url("../../assets/img/zuo_xuxian.png");
         bottom: -10px;
         left: -2%;

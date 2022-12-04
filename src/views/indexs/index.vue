@@ -1,12 +1,6 @@
-<!--
- * @Author: daidai
- * @Date: 2022-03-04 09:23:59
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-07 11:05:02
- * @FilePath: \web-pc\src\pages\big-screen\view\indexs\index.vue
--->
 <template>
   <div class="contents">
+    <!--左-->
     <div class="content_left">
       <div class="pagetab">
         <!-- <div class="item">实时监测</div> -->
@@ -14,7 +8,7 @@
       <ItemWrap class="content_left-top content_lr-item" title="房屋总览">
         <LeftTop/>
       </ItemWrap>
-      <ItemWrap class="content_left-center content_lr-item" title="报修信息">
+      <ItemWrap class="content_left-center content_lr-item" title="投诉建议">
         <LeftBottom />
       </ItemWrap>
 <!--      <ItemWrap-->
@@ -25,12 +19,14 @@
 <!--        <LeftCenter />-->
 <!--      </ItemWrap>-->
     </div>
+    <!--中-->
     <div class="content_center">
       <CenterMap class="content_center_top" />
 <!--      <ItemWrap class="content_center-bottom" title="安装计划">-->
 <!--          <RightTop/>-->
 <!--      </ItemWrap>-->
     </div>
+    <!--右-->
     <div class="content_right">
       <ItemWrap
         class="content_left-bottom content_lr-item"
@@ -100,13 +96,13 @@ export default {
 .contents {
   .content_left,
   .content_right {
-    width: 540px;
+    width: 430px;
     box-sizing: border-box;
     // padding: 16px 0;
   }
 
   .content_center {
-    width: 720px;
+    width: 550px;
   }
 
   //左右两侧 三个块
@@ -136,8 +132,12 @@ export default {
     flex-direction: column;
     justify-content: space-around;
     position: relative;
-
-
+  }
+  .content_left{
+    margin-top: -60px;
+  }
+  .content_right{
+    margin-top: -10px;
   }
 }
 

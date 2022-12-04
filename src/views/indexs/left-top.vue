@@ -117,9 +117,9 @@ export default {
         },
         getData() {
             this.pageflag = true;
-            currentGET("big2").then((res) => {
+            currentGET("big1").then((res) => {
                 if (!this.timer) {
-                    console.log("设备总览", res);
+                    console.log("房屋总览", res);
                 }
                 if (res.success) {
                     this.userOverview = res.data;
