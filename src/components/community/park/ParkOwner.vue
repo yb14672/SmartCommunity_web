@@ -219,7 +219,7 @@ export default {
   methods: {
       /**查询所有小区*/
       async getCommunities() {
-          const {data: com} = await this.$http.get('/zyCommunity/selectAll', {
+          const {data: com} = await this.$http.get('/zyCommunity/getCommunityIdByUserId', {
               params: {
                   pageNum: 0,
                   pageSize: 0,
@@ -228,7 +228,7 @@ export default {
           if (com.meta.errorCode !== 200) {
               return this.$message.error(com.meta.errorMsg)
           }
-          this.options = com.data.zyCommunityList;
+          this.options = com.data;
           this.queryParams.communityId = this.options[0].communityId;
           this.communityId = this.options[0].communityId
       },
