@@ -121,23 +121,23 @@ export default {
                 if (!this.timer) {
                     console.log("房屋总览", res);
                 }
-                if (res.success) {
-                    this.userOverview = res.data;
+                if (res.data.meta.errorCode === 200) {
+                    this.userOverview = res.data.data;
                     this.onlineconfig = {
                         ...this.onlineconfig,
-                        number: [res.data.onlineNum]
+                        number: [res.data.data.moveInTotal]
                     }
                     this.config = {
                         ...this.config,
-                        number: [res.data.totalNum]
+                        number: [res.data.data.roomTotal]
                     }
                     this.offlineconfig = {
                         ...this.offlineconfig,
-                        number: [res.data.offlineNum]
+                        number: [res.data.data.unsoldTotal]
                     }
                     this.laramnumconfig = {
                         ...this.laramnumconfig,
-                        number: [res.data.alarmNum]
+                        number: [res.data.data.soldTotal]
                     }
                     this.switper()
                 } else {
