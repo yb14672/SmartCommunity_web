@@ -40,9 +40,9 @@ export default {
   methods: {
     getData(code) {
       currentGET("big3", {regionCode: code}).then((res) => {
-        // console.log("小区分布", res);
+        console.log("小区分布", res);
         if (res.data.meta.errorCode === 200) {
-          this.getGeojson(res.data.data[0].regionCode, res.data.data);
+          this.getGeojson(res.data.data.regionCode, res.data.data.areaInfoList);
           this.mapclick();
         } else {
           this.$Messages.warning(res.data.data);
@@ -56,9 +56,16 @@ export default {
      * @return {*}
      */
     async getGeojson(name, mydata) {
-      this.code = name;
-      //如果要展示南海群岛并且展示的是中国的话
-      let geoname = name;
+      let geoname = '';
+      if (name !== 'china') {
+        let xzqData = xzqCode[name];
+        this.code = xzqData.adcode;
+        geoname = xzqData.adcode
+      } else {
+        this.code = name;
+        //如果要展示南海群岛并且展示的是中国的话
+        geoname = name;
+      }
       if (this.isSouthChinaSea && name == "china") {
         geoname = "chinaNanhai";
       }
@@ -70,9 +77,10 @@ export default {
         mapjson = await GETNOBASE(`http://localhost:8081/map-geojson/${geoname}.json`).then((res) => {
           return res.data;
         });
-        // console.log("获取范围", name, "数据", mapjson)
         echarts.registerMap(name, mapjson);
       }
+      // console.log("获取范围", name, "数据", mapjson,mydata)
+
       let cityCenter = {};
       let arr = mapjson.features;
       //根据geojson获取省份中心点
@@ -106,12 +114,12 @@ export default {
           left: 20,
           bottom: 20,
           pieces: [
-            {gte: 1000, label: "1000个以上"}, // 不指定 max，表示 max 为无限大（Infinity）。
-            {gte: 600, lte: 999, label: "600-999个"},
-            {gte: 200, lte: 599, label: "200-599个"},
-            {gte: 50, lte: 199, label: "49-199个"},
-            {gte: 10, lte: 49, label: "10-49个"},
-            {lte: 9, label: "1-9个"}, // 不指定 min，表示 min 为无限大（-Infinity）。
+            {gte: 20, label: "20个以上"}, // 不指定 max，表示 max 为无限大（Infinity）。
+            {gte: 15, lte: 19, label: "15~19个"},
+            {gte: 10, lte: 14, label: "10~14个"},
+            {gte: 5, lte: 9, label: "5~9个"},
+            {gte: 2, lte: 4, label: "2~4个"},
+            {lte: 1, label: "1个"}, // 不指定 min，表示 min 为无限大（-Infinity）。
           ],
           inRange: {
             // 渐变颜色，从小到大
@@ -286,8 +294,9 @@ export default {
       //单击切换到级地图，当mapCode有值,说明可以切换到下级地图
       this.$refs.CenterMap.chart.on("click", (params) => {
         let xzqData = xzqCode[params.name];
+        console.log(params,xzqData)
         if (xzqData) {
-          this.getData(xzqData.adcode);
+          this.getData(xzqData.name);
         } else {
           this.message("暂无下级地市!");
         }

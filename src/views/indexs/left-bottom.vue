@@ -20,49 +20,57 @@
             <div class="flex">
               <div class="info">
                 <span class="labels">建议ID：</span>
-                <span class="contents zhuyao doudong wangguan" style="font-size: 12px">
+                <span class="contents zhuyao doudong wangguan">
                   {{ item.complaintSuggestId }}</span
                 >
               </div>
-              <div class="info">
-                <span class="labels">时间：</span>
-                <span class="contents " style="font-size: 12px">
-                  {{ item.createTime }}</span
-                >
-              </div>
             </div>
-
-              <span
-                class="types doudong"
-                :class="{
+            <span
+              class="types doudong"
+              :class="{
                   typeRed: item.complaintSuggestType == 'Complaint',
                   typeGreen: item.complaintSuggestType == 'Suggest',
                 }"
-                >{{ item.complaintSuggestType == 'Complaint' ? "投诉" : "建议" }}</span
-              >
-            <div class="info addresswrap">
-              <span class="labels">投诉预览：</span>
-              <span v-if="item.complaintSuggestContent.length<10" class="contents ciyao" style="font-size: 12px">
+            >{{ item.complaintSuggestType == 'Complaint' ? "投诉" : "建议" }}</span
+            >
+            <div class="flex">
+              <div class="info">
+                <span class="labels"> 所在小区：</span>
+                <span class="contents ciyao" style="font-size:12px"> {{ item.communityName }}</span>
+              </div>
+              <div class="info time">
+                <span class="labels">时间：</span>
+                <span class="contents " style="font-size: 12px">
+                  {{ item.createTime }}
+                </span>
+              </div>
+            </div>
+            <div class="flex">
+              <div class="info addresswrap">
+                <span class="labels">投诉预览：</span>
+                <span v-if="item.complaintSuggestContent.length<10" class="contents ciyao" style="font-size: 12px">
                 {{ item.complaintSuggestContent }}
               </span>
-              <span v-else class="contents ciyao" style="font-size: 12px">
-                {{ item.complaintSuggestContent.slice(0,9)}}...
+                <span v-else class="contents ciyao" style="font-size: 12px">
+                {{ item.complaintSuggestContent.slice(0, 9) }}...
               </span>
+              </div>
             </div>
           </div>
         </li>
       </ul>
     </component>
   </div>
-  <Reacquire v-else @onclick="getData" style="line-height: 200px" />
+  <Reacquire v-else @onclick="getData" style="line-height: 200px"/>
 </template>
 
 <script>
-import { currentGET } from "@/api";
+import {currentGET} from "@/api";
 import vueSeamlessScroll from "vue-seamless-scroll"; // vue2引入方式
 import Kong from "../../components/kong.vue";
+
 export default {
-  components: { vueSeamlessScroll, Kong },
+  components: {vueSeamlessScroll, Kong},
   data() {
     return {
       list: [],
@@ -108,7 +116,7 @@ export default {
     getData() {
       this.pageflag = true;
       // this.pageflag =false
-      currentGET("big2", { limitNum: 20 }).then((res) => {
+      currentGET("big2", {limitNum: 20}).then((res) => {
         // console.log("投诉建议", res);
         if (res.data.meta.errorCode === 200) {
           this.countUserNumData = res.data;
@@ -132,6 +140,7 @@ export default {
 </script>
 <style lang='scss' scoped>
 @import "src/assets/css/variable";
+
 .left_boottom_wrap {
   overflow: hidden;
   width: 100%;
@@ -162,6 +171,7 @@ export default {
     padding: 8px;
     font-size: 14px;
     margin: 10px 0;
+
     .orderNum {
       margin: 0 16px 0 -20px;
     }
@@ -203,15 +213,17 @@ export default {
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
+
       .dibu {
         position: absolute;
         height: 2px;
-        width: 100%;
+        width: 105%;
         background-image: url("../../assets/img/zuo_xuxian.png");
         bottom: -10px;
         left: -2%;
         background-size: cover;
       }
+
       .addresswrap {
         width: 100%;
         display: flex;
@@ -223,7 +235,7 @@ export default {
       color: #1890ff;
       font-weight: 900;
       font-size: 15px;
-      width: 80px;
+      width: 200px;
       flex-shrink: 0;
     }
 

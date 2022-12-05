@@ -129,7 +129,7 @@ export default {
     padding: 10px;
     font-size: 14px;
     color: #fff;
-
+    margin-left: 15px;
     .orderNum {
       margin: 0 20px 0 -20px;
     }

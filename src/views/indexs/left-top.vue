@@ -132,11 +132,11 @@ export default {
                     }
                     this.offlineconfig = {
                         ...this.offlineconfig,
-                        number: [res.data.data.unsoldTotal]
+                        number: [res.data.data.soldTotal]
                     }
                     this.laramnumconfig = {
                         ...this.laramnumconfig,
-                        number: [res.data.data.soldTotal]
+                        number: [res.data.data.unsoldTotal]
                     }
                     this.switper()
                 } else {
