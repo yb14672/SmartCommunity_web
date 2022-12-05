@@ -118,7 +118,7 @@ export default {
             this.pageflag = true;
             currentGET("big1").then((res) => {
                 if (!this.timer) {
-                    console.log("房屋总览", res);
+                    // console.log("房屋总览", res);
                 }
                 if (res.data.meta.errorCode === 200) {
                     this.userOverview = res.data.data;

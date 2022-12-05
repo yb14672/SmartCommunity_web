@@ -58,7 +58,7 @@ export default {
       currentGET('big7', { gatewayno: this.gatewayno }).then(res => {
 
         if (!this.timer) {
-          console.log('报警排名', res);
+          // console.log('报警排名', res);
         }
         if (res.success) {
           this.config = {

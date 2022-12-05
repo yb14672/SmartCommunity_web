@@ -51,7 +51,7 @@ export default {
       currentGET('big1').then(res => {
         //只打印一次
         if (!this.timer) {
-          console.log("用户总览", res);
+          // console.log("用户总览", res);
         }
         if (res.status===200) {
           this.countUserNumData = res.data.data

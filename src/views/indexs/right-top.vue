@@ -51,7 +51,7 @@ export default {
       // this.pageflag =false
       currentGET("big4").then((res) => {
         if (!this.timer) {
-          console.log("报警次数", res);
+          // console.log("报警次数", res);
         }
         if (res.success) {
           this.countUserNumData = res.data;

@@ -43,8 +43,6 @@ $item_title_content-height: calc(100% - 40px);
 
 .lr_titles {
   box-sizing: border-box;
-  width: 600px;
-  height: 800px;
 :deep(.border-box-content)  {
     box-sizing: border-box;
     padding: 6px 16px 0px;

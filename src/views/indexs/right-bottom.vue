@@ -97,7 +97,7 @@ export default {
       this.pageflag = true
       // this.pageflag =false
       currentGET('big5', {limitNum: 20}).then(res => {
-        console.log('互动信息', res);
+        // console.log('互动信息', res);
         if (res.data.meta.errorCode === 200) {
           this.list = res.data.data
           let timer = setTimeout(() => {

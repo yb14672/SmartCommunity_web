@@ -109,7 +109,7 @@ export default {
       this.pageflag = true;
       // this.pageflag =false
       currentGET("big2", { limitNum: 20 }).then((res) => {
-        console.log("投诉建议", res);
+        // console.log("投诉建议", res);
         if (res.data.meta.errorCode === 200) {
           this.countUserNumData = res.data;
           this.list = res.data.data;

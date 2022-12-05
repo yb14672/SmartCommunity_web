@@ -25,7 +25,7 @@ export default {
     getData() {
       this.pageflag = true;
       currentGET("big4").then((res) => {
-        console.log("房屋绑定率", res);
+        // console.log("房屋绑定率", res);
         if (res.data.meta.errorCode === 200) {
           this.init(res.data.data);
         } else {
