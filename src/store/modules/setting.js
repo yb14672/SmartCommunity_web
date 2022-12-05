@@ -29,7 +29,6 @@ export default {
     mutations: {
         initSwipers(state){
             let flags = JSON.parse(localStorage.getItem('settingData'))
-            // console.log(flags);
             if(flags && isObject(flags)){
                for (const key in flags) {
                    if (state.hasOwnProperty.call(flags, key)&&flags.hasOwnProperty.call(flags, key)) {

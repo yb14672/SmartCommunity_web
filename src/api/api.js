@@ -98,7 +98,6 @@ export const PUT = async (url, params) => {
     }
 }
 export const DELETE = async (url, params) => {
-    // console.log(params)
     try {
         params = isEncryptionParam(params)
         const data = await axios.delete(`${baseUrl}${url}`, { data: params, headers: configs_ENC.headers }, configs_ENC);
@@ -127,7 +126,6 @@ export const FILESubmit = async (url, params, config) => {
                 if (e.total > 0) {
                     e.percent = e.loaded / e.total * 100;
                 }
-                // console.log(config)
                 config.onProgress && config.onProgress(e)
             },
 
@@ -151,7 +149,6 @@ export const FILE = async (config = {}, body, params) => {
             params: params,
             responseType: config.responseType || 'blob',
             onDownloadProgress: (e) => {
-                // console.log(e,e.currentTarget)
                 // if (e.currentTarget.response.size > 0) {
                 //     e.percent = e.loaded / e.currentTarget.response.size * 100;
                 // }

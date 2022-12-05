@@ -35,13 +35,12 @@ export default {
   },
 
   mounted() {
-    // console.log(xzqCode);
     this.getData("china");
   },
   methods: {
     getData(code) {
       currentGET("big3", {regionCode: code}).then((res) => {
-        console.log("小区分布", res);
+        // console.log("小区分布", res);
         if (res.data.meta.errorCode === 200) {
           this.getGeojson(res.data.data[0].regionCode, res.data.data);
           this.mapclick();
@@ -71,7 +70,7 @@ export default {
         mapjson = await GETNOBASE(`http://localhost:8081/map-geojson/${geoname}.json`).then((res) => {
           return res.data;
         });
-        console.log("获取范围", name, "数据", mapjson)
+        // console.log("获取范围", name, "数据", mapjson)
         echarts.registerMap(name, mapjson);
       }
       let cityCenter = {};
@@ -93,7 +92,6 @@ export default {
       this.init(name, mydata, newData);
     },
     init(name, data, data2) {
-      // console.log(data2);
       let top = 45;
       let zoom = 1.05;
       let option = {
@@ -171,7 +169,6 @@ export default {
               color: "#000",
               // position: [-10, 0],
               formatter: function (val) {
-                // console.log(val)
                 if (val.data !== undefined) {
                   return val.name.slice(0, 2);
                 } else {

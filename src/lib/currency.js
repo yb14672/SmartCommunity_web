@@ -42,7 +42,6 @@ export function getUUID() {
  * @param {*} key
  */
 export function isAuth(key) {
-  // console.log("key",key,sessionStorage.getItem('permissions'))
   // if(process.env.VUE_APP_CONFIG=="dev"){
   //   return true
   // }
@@ -67,7 +66,6 @@ export const currentQuery = (param) => {
       delete newParam[i]
     }
   }
-  // console.log(newParam)
   router.push({
     path: router.currentRoute.path,
     query: newParam
@@ -81,7 +79,6 @@ export const currentQuery = (param) => {
  * @param {*} order
  */
 export function treeDataTranslate(data, id, pid, order) {
-  // console.log(Array.isArray(data))
   if (data == null || !Array.isArray(data)) {
     return [];
   }
@@ -90,7 +87,6 @@ export function treeDataTranslate(data, id, pid, order) {
       return a[order] - b[order];
     })
   }
-  // console.log(data)
   var res = []
   var temp = {}
   for (var i = 0; i < data.length; i++) {
@@ -113,8 +109,6 @@ export function treeDataTranslate(data, id, pid, order) {
       res.push(data[k])
     }
   }
-  // console.log(outurls)
-  // console.log(res)
   return res
 }
 
@@ -209,7 +203,6 @@ export const exportFile = (data, name) => {
       return
     }
     if (data.type && data.type.indexOf('application/vnd.ms-excel') >= 0) {
-      // console.log(data)
       try {
         let blob = new Blob([data], {
           type:data.type|| 'application/vnd.ms-excel;charset=UTF-8'
@@ -252,7 +245,6 @@ export const exportFile = (data, name) => {
         })
       }
     } else {
-      // console.log(data)
        readFile(data).then(res => {
         resolve(res)
       }).catch(err => {
@@ -343,7 +335,6 @@ export const ArrayCleanRepeat = (origin, target) => {
  * @return {*}
  */
 export const beforeUpoads = (file) => {
-  // console.log(file)
   var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
   if (
     testmsg != 'png' &&
@@ -364,7 +355,6 @@ export const beforeUpoads = (file) => {
       msg: "上传图片大小不能超过20M!"
     }
   }
-  // console.log("上传前",file, this.filelist)
   return {
     success: true
   }

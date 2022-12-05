@@ -181,7 +181,6 @@ Mock.mock(new RegExp('installationPlan'), 'get', installationPlan)
 function ranking() {
    //多生成几个避免重复 重复会报错
   let num =Mock.mock({"list|48":[{ value:"@integer(50,1000)",name:"@city()"}]}).list
-//   console.log(num);
   let newNum =[],numObj={}
   num.map(item=>{
     if(!numObj[item.name] && newNum.length<8){
@@ -224,7 +223,7 @@ function parameteUrl(url) {
         for (var i = 0; i < urlArray.length; i++) {
             var urlItem = urlArray[i];
             var item = urlItem.split("=");
-            console.log(item);
+            // console.log(item);
             json[item[0]] = item[1];
         }
         return json;

@@ -95,7 +95,6 @@ export default {
   methods: {
     initSize() {
       return new Promise((resolve, reject) => {
-        // console.log("初始化样式");
         //给父元素设置 overflow:hidden
         this.screenWrapper.parentNode.style.overflow = "hidden";
         this.screenWrapper.parentNode.scrollLeft = 0;
@@ -198,7 +197,6 @@ export default {
       window.addEventListener("resize", this.onResize);
     },
     clearStyle() {
-      // console.log("清除");
       const screenWrapper = this.screenWrapper;
       screenWrapper.parentNode.style.overflow = "auto";
 
