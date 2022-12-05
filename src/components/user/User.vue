@@ -605,6 +605,10 @@ export default {
       const {data: res} = await this.$http.get('/sysUser/selectUsers', {
         params: this.form
       });
+      if (res.status===403)
+      {
+          return this.$message.error("无权进行此操作")
+      }
       this.tableData = res.data.sysUserDeptDto;
       this.total = res.data.pageable.total
       this.form.pageNum = res.data.pageable.pageNum

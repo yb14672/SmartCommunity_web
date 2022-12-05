@@ -82,15 +82,15 @@ export default {
             trigger: 'blur'
           }
         ],
-        password: [
-          {required: true, message: '请输入密码', trigger: 'blur'},
-          {
-            min: 6,
-            max: 15,
-            message: '密码长度在 6 到 15 个字符',
-            trigger: 'blur'
-          }
-        ]
+        // password: [
+        //   {required: true, message: '请输入密码', trigger: 'blur'},
+        //   {
+        //     min: 6,
+        //     max: 15,
+        //     message: '密码长度在 6 到 15 个字符',
+        //     trigger: 'blur'
+        //   }
+        // ]
       }
     }
   },
@@ -130,12 +130,7 @@ export default {
         if (!valid) {
           return
         }
-        const {data: res} = await this.$http.post('sysUser/login',{}, {
-          params: {
-            userName: this.loginForm.username,
-            password: this.loginForm.password
-          }
-        })
+        const {data: res} = await this.$http.post('sysUser/login',this.$qs.stringify(this.loginForm))
         if (res.meta.errorCode !== 2015) {
           return this.$message.error(res.meta.errorMsg)
         } else {

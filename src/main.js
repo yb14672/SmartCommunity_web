@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import axios from 'axios'
+import qs from 'qs'
 //动态背景
 import VueParticles from 'vue-particles'
 //图片裁剪
@@ -32,7 +33,7 @@ import "@/assets/css/scrollbar.css"
 //工具类
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree } from "@/utils/zhiyu";
 import { getDicts } from "@/utils/data";
-
+Vue.prototype.$qs=qs
 //图标选择器
 Vue.use(iconPicker);
 //粒子效果
