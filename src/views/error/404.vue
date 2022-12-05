@@ -44,7 +44,6 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
-      // console.log(from, 'from')
       //  这里的vm指的就是vue实例，可以用来当做this使用
       vm.beforePath=from.path;
     })

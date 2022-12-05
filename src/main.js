@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import axios from 'axios'
 import qs from 'qs'
+import { VueJsonp } from 'vue-jsonp';
 //动态背景
 import VueParticles from 'vue-particles'
 //图片裁剪
@@ -24,7 +25,8 @@ import DictTag from '@/components/DictTag'
 import RightToolbar from "@/components/RightToolbar"
 //封装分页
 import Pagination from "@/components/Pagination";
-
+// 将自动注册所有组件为全局组件
+import dataV from '@jiaminghi/data-view'
 //element Ui
 import "./plugins/element"
 import './plugins/element.js'
@@ -33,6 +35,15 @@ import "@/assets/css/scrollbar.css"
 //工具类
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree } from "@/utils/zhiyu";
 import { getDicts } from "@/utils/data";
+//首页数据大屏相关
+import Echart from './components/echart/index.vue'
+import ItemWrap from './components/item-wrap/item-wrap.vue'
+import Message from './components/message/message.vue'
+import Reacquire from './components/reacquire/reacquire.vue'
+import Messages from './components/message/message'
+import "vue-easytable/libs/theme-default/index.css";
+import  '@/assets/css/public.scss'
+import "@/assets/css/index.scss"
 Vue.prototype.$qs=qs
 //图标选择器
 Vue.use(iconPicker);
@@ -42,7 +53,8 @@ Vue.use(VueParticles)
 Vue.use(SlideVerify);
 //树状选择器
 Vue.use(Treeselect)
-
+Vue.use(dataV)
+Vue.use(VueJsonp)
 
 // 将图片裁剪全局挂载
 Vue.component('VueCropper',VueCropper);
@@ -54,7 +66,14 @@ Vue.component('DictTag', DictTag)
 Vue.component('RightToolbar', RightToolbar)
 //分页
 Vue.component('Pagination', Pagination)
+// 自定义组件
+Vue.component("Echart",Echart)
+Vue.component("ItemWrap",ItemWrap)
+Vue.component("Message",Message)
+Vue.component("Reacquire",Reacquire)
+Vue.prototype.$Messages =  Messages
 
+// require('./mock/mock')//是否使用mock
 Vue.filter('moment', function (value, formatString) {
   formatString = formatString || 'YYYY-MM-DD HH:mm:ss';
   return moment(value).format(formatString);

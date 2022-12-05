@@ -403,7 +403,6 @@ export default {
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(async valid => {
-        console.log(this.form)
         if (valid) {
           if (this.form.parkId != undefined) {
             delete this.form.number;

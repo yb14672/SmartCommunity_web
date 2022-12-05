@@ -59,10 +59,10 @@ export default {
       mnum: 0,
       snum: 0,
       imgList: [
-        {id:0,url: require("../assets/imgs/pic01.jpg")},
-        {id:1,url: require("../assets/imgs/pic02.jpg")},
-        {id:2,url: require("../assets/imgs/pic03.jpg")},
-        {id:3,url: require("../assets/imgs/pic04.jpg")},
+        {id:0,url: require("../assets/img/pic01.jpg")},
+        {id:1,url: require("../assets/img/pic02.jpg")},
+        {id:2,url: require("../assets/img/pic03.jpg")},
+        {id:3,url: require("../assets/img/pic04.jpg")},
       ],
       index: 0, //现在是第几张
       time: 1500, //设置循环时间
