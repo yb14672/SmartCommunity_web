@@ -44,7 +44,7 @@ const router = new Router({
       component: Home,
       redirect: '/welcome',
       children: [
-        {path: '/welcome', component: HomeIndex},
+        {path: '/welcome', component: HomeInfo},
         {path: '/system/user', component: User},
         {path: '/system/user-auth/role/:userId(\\d+)', component: AuthRole},
         {path: '/user/profile', component: Profile},
