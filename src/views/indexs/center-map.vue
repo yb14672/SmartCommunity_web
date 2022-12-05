@@ -57,7 +57,6 @@ export default {
      * @return {*}
      */
     async getGeojson(name, mydata) {
-      // console.log("当前请求的范围+数据", name, mydata)
       this.code = name;
       //如果要展示南海群岛并且展示的是中国的话
       let geoname = name;
