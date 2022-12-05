@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import axios from 'axios'
+import { VueJsonp } from 'vue-jsonp';
 //动态背景
 import VueParticles from 'vue-particles'
 //图片裁剪
@@ -51,6 +52,7 @@ Vue.use(SlideVerify);
 //树状选择器
 Vue.use(Treeselect)
 Vue.use(dataV)
+Vue.use(VueJsonp)
 
 // 将图片裁剪全局挂载
 Vue.component('VueCropper',VueCropper);

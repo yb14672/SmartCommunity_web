@@ -8,9 +8,9 @@
 import * as API from "../api";
 
 export const paramType ={
-    'big1':"/bigScreen/countUserNum", //房屋总览
+    'big1':"/bigScreen/getRoomStatuses", //房屋总览
     'big2':"/bigScreen/getSuggestInMonth", //投诉建议
-    'big3':"/bigScreen/sbtx", //小区分布
+    'big3':"/bigScreen/getProvinces", //小区分布
     'big4':"/bigScreen/getTheNumberOfHouseBindings", //房屋绑定率
     'big5':'/bigScreen/getInteractionInMonth',//获取互动
 }

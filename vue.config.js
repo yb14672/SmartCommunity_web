@@ -121,7 +121,7 @@ module.exports = {
 
   devServer: {
     // 配置多个代理
-    proxy: 'http://localhost:8080'
+    //proxy: 'http://localhost:8080'
   },
   pluginOptions: {
   }

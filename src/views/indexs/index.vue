@@ -94,6 +94,9 @@ export default {
 <style lang="scss" scoped>
 // 内容
 .contents {
+  background-image: url("../../assets/img/pageBg.png");
+  background-size: cover;
+  background-position: center center;
   .content_left,
   .content_right {
     width: 430px;
@@ -134,11 +137,9 @@ export default {
     position: relative;
   }
   .content_left{
-    margin-top: -60px;
+    margin-top: -90px;
   }
-  .content_right{
-    margin-top: -10px;
-  }
+
 }
 
 

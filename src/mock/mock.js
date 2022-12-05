@@ -22,7 +22,7 @@ function countUserNum() {
 // 接口，第一个参数url，第二个参数请求类型，第三个参数响应回调
 Mock.mock(new RegExp('countUserNum'), 'get', countUserNum)
 
-// /设备总览 
+// /设备总览
 
 function countDeviceNum() {
     const a = Mock.mock({
@@ -41,7 +41,7 @@ function countDeviceNum() {
 
 Mock.mock(new RegExp('countDeviceNum'), 'get', countDeviceNum)
 
-// /设备总览 
+// /设备总览
 
 function sbtx() {
     const a = Mock.mock({
@@ -145,13 +145,13 @@ function ssyj() {
                 cityName: '@city()',
                 countyName: "@county()",
             }],
-            
+
         }
     })
     return a
 }
 Mock.mock(new RegExp('ssyj'), 'get', ssyj)
-//安装计划 
+//安装计划
 function installationPlan() {
     let num=  RandomNumBoth(26,32);
     const a = Mock.mock({
@@ -177,7 +177,7 @@ Mock.mock(new RegExp('installationPlan'), 'get', installationPlan)
 
 
 
-//报警排名 
+//报警排名
 function ranking() {
    //多生成几个避免重复 重复会报错
   let num =Mock.mock({"list|48":[{ value:"@integer(50,1000)",name:"@city()"}]}).list
