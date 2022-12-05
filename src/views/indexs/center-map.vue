@@ -69,15 +69,9 @@ export default {
       if (mapjson) {
         mapjson = mapjson.geoJSON;
       } else {
-        // if (geoname === 'china') {
-        //     mapjson = await GETNOBASE(`http://localhost:8081/map-geojson/china.js`).then((res) => {
-        //         return res;
-        //     });
-        // } else {
         mapjson = await GETNOBASE(`http://localhost:8081/map-geojson/${geoname}.json`).then((res) => {
           return res.data;
         });
-        // }
         console.log("获取范围", name, "数据", mapjson)
         echarts.registerMap(name, mapjson);
       }
