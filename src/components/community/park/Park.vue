@@ -193,7 +193,6 @@
                     return this.$message.error(com.meta.errorMsg)
                 }
                 this.options = com.data.zyCommunityList;
-                console.log(this.options)
                 this.queryParams.communityId = this.options[0].communityId;
                 this.communityId = this.options[0].communityId
             },
@@ -240,7 +239,6 @@
                     return this.$message.error(res.meta.errorMsg)
                 }
                 this.parkList = res.data.records;
-                console.log(this.parkList)
                 this.total = res.data.total;
 
             },

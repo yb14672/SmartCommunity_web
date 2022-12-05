@@ -87,7 +87,6 @@ export default {
     },
     init() {
       let total = this.countUserNumData.totalNum;
-      console.log(total)
       let colors = ["#ECA444", "#33A1DB", "#56B557"];
       let piedata = {
         name: "用户总览",
