@@ -276,10 +276,10 @@ export default {
             },
           },
         ],
-         //动画效果
-            // animationDuration: 1000,
-            // animationEasing: 'linear',
-            // animationDurationUpdate: 1000
+         // 动画效果
+            animationDuration: 1000,
+            animationEasing: 'linear',
+            animationDurationUpdate: 1000
       };
       this.options = option;
     },

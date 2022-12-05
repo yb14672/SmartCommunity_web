@@ -11,26 +11,25 @@
             <div class="user_Overview_nums allnum ">
                 <dv-digital-flop :config="config" style="width:100%;height:100%;" />
             </div>
-            <p>总设备数</p>
+            <p>总房屋数</p>
         </li>
         <li class="user_Overview-item" style="color: #07f7a8">
             <div class="user_Overview_nums online">
                 <dv-digital-flop :config="onlineconfig" style="width:100%;height:100%;" />
             </div>
-            <p>在线数</p>
+            <p>已入住</p>
         </li>
         <li class="user_Overview-item" style="color: #e3b337">
             <div class="user_Overview_nums offline">
                 <dv-digital-flop :config="offlineconfig" style="width:100%;height:100%;" />
-
             </div>
-            <p>掉线数</p>
+            <p>未入住</p>
         </li>
         <li class="user_Overview-item" style="color: #f5023d">
             <div class="user_Overview_nums laramnum">
                 <dv-digital-flop :config="laramnumconfig" style="width:100%;height:100%;" />
             </div>
-            <p>告警次数</p>
+            <p>未出售</p>
         </li>
     </ul>
     <Reacquire v-else @onclick="getData" line-height="200px">
@@ -65,7 +64,7 @@ export default {
                 },
             },
             onlineconfig: {
-                number: [0],
+                number: [56],
                 content: '{nt}',
                 style: {
                     ...style,
@@ -74,7 +73,7 @@ export default {
                 },
             },
             offlineconfig: {
-                number: [0],
+                number: [34],
                 content: '{nt}',
                 style: {
                     ...style,
@@ -83,7 +82,7 @@ export default {
                 },
             },
             laramnumconfig: {
-                number: [0],
+                number: [10],
                 content: '{nt}',
                 style: {
                     ...style,
