@@ -64,7 +64,7 @@ export default {
             settingShow: false,
             sbtxradio:true,
             ssyjradio: true,
-            isScaleradio:false,
+            isScaleradio:true,
         };
     },
     computed: {},

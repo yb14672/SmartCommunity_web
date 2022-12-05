@@ -146,15 +146,15 @@ export default {
         // @ts-ignore
         !this.autoScale.y && (my = 0);
       }
-      // console.log({
-      //   mx,
-      //   my,
-      //   currentWidth,
-      //   currentHeight,
-      //   domWidth,
-      //   domHeight,
-      //   scale,
-      // });
+      console.log({
+        mx,
+        my,
+        currentWidth,
+        currentHeight,
+        domWidth,
+        domHeight,
+        scale,
+      });
       this.screenWrapper.style.margin = `${my}px ${mx}px`;
     },
     updateScale() {

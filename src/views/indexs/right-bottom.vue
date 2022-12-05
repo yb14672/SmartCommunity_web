@@ -145,7 +145,7 @@ export default {
       .dibu {
         position: absolute;
         height: 2px;
-        width: 100%;
+        width: 82%;
         background-image: url("../../assets/img/zuo_xuxian.png");
         bottom: -12px;
         left: -2%;
