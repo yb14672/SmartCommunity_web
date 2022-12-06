@@ -56,8 +56,8 @@ export default {
         if (res.success) {
           this.countUserNumData = res.data;
           this.$nextTick(() => {
-            this.init(res.data.dateList, res.data.numList, res.data.numList2),
-              this.switper();
+            this.init(res.data.dateList, res.data.numList, res.data.numList2)
+              //this.switper();
           });
         } else {
           this.pageflag = false;

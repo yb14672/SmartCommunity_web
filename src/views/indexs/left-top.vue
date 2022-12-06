@@ -138,7 +138,7 @@ export default {
                         ...this.laramnumconfig,
                         number: [res.data.data.unsoldTotal]
                     }
-                    this.switper()
+                    // this.switper()
                 } else {
                     this.pageflag = false;
                     this.$Messages.warning(res.msg);

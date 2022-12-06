@@ -373,12 +373,16 @@
       :visible.sync="dialogVisible"
       width="30%"
       center>
-      <span>确认要重置{{ user.usernamne }}用户的密码</span>
-      <el-input v-model="user.password" placeholder="请输入密码"></el-input>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="changPwd()">确 定</el-button>
-      </div>
+      <span>确认要重置{{ user.username }}用户的密码</span>
+      <el-form :rules="rules">
+        <el-form-item>
+          <el-input prop="password" v-model="user.password" placeholder="请输入密码"></el-input>
+        </el-form-item>
+        <el-form-item class="dialog-footer">
+          <el-button style="float: right;margin-left: 10px" @click="dialogVisible = false">取 消</el-button>
+          <el-button style="float: right" type="primary" @click="changPwd()">确 定</el-button>
+        </el-form-item>
+      </el-form>
     </el-dialog>
     <!--验证重复有多少条数据-->
     <el-dialog
@@ -442,7 +446,7 @@ export default {
     return {
       ids: '',
       user: {
-        usernamne: '',
+        username: '',
         userId: '',
         password: '',
       },
@@ -804,8 +808,9 @@ export default {
       this.title = '重置密码';
       this.dialogVisible = true;
       this.user.userId = row.userId;
-      this.user.password = row.password;
+      this.user.password = 888888;
       this.user.username = row.nickName;
+      console.log(row,this.user)
     },
     /**修改密码 */
     async changPwd() {

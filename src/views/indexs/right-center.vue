@@ -65,7 +65,7 @@ export default {
             ...this.config,
             data: res.data
           }
-          this.switper()
+          //this.switper()
         } else {
           this.pageflag = false
           this.srcList = []
