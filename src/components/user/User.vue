@@ -7,15 +7,15 @@
       <el-card shadow="hover" style="border: none">
         <el-aside>
           <el-input
-              size="small"
-              style="width: 60%"
-              popper-class="my-autocomplete"
-              v-model="filterText"
-              :fetch-suggestions="querySearch"
-              placeholder="请输入部门名称">
+            size="small"
+            style="width: 60%"
+            popper-class="my-autocomplete"
+            v-model="filterText"
+            :fetch-suggestions="querySearch"
+            placeholder="请输入部门名称">
             <i
-                class="el-input__icon el-icon-search"
-                slot="suffix">
+              class="el-input__icon el-icon-search"
+              slot="suffix">
             </i>
             <template slot-scope="{ item }">
               <div class="name">{{ item.deptName }}</div>
@@ -43,58 +43,58 @@
           <el-form :model="form" ref="queryForm" :inline="true" label-width="68px" :rules="formRules">
             <el-form-item label="用户名称">
               <el-input
-                  v-model="form.userName"
-                  placeholder="请输入用户名称"
-                  clearable
-                  @clear="queryKey"
-                  size="small"
-                  style="width: 240px"
-                  @keyup.enter.native="handleQuery()"
-                  @blur="getUserList"
+                v-model="form.userName"
+                placeholder="请输入用户名称"
+                clearable
+                @clear="queryKey"
+                size="small"
+                style="width: 240px"
+                @keyup.enter.native="handleQuery()"
+                @blur="getUserList"
               />
             </el-form-item>
             <el-form-item label="手机号码"
                           prop="phonenumber">
               <el-input
-                  v-model="form.phonenumber"
-                  placeholder="请输入手机号码"
-                  clearable
-                  @clear="queryKey"
-                  size="small"
-                  style="width: 240px"
-                  @blur="getUserList"
+                v-model="form.phonenumber"
+                placeholder="请输入手机号码"
+                clearable
+                @clear="queryKey"
+                size="small"
+                style="width: 240px"
+                @blur="getUserList"
               />
             </el-form-item>
             <el-form-item label="状态" prop="status">
               <el-select
-                  v-model="form.status"
-                  placeholder="用户状态"
-                  clearable
-                  @clear="queryKey"
-                  size="small"
-                  style="width: 240px"
-                  @change="getUserList"
+                v-model="form.status"
+                placeholder="用户状态"
+                clearable
+                @clear="queryKey"
+                size="small"
+                style="width: 240px"
+                @change="getUserList"
               >
                 <el-option
-                    style="margin-left: 15px"
-                    v-for="dict in statusList"
-                    :key="dict.dictValue"
-                    :label="dict.dictLabel"
-                    :value="dict.dictValue"
+                  style="margin-left: 15px"
+                  v-for="dict in statusList"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
                 />
               </el-select>
             </el-form-item>
             <el-form-item label="创建时间">
               <el-date-picker
-                  v-model="searchTime"
-                  size="small"
-                  style="width: 240px"
-                  value-format="yyyy-MM-dd"
-                  type="daterange"
-                  range-separator="-"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  @change="getUserList"
+                v-model="searchTime"
+                size="small"
+                style="width: 240px"
+                value-format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="-"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                @change="getUserList"
               ></el-date-picker>
             </el-form-item>
             <el-form-item>
@@ -107,31 +107,31 @@
           <el-row :gutter="10" class="mb8">
             <el-col :span="1.5">
               <el-button
-                  plain
-                  size="small"
-                  type="primary"
-                  icon="el-icon-plus"
-                  @click="handleAdd"
+                plain
+                size="small"
+                type="primary"
+                icon="el-icon-plus"
+                @click="handleAdd"
               >新增
               </el-button>
             </el-col>
             <el-col :span="1.5">
               <el-button
-                  size="mini"
-                  type="danger"
-                  icon="el-icon-delete"
-                  :disabled="multiple"
-                  @click="deleteUser"
+                size="mini"
+                type="danger"
+                icon="el-icon-delete"
+                :disabled="multiple"
+                @click="deleteUser"
               >删除
               </el-button>
             </el-col>
             <el-col :span="1.5">
               <el-button
-                  plain
-                  size="mini"
-                  type="el-button el-button--info is-plain"
-                  icon="el-icon-upload2"
-                  @click="dialogVisible6 = true"
+                plain
+                size="mini"
+                type="el-button el-button--info is-plain"
+                icon="el-icon-upload2"
+                @click="dialogVisible6 = true"
               >导入
               </el-button>
             </el-col>
@@ -164,11 +164,11 @@
             </el-dialog>
             <el-col :span="1.5">
               <el-button
-                  plain
-                  size="mini"
-                  type="warning"
-                  icon="el-icon-download"
-                  @click="handleExport"
+                plain
+                size="mini"
+                type="warning"
+                icon="el-icon-download"
+                @click="handleExport"
               >导出
               </el-button>
             </el-col>
@@ -176,9 +176,9 @@
           <!--渲染数据的表格-->
           <template>
             <el-table
-                :data="tableData"
-                style="width: 100%"
-                @selection-change="handleSelectionChange">
+              :data="tableData"
+              style="width: 100%"
+              @selection-change="handleSelectionChange">
               <el-table-column type="selection" width="50" align="center"/>
               <el-table-column label="用户编号" align="center" prop="userId"/>
               <el-table-column label="用户名称" align="center" prop="userName" :show-overflow-tooltip="true"/>
@@ -189,11 +189,11 @@
               <el-table-column label="状态" align="center">
                 <template slot-scope="scope">
                   <el-switch
-                      :disabled="scope.row.userId === 1"
-                      v-model="scope.row.status"
-                      active-value="0"
-                      inactive-value="1"
-                      @change="handleStatusChange(scope.row)"
+                    :disabled="scope.row.userId === 1"
+                    v-model="scope.row.status"
+                    active-value="0"
+                    inactive-value="1"
+                    @change="handleStatusChange(scope.row)"
                   ></el-switch>
                 </template>
               </el-table-column>
@@ -205,17 +205,17 @@
               <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
                 <template slot-scope="scope" v-if="scope.row.userName != 'admin'">
                   <el-button
-                      size="mini"
-                      type="text"
-                      icon="el-icon-edit"
-                      @click="updateForm(scope.row)"
+                    size="mini"
+                    type="text"
+                    icon="el-icon-edit"
+                    @click="updateForm(scope.row)"
                   >修改
                   </el-button>
                   <el-button
-                      size="mini"
-                      type="text"
-                      icon="el-icon-delete"
-                      @click="deleteUser(scope.row)"
+                    size="mini"
+                    type="text"
+                    icon="el-icon-delete"
+                    @click="deleteUser(scope.row)"
                   >删除
                   </el-button>
                   <el-dropdown size="mini" @command="(command) => handleCommand(command, scope.row)"
@@ -302,11 +302,11 @@
             <el-form-item label="用户性别" prop="sex">
               <el-select v-model="formData.sex" placeholder="请选择">
                 <el-option
-                    style="margin-left: 15px"
-                    v-for="dict in sexOptions"
-                    :key="dict.dictValue"
-                    :label="dict.dictLabel"
-                    :value="dict.dictValue"
+                  style="margin-left: 15px"
+                  v-for="dict in sexOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -315,9 +315,9 @@
             <el-form-item label="状态">
               <el-radio-group v-model="formData.status">
                 <el-radio
-                    v-for="dict in statusList"
-                    :key="dict.dictValue"
-                    :label="dict.dictValue"
+                  v-for="dict in statusList"
+                  :key="dict.dictValue"
+                  :label="dict.dictValue"
                 >{{ dict.dictLabel }}
                 </el-radio>
               </el-radio-group>
@@ -329,12 +329,12 @@
             <el-form-item label="岗位" prop="postId">
               <el-select @change="$forceUpdate" v-model="formData.postId" placeholder="请选择">
                 <el-option
-                    style="margin-left: 15px"
-                    v-for="item in postOptions"
-                    :key="item.postId"
-                    :label="item.postName"
-                    :value="item.postId"
-                    :disabled="item.status == 1"
+                  style="margin-left: 15px"
+                  v-for="item in postOptions"
+                  :key="item.postId"
+                  :label="item.postName"
+                  :value="item.postId"
+                  :disabled="item.status == 1"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -343,12 +343,12 @@
             <el-form-item label="角色" prop="roleId">
               <el-select v-model="formData.roleId" placeholder="请选择">
                 <el-option
-                    style="margin-left: 15px"
-                    v-for="item in roleOptions"
-                    :key="item.roleId"
-                    :label="item.roleName"
-                    :value="item.roleId"
-                    :disabled="item.status == 1"
+                  style="margin-left: 15px"
+                  v-for="item in roleOptions"
+                  :key="item.roleId"
+                  :label="item.roleName"
+                  :value="item.roleId"
+                  :disabled="item.status == 1"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -369,10 +369,10 @@
     </el-dialog>
     <!--重置密码确认框-->
     <el-dialog
-        title="提示"
-        :visible.sync="dialogVisible"
-        width="30%"
-        center>
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+      center>
       <span>确认要重置{{ user.usernamne }}用户的密码</span>
       <el-input v-model="user.password" placeholder="请输入密码"></el-input>
       <div slot="footer" class="dialog-footer">
@@ -382,9 +382,9 @@
     </el-dialog>
     <!--验证重复有多少条数据-->
     <el-dialog
-        title="错误"
-        :visible.sync="dialogVisibleUpload"
-        width="30%">
+      title="错误"
+      :visible.sync="dialogVisibleUpload"
+      width="30%">
       <span>{{ uploadData }}</span>
       <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="dialogVisibleUpload = false">确 定</el-button>
@@ -605,9 +605,8 @@ export default {
       const {data: res} = await this.$http.get('/sysUser/selectUsers', {
         params: this.form
       });
-      if (res.status===403)
-      {
-          return this.$message.error("无权进行此操作")
+      if (res.meta.errorCode !== 200) {
+        return this.$message.error(res.meta.errorMsg)
       }
       this.tableData = res.data.sysUserDeptDto;
       this.total = res.data.pageable.total
@@ -837,16 +836,16 @@ export default {
       //发送请求
       // eslint-disable-next-line no-undef
       this.$http(config).then(response => {
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', '用户管理.xls');
-            document.body.appendChild(link);
-            link.click();
-            if (response.data !== null) {
-              this.$message.success("导出成功");
-            }
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', '用户管理.xls');
+          document.body.appendChild(link);
+          link.click();
+          if (response.data !== null) {
+            this.$message.success("导出成功");
           }
+        }
       )
     },
     /** 下载模板 */
@@ -860,37 +859,37 @@ export default {
       //发送请求
       // eslint-disable-next-line no-undef
       this.$http(config).then(response => {
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', '用户管理模板.xls');
-            document.body.appendChild(link);
-            link.click();
-            if (response.data !== null) {
-              this.$message.success("下载成功");
-            }
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', '用户管理模板.xls');
+          document.body.appendChild(link);
+          link.click();
+          if (response.data !== null) {
+            this.$message.success("下载成功");
           }
+        }
       )
     },
     /** 关闭导入报错有重复的弹窗 */
     handleCloseUpload(done) {
       this.$confirm('确认关闭？')
-          .then(_ => {
-            done();
-          })
-          .catch(_ => {
-          });
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {
+        });
     },
     /** 关闭导入的x */
     handleClose(done) {
       this.$confirm('确认关闭？')
-          .then(_ => {
-            done();
-            this.fileList.splice(0, 1)
-            this.visible = false
-          })
-          .catch(_ => {
-          });
+        .then(_ => {
+          done();
+          this.fileList.splice(0, 1)
+          this.visible = false
+        })
+        .catch(_ => {
+        });
     },
     /** 判断文件类型 */
     judgeFileType(file) {

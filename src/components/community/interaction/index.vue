@@ -164,14 +164,14 @@
                   </p>
                 </div>
                 <div class="reply-box">
-                  <!--                  <el-button-->
-                  <!--                    size="mini"-->
-                  <!--                    type="text"-->
-                  <!--                    icon="el-icon-edit"-->
-                  <!--                    @click="handleAdd(reply)"-->
-                  <!--                    v-hasPermi="['system:comment:add']"-->
-                  <!--                  >回复-->
-                  <!--                  </el-button>-->
+<!--                  <el-button-->
+<!--                    size="mini"-->
+<!--                    type="text"-->
+<!--                    icon="el-icon-edit"-->
+<!--                    @click="handleAdd(reply)"-->
+<!--                    v-hasPermi="['system:comment:add']"-->
+<!--                  >回复-->
+<!--                  </el-button>-->
                   <el-button
                     size="mini"
                     type="text"

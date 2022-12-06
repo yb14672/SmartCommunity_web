@@ -40,7 +40,7 @@ export default {
   methods: {
     getData(code) {
       currentGET("big3", {regionCode: code}).then((res) => {
-        console.log("小区分布", res);
+        // console.log("小区分布", res);
         if (res.data.meta.errorCode === 200) {
           this.getGeojson(res.data.data.regionCode, res.data.data.areaInfoList);
           this.mapclick();
@@ -294,7 +294,7 @@ export default {
       //单击切换到级地图，当mapCode有值,说明可以切换到下级地图
       this.$refs.CenterMap.chart.on("click", (params) => {
         let xzqData = xzqCode[params.name];
-        console.log(params,xzqData)
+        // console.log(params,xzqData)
         if (xzqData) {
           this.getData(xzqData.name);
         } else {
