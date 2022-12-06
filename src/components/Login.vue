@@ -22,8 +22,7 @@
       <div class="text">智 慧 社 区</div>
       <!-- 头像 -->
       <div class="avatar_box">
-
-        <!--                <img src="../assets/logo.jpg" alt="">-->
+        <!--<img src="../assets/logo.jpg" alt="">-->
       </div>
       <!-- 登录表单 -->
       <el-form :model="loginForm" ref="LoginFormRef" :rules="loginFormRules" label-width="0px" class="login_form">
@@ -137,7 +136,6 @@ export default {
           // 保存token
           window.sessionStorage.setItem('token', res.data)
           this.dialogVisible = true;
-
         }
       })
 
