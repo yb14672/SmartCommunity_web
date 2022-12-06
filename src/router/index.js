@@ -31,7 +31,8 @@ import Server from "../components/server/index";
 import ParkOwner from "@/components/community/park/ParkOwner";
 import ParkInfo from "@/components/community/park/ParkInfo";
 import HomeIndex from "../views/indexs/index.vue";
-import HomeInfo from "../views/home.vue";
+import Redis from "@/components/server/redis";
+import Druid from "@/components/server/druid";
 
 Vue.use(Router)
 
@@ -69,6 +70,8 @@ const router = new Router({
         {path: '/suggest/suggest', component: Suggest},
         {path: '/Park/park', component: park},
         {path: '/monitor/server', component: Server},
+        {path: '/monitor/cache', component: Redis},
+        {path: '/monitor/druid', component: Druid},
         {path: '/park/parkOwner', component: ParkOwner},
         {path: '/community/parkInfo', component: ParkInfo},
       ]

@@ -177,8 +177,6 @@
 </template>
 
 <script>
-
-
 export default {
   name: "Data",
   data() {
