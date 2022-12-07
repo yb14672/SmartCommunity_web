@@ -106,7 +106,7 @@ const myInterceptor = axios.interceptors.response.use(res => {
   if(res.data.meta==undefined){
     if(res.meta==undefined){
       if(res.status==undefined){
-        code=200
+        code=200;
       }else{
         code=res.status
       }
@@ -116,7 +116,7 @@ const myInterceptor = axios.interceptors.response.use(res => {
   }else{
     code=res.data.meta.errorCode
   }
-  if(code !==undefined && code === 2013 || code === 2014){
+  if(code !==undefined && code === 2013 || code === 2014 || code === 2002){
     //移除拦截器
     axios.interceptors.request.eject(myInterceptor);
     // 从 sessionStorage 删除所有保存的数据

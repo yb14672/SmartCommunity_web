@@ -154,8 +154,7 @@
                   v-for="item in Coptions"
                   :key="item.value"
                   :label="item.label"
-                  :value="item.value"
-                  :disabled="form.repairState!='Pending'">
+                  :value="item.value">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -222,6 +221,7 @@
                               v-model="form.cancelTime"
                               type="datetime"
                               value-format="yyyy-MM-dd HH:mm:ss"
+                              disabled
               >
               </el-date-picker>
             </el-form-item>

@@ -384,6 +384,7 @@ export default {
       this.reset();
       this.open = true;
       this.title = "添加车位 ";
+      this.form.communityId = this.communityId;
     },
     /** 修改按钮操作 */
     async handleUpdate(row) {
@@ -414,7 +415,7 @@ export default {
             await this.getList();
             return this.$message.success("修改成功！")
           } else {
-            this.form.communityId = this.communityId;
+            // this.form.communityId = this.communityId;
             const {data: res} = await this.$http.post('zyPark/batchInsert', this.form,{
                 params:{
                     number:this.form.number

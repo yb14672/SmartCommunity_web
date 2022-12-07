@@ -8,7 +8,7 @@
     export default {
         data() {
             return {
-                src: "http://192.168.31.218:3000/d/facCaLKVk/windows-node-fixed-for-v0-13-0?orgId=1&refresh=1m&from=1670290831084&to=1670301631084",
+                src: "http://localhost:3000/d/w6s1tQdVk/1-windows_exporter-for-prometheus-dashboard-cn-v20201012?orgId=1&from=1670363603264&to=1670374403264",
                 height: document.documentElement.clientHeight - 69.5 + "px;",
                 loading: true
             };
