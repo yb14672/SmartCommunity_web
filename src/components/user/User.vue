@@ -374,9 +374,9 @@
       width="30%"
       center>
       <span>确认要重置{{ user.username }}用户的密码</span>
-      <el-form :rules="rules">
-        <el-form-item>
-          <el-input prop="password" v-model="user.password" placeholder="请输入密码"></el-input>
+      <el-form :rules="rules" ref="resetPwd">
+        <el-form-item prop="password">
+          <el-input v-model="user.password" placeholder="请输入密码"></el-input>
         </el-form-item>
         <el-form-item class="dialog-footer">
           <el-button style="float: right;margin-left: 10px" @click="dialogVisible = false">取 消</el-button>
@@ -398,590 +398,597 @@
 </template>
 
 <script>
-export default {
-  name: "UserList",
-  // inject: ["reload"],
-  props: {
-    /* 配置项 */
-    props: {
-      type: Object,
-      default: () => {
-        return {
-          value: 'deptId',        // ID字段名
-          label: 'deptName',      // 显示名称
-          children: 'children'    // 子级字段名
-        }
-      }
-    },
-    /* 选项列表数据(树形结构的对象数组) */
-    options: {
-      type: Array,
-      default: () => {
-        return []
-      }
-    },
-    /* 初始值 */
-    value: {
-      type: Number,
-      default: () => {
-        return 100
-      }
-    },
-    /* 可清空选项 */
-    clearable: {
-      type: Boolean,
-      default: () => {
-        return true
-      }
-    },
-    /* 自动收起 */
-    accordion: {
-      type: Boolean,
-      default: () => {
-        return true
-      }
-    },
-  },
-  data() {
-    return {
-      ids: '',
-      user: {
-        username: '',
-        userId: '',
-        password: '',
-      },
-      dialogVisible: false,
-      dialogVisible6: false,
-      dialogVisibleUpload: false,
-      uploadData: '',
-      defaultExpandedKey: [],
-      loading: true,
-      open: false,
-      multiple: true,
-      //状态
-      valueTitle: '智慧社区',
-      deptName: '',
-      statusList: [],
-      deptOptions: [],
-      sexOptions: [],
-      postOptions: [],
-      roleOptions: [],
-      searchTime: [],
-      total: 0,
-      title: '',
-      fileList: [],
-      form: {
-        pageNum: 1,
-        pageSize: 5,
-        userName: undefined,
-        phonenumber: undefined,
-        status: undefined,
-        deptId: 100,
-      },
-      formData: {
-        phonenumber: undefined,
-        userId: undefined,
-        nickName: undefined,
-        email: undefined,
-        sex: undefined,
-        deptId: undefined,
-        postId: '',
-        roleId: '',
-        userName: undefined,
-        status: undefined,
-        remark: '',
-      },
-      restaurants: [],
-      filterText: '',
-      deptList: [],
-      defaultProps: {
-        value: 'deptId',        // ID字段名
-        label: 'deptName',      // 显示名称
-        children: 'children'    // 子级字段名
-      },
-      tableData: [],
-      formRules: {
-        phonenumber: [
-          {max: 11, message: "手机号最长为11位", trigger: "blur"},
-          {pattern: /^-?[1-9]\d*$/, message: '手机号只能为数字'},
-        ],
-      },
-      // 表单校验
-      rules: {
-        nickName: [
-          {required: true, message: "角色名称不能为空", trigger: "blur"},
-          {pattern: /^[A-Za-z0-9\u4e00-\u9fa5]+$/, message: '非法字符', trigger: "blur"},
-          {min: 2, max: 16, message: '长度在 2 到 16 个字符', trigger: 'blur'}
-        ],
-        email: [
-          {required: true, message: "邮箱不能为空", trigger: "blur"},
-          {pattern: /^([a-zA-Z0-9]+[-_.]?)+@[a-zA-Z0-9]+\.[a-z]+$/, message: '请输入正确邮箱', trigger: "blur"},
-        ],
-        userName: [
-          {required: true, message: "角色名称不能为空", trigger: "blur"},
-          {pattern: /^[A-Za-z0-9\u4e00-\u9fa5]+$/, message: '非法字符', trigger: "blur"},
-          {min: 2, max: 10, message: "角色名称长度需在2-10个字符", trigger: "blur"},
-        ],
-        password: [
-          {required: true, message: "密码不能为空", trigger: "blur"},
-          {min: 6, max: 20, message: "密码长度为6-20个字符", trigger: "blur"},
-        ],
-        phonenumber: [
-          {required: true, message: "手机号不能为空", trigger: "blur"},
-          {max: 11, message: "手机号最长为11位", trigger: "blur"},
-          {pattern: /(^1[3|4|5|6|7|8|9]\d{9}$)|(^09\d{8}$)/, message: '输入有效的手机号', trigger: "blur"},
-        ],
-        sex: [
-          {required: true, message: "用户性别不能为空", trigger: "blur"},
-        ],
-        remark: [
-          {max: 50, message: "角色备注不能超过50字符", trigger: "blur"}
-        ]
-      }
-    }
-  },
-  async created() {
-    await this.getDeptList();
-    await this.getUserList();
-    await this.getPostIds();
-    await this.getRoleIds();
-    this.loading = false
-    this.$forceUpdate();
-    //查询需要使用的字典
-    await this.getSex("sys_user_sex");
-    this.getDicts("sys_normal_disable").then(response => {
-      this.statusList = response.data.data;
-    });
-  },
-  methods: {
-    /** 角色状态修改 */
-    handleStatusChange(row) {
-      let text = row.status === "0" ? "启用" : "停用";
-      this.$confirm('确认要"' + text + '""' + row.roleName + '"角色吗?', "警告", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(async () => {
-        const {data: res} = await this.$http.put('sysUser/adminUpdateUser', row);
-        if (res.meta.errorCode !== 200) {
-          return this.$message.error(res.meta.errorMsg)
-        }
-        await this.getUserList();
-        this.$message.success(text + "成功");
-      }).catch(function () {
-        row.status = row.status === "0" ? "1" : "0";
-      });
-    },
-    /** 查询数据字典性别 */
-    async getSex(deptType) {
-      const {data: res} = await this.$http.get(`sysDictData/getDict?dictType=${deptType}`);
-      this.sexOptions = res.data;
-    },
-    /** 获取岗位列表 */
-    async getPostIds() {
-      const {data: res} = await this.$http.get('sysPost/getAllPost');
-      if (res.meta.errorCode !== 200) {
-        return this.$message.error("获取岗位失败")
-      }
-      this.postOptions = res.data;
-    },
-    /** 获取角色列表 */
-    async getRoleIds() {
-      const {data: res} = await this.$http.get('sysRole/getAllRole');
-      if (res.meta.errorCode !== 200) {
-        return this.$message.error("获取角色失败")
-      }
-      this.roleOptions = res.data;
-    },
-    /** 获取部门列表 */
-    async getDeptList() {
-      const {data: res} = await this.$http.get('sysDept/getDeptList');
-      if (res.meta.errorCode !== 200) {
-        return this.$message.error(res.meta.errorMsg)
-      }
-      this.deptOptions = res.data
-    },
-    /** 获取用户列表 */
-    async getUserList() {
-      this.form.startTime = this.searchTime[0]
-      this.form.endTime = this.searchTime[1]
-      this.loading = true;
-      const {data: res} = await this.$http.get('/sysUser/selectUsers', {
-        params: this.form
-      });
-      if (res.meta.errorCode !== 200) {
-        return this.$message.error(res.meta.errorMsg)
-      }
-      this.tableData = res.data.sysUserDeptDto;
-      this.total = res.data.pageable.total
-      this.form.pageNum = res.data.pageable.pageNum
-      this.loading = false
-    },
-    /** 更多操作触发 */
-    handleCommand(command, row) {
-      switch (command) {
-        case "handleResetPwd":
-          this.reLoadPwd(row);
-          break;
-        case "handleAuthRole":
-          this.handleAuthRole(row);
-          break;
-        default:
-          break;
-      }
-    },
-    /** 重置 */
-    formReload() {
-      this.form.pageNum = 1
-      this.form.userName = undefined
-      this.form.phonenumber = undefined
-      this.form.status = undefined
-      this.searchTime = []
-      this.getUserList()
-    },
-    /**查询表单清空 */
-    queryKey() {
-      if (this.searchTime == null) {
-        this.searchTime = []
-      }
-      this.getUserList()
-    },
-    /** 清除选中 */
-    clearHandle() {
-      this.valueTitle = '智慧社区'
-      this.valueId = 100
-      this.formData.deptId = 100
-      this.defaultExpandedKey = []
-      this.clearSelected()
-      this.$emit('getValue', null)
-    },
-    /** 切换选项 */
-    handleNodeClick2(node) {
-      this.valueTitle = node[this.props.label]
-      this.valueId = node[this.props.value]
-      this.$emit('getValue', this.valueId)
-      this.formData.deptId = node.deptId
-      this.defaultExpandedKey = []
-    },
-    /** 选中部门节点时 */
-    handleNodeClick(data) {
-      this.form.deptId = data.deptId
-      this.deptName = data.deptName
-      this.getUserList()
-    },
-    /** 搜索框变化时 */
-    querySearch(queryString, cb) {
-      let restaurants = this.restaurants;
-      let results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
-    },
-    /**过滤器发生变化时 */
-    createFilter(queryString) {
-      return (restaurant) => {
-        return (restaurant.deptName.indexOf(queryString.toLowerCase()) === 0);
-      };
-    },
-    /**批量删除中的查询*/
-    filterNode(value, data) {
-      return data.deptName.indexOf(value) !== -1;
-    },
-    /**根据id删除*/
-    deleteUser(row) {
-      const userIds = row.userId || this.ids;
-      this.$confirm('是否确认删除角色编号为"' + userIds + '"的数据项?', "警告", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(() => {
-        return this.$http.delete(`/sysUser?idList=${userIds}`);
-      }).then((res) => {
-        if (res.data.meta.errorCode !== 200) {
-          return this.$message.error(res.data.meta.errorMsg);
-        }
-        this.getUserList();
-        this.$message.success("删除成功");
-      })
-    },
-    /**关闭表单的方法*/
-    closeFrom() {
-      //清空验证
-      this.$refs['formData'].resetFields()
-    },
-    /** 分配角色操作 */
-    handleAuthRole: function (row) {
-      const userId = row.userId;
-      this.$router.push("/system/user-auth/role/" + userId);
-    },
-    /** 每页显示的条数 */
-    handleSizeChange(val) {
-      // 改变每页显示的条数
-      this.form.pageSize = val
-      // 注意：在改变每页显示的条数时，要将页码显示到第一页
-      this.form.pageNum = 1
-      this.getUserList()
-    },
-    /** 显示第几页 */
-    handleCurrentChange(val) {
-      // 改变默认的页数
-      this.form.pageNum = val
-      this.getUserList()
-    },
-    /**取消 */
-    cancel() {
-      this.$refs.formData.resetFields();
-      this.open = false;
-    },
-    /** 新增 */
-    handleAdd() {
-      this.title = '添加'
-      this.valueTitle = this.deptName
-      this.formData = {
-        phonenumber: undefined,
-        userId: undefined,
-        nickName: undefined,
-        email: undefined,
-        sex: undefined,
-        deptId: JSON.parse(JSON.stringify(this.form.deptId)),
-        postIds: [],
-        roleIds: [],
-        userName: undefined,
-        status: "0",
-      }
-      this.open = true
-      this.$refs.formData.resetFields();
-    },
-    /** 打开修改表单时 */
-    async updateForm(row) {
-      this.open = true;
-      const {data: res} = await this.$http.get(`sysUser/getUserInfo?userId=` + row.userId);
-      this.formData.phonenumber = res.data.sysUser.phonenumber;
-      this.formData.userId = res.data.sysUser.userId;
-      this.formData.nickName = res.data.sysUser.nickName;
-      this.formData.userName = res.data.sysUser.userName;
-      this.formData.status = res.data.sysUser.status;
-      this.formData.email = res.data.sysUser.email;
-      this.formData.sex = res.data.sysUser.sex;
-      this.formData.deptId = res.data.sysUser.deptId;
-      this.formData.remark = res.data.sysUser.remark;
-      this.formData.postId = res.data.sysPost.postId;
-      this.formData.roleId = res.data.sysRole.roleId;
-    },
-    /**表单提交 */
-    submitForm() {
-      this.$refs["formData"].validate(async valid => {
-        if (valid) {
-          if (this.formData.userId === undefined) {
-            const {data: res} = await this.$http.post("sysUser/insertUser", this.formData)
-            if (res.meta.errorCode !== 200) {
-              return this.$message.error(res.meta.errorMsg)
+    export default {
+        name: "UserList",
+        // inject: ["reload"],
+        props: {
+            /* 配置项 */
+            props: {
+                type: Object,
+                default: () => {
+                    return {
+                        value: 'deptId',        // ID字段名
+                        label: 'deptName',      // 显示名称
+                        children: 'children'    // 子级字段名
+                    }
+                }
+            },
+            /* 选项列表数据(树形结构的对象数组) */
+            options: {
+                type: Array,
+                default: () => {
+                    return []
+                }
+            },
+            /* 初始值 */
+            value: {
+                type: Number,
+                default: () => {
+                    return 100
+                }
+            },
+            /* 可清空选项 */
+            clearable: {
+                type: Boolean,
+                default: () => {
+                    return true
+                }
+            },
+            /* 自动收起 */
+            accordion: {
+                type: Boolean,
+                default: () => {
+                    return true
+                }
+            },
+        },
+        data() {
+            return {
+                ids: '',
+                user: {
+                    username: '',
+                    userId: '',
+                    password: '',
+                },
+                dialogVisible: false,
+                dialogVisible6: false,
+                dialogVisibleUpload: false,
+                uploadData: '',
+                defaultExpandedKey: [],
+                loading: true,
+                open: false,
+                multiple: true,
+                //状态
+                valueTitle: '智慧社区',
+                deptName: '',
+                statusList: [],
+                deptOptions: [],
+                sexOptions: [],
+                postOptions: [],
+                roleOptions: [],
+                searchTime: [],
+                total: 0,
+                title: '',
+                fileList: [],
+                form: {
+                    pageNum: 1,
+                    pageSize: 5,
+                    userName: undefined,
+                    phonenumber: undefined,
+                    status: undefined,
+                    deptId: 100,
+                },
+                formData: {
+                    phonenumber: undefined,
+                    userId: undefined,
+                    nickName: undefined,
+                    email: undefined,
+                    sex: undefined,
+                    deptId: undefined,
+                    postId: '',
+                    roleId: '',
+                    userName: undefined,
+                    status: undefined,
+                    remark: '',
+                },
+                restaurants: [],
+                filterText: '',
+                deptList: [],
+                defaultProps: {
+                    value: 'deptId',        // ID字段名
+                    label: 'deptName',      // 显示名称
+                    children: 'children'    // 子级字段名
+                },
+                tableData: [],
+                formRules: {
+                    phonenumber: [
+                        {max: 11, message: "手机号最长为11位", trigger: "blur"},
+                        {pattern: /^-?[1-9]\d*$/, message: '手机号只能为数字'},
+                    ],
+                },
+                // 表单校验
+                rules: {
+                    nickName: [
+                        {required: true, message: "角色名称不能为空", trigger: "blur"},
+                        {pattern: /^[A-Za-z0-9\u4e00-\u9fa5]+$/, message: '非法字符', trigger: "blur"},
+                        {min: 2, max: 16, message: '长度在 2 到 16 个字符', trigger: 'blur'}
+                    ],
+                    email: [
+                        {required: true, message: "邮箱不能为空", trigger: "blur"},
+                        {pattern: /^([a-zA-Z0-9]+[-_.]?)+@[a-zA-Z0-9]+\.[a-z]+$/, message: '请输入正确邮箱', trigger: "blur"},
+                    ],
+                    userName: [
+                        {required: true, message: "角色名称不能为空", trigger: "blur"},
+                        {pattern: /^[A-Za-z0-9\u4e00-\u9fa5]+$/, message: '非法字符', trigger: "blur"},
+                        {min: 2, max: 10, message: "角色名称长度需在2-10个字符", trigger: "blur"},
+                    ],
+                    password: [
+                        {required: true, message: "密码不能为空", trigger: "blur"},
+                        {min: 6, max: 20, message: "密码长度为6-20个字符", trigger: "blur"},
+                    ],
+                    phonenumber: [
+                        {required: true, message: "手机号不能为空", trigger: "blur"},
+                        {max: 11, message: "手机号最长为11位", trigger: "blur"},
+                        {pattern: /(^1[3|4|5|6|7|8|9]\d{9}$)|(^09\d{8}$)/, message: '输入有效的手机号', trigger: "blur"},
+                    ],
+                    sex: [
+                        {required: true, message: "用户性别不能为空", trigger: "blur"},
+                    ],
+                    remark: [
+                        {max: 50, message: "角色备注不能超过50字符", trigger: "blur"}
+                    ]
+                }
             }
+        },
+        async created() {
+            await this.getDeptList();
             await this.getUserList();
-            this.$message.success("新增成功");
-            this.open = false;
-          } else {
-            const {data: res} = await this.$http.put('sysUser/adminUpdateUser', {
-              userId: this.formData.userId,
-              phonenumber: this.formData.phonenumber,
-              nickName: this.formData.nickName,
-              email: this.formData.email,
-              sex: this.formData.sex,
-              remark: this.formData.remark,
-              deptId: this.formData.deptId,
-              postId: this.formData.postId,
-              roleId: this.formData.roleId,
-              userName: this.formData.userName,
-              status: this.formData.status,
+            await this.getPostIds();
+            await this.getRoleIds();
+            this.loading = false
+            this.$forceUpdate();
+            //查询需要使用的字典
+            await this.getSex("sys_user_sex");
+            this.getDicts("sys_normal_disable").then(response => {
+                this.statusList = response.data.data;
             });
-            if (res.meta.errorCode !== 200) {
-              return this.$message.error(res.meta.errorMsg)
-            }
-            await this.getUserList();
-            this.$message.success("修改成功");
-            this.open = false;
-          }
-        }
-      });
-    },
-    /** 重置密码 */
-    reLoadPwd(row) {
-      this.title = '重置密码';
-      this.dialogVisible = true;
-      this.user.userId = row.userId;
-      this.user.password = 888888;
-      this.user.username = row.nickName;
-      console.log(row,this.user)
-    },
-    /**修改密码 */
-    async changPwd() {
-      const {data: res} = await this.$http.post("sysUser/resetPassword", {
-        userId: this.user.userId,
-        password: this.user.password
-      });
-      if (res.meta.errorCode !== 200) {
-        return this.$message.error(res.meta.errorMsg)
-      }
-      this.dialogVisible = false;
-      return this.$message.success("重置成功")
-    },
-    /**多选框选中 */
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.userId)
-      this.single = selection.length != 1
-      this.multiple = !selection.length
-    },
-    /** 导出按钮操作 */
-    handleExport() {
-      //设置全局配置信息
-      const config = {
-        method: 'get',
-        url: 'sysUser/getExcel?userIds=' + this.ids,
-        responseType: 'blob'
-      };
-      //发送请求
-      // eslint-disable-next-line no-undef
-      this.$http(config).then(response => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', '用户管理.xls');
-          document.body.appendChild(link);
-          link.click();
-          if (response.data !== null) {
-            this.$message.success("导出成功");
-          }
-        }
-      )
-    },
-    /** 下载模板 */
-    downloadExport() {
-      //设置全局配置信息
-      const config = {
-        method: 'get',
-        url: 'sysUser/uploadExcel',
-        responseType: 'blob'
-      };
-      //发送请求
-      // eslint-disable-next-line no-undef
-      this.$http(config).then(response => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', '用户管理模板.xls');
-          document.body.appendChild(link);
-          link.click();
-          if (response.data !== null) {
-            this.$message.success("下载成功");
-          }
-        }
-      )
-    },
-    /** 关闭导入报错有重复的弹窗 */
-    handleCloseUpload(done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done();
-        })
-        .catch(_ => {
-        });
-    },
-    /** 关闭导入的x */
-    handleClose(done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done();
-          this.fileList.splice(0, 1)
-          this.visible = false
-        })
-        .catch(_ => {
-        });
-    },
-    /** 判断文件类型 */
-    judgeFileType(file) {
-      let suffix = file.name.substring(file.name.lastIndexOf('.') + 1)
-      if (suffix !== 'xlsx' && suffix !== 'xls') {
-        // warning('请选择正确的文件格式的文件')
-        this.fileList.splice(0, 1)
-      }
-    },
-    /** 上传文件 */
-    async uploadFile(param) {
-      let fileObject = param.file
-      let formData = new FormData()
-      formData.append('file', fileObject)
-      const {data: res} = await this.$http.post('sysUser/import-data', formData)
-      if (res.meta.errorCode !== 200) {
-        this.dialogVisibleUpload = true;
-        this.uploadData = res.data;
-      } else {
-        this.$message({
-          message: '导入成功！',
-          type: 'success'
-        });
-        this.getUserList();
-      }
-      this.fileList.splice(0, 1)
-      this.visible = false
+        },
+        methods: {
+            /** 角色状态修改 */
+            handleStatusChange(row) {
+                let text = row.status === "0" ? "启用" : "停用";
+                this.$confirm('确认要"' + text + '""' + row.roleName + '"角色吗?', "警告", {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    type: "warning"
+                }).then(async () => {
+                    const {data: res} = await this.$http.put('sysUser/adminUpdateUser', row);
+                    if (res.meta.errorCode !== 200) {
+                        return this.$message.error(res.meta.errorMsg)
+                    }
+                    await this.getUserList();
+                    this.$message.success(text + "成功");
+                }).catch(function () {
+                    row.status = row.status === "0" ? "1" : "0";
+                });
+            },
+            /** 查询数据字典性别 */
+            async getSex(deptType) {
+                const {data: res} = await this.$http.get(`sysDictData/getDict?dictType=${deptType}`);
+                this.sexOptions = res.data;
+            },
+            /** 获取岗位列表 */
+            async getPostIds() {
+                const {data: res} = await this.$http.get('sysPost/getAllPost');
+                if (res.meta.errorCode !== 200) {
+                    return this.$message.error("获取岗位失败")
+                }
+                this.postOptions = res.data;
+            },
+            /** 获取角色列表 */
+            async getRoleIds() {
+                const {data: res} = await this.$http.get('sysRole/getAllRole');
+                if (res.meta.errorCode !== 200) {
+                    return this.$message.error("获取角色失败")
+                }
+                this.roleOptions = res.data;
+            },
+            /** 获取部门列表 */
+            async getDeptList() {
+                const {data: res} = await this.$http.get('sysDept/getDeptList');
+                if (res.meta.errorCode !== 200) {
+                    return this.$message.error(res.meta.errorMsg)
+                }
+                this.deptOptions = res.data
+            },
+            /** 获取用户列表 */
+            async getUserList() {
+                this.form.startTime = this.searchTime[0]
+                this.form.endTime = this.searchTime[1]
+                this.loading = true;
+                const {data: res} = await this.$http.get('/sysUser/selectUsers', {
+                    params: this.form
+                });
+                if (res.meta.errorCode !== 200) {
+                    return this.$message.error(res.meta.errorMsg)
+                }
+                this.tableData = res.data.sysUserDeptDto;
+                this.total = res.data.pageable.total
+                this.form.pageNum = res.data.pageable.pageNum
+                this.loading = false
+            },
+            /** 更多操作触发 */
+            handleCommand(command, row) {
+                switch (command) {
+                    case "handleResetPwd":
+                        this.reLoadPwd(row);
+                        break;
+                    case "handleAuthRole":
+                        this.handleAuthRole(row);
+                        break;
+                    default:
+                        break;
+                }
+            },
+            /** 重置 */
+            formReload() {
+                this.form.pageNum = 1
+                this.form.userName = undefined
+                this.form.phonenumber = undefined
+                this.form.status = undefined
+                this.searchTime = []
+                this.getUserList()
+            },
+            /**查询表单清空 */
+            queryKey() {
+                if (this.searchTime == null) {
+                    this.searchTime = []
+                }
+                this.getUserList()
+            },
+            /** 清除选中 */
+            clearHandle() {
+                this.valueTitle = '智慧社区'
+                this.valueId = 100
+                this.formData.deptId = 100
+                this.defaultExpandedKey = []
+                this.clearSelected()
+                this.$emit('getValue', null)
+            },
+            /** 切换选项 */
+            handleNodeClick2(node) {
+                this.valueTitle = node[this.props.label]
+                this.valueId = node[this.props.value]
+                this.$emit('getValue', this.valueId)
+                this.formData.deptId = node.deptId
+                this.defaultExpandedKey = []
+            },
+            /** 选中部门节点时 */
+            handleNodeClick(data) {
+                this.form.deptId = data.deptId
+                this.deptName = data.deptName
+                this.getUserList()
+            },
+            /** 搜索框变化时 */
+            querySearch(queryString, cb) {
+                let restaurants = this.restaurants;
+                let results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+                // 调用 callback 返回建议列表的数据
+                cb(results);
+            },
+            /**过滤器发生变化时 */
+            createFilter(queryString) {
+                return (restaurant) => {
+                    return (restaurant.deptName.indexOf(queryString.toLowerCase()) === 0);
+                };
+            },
+            /**批量删除中的查询*/
+            filterNode(value, data) {
+                return data.deptName.indexOf(value) !== -1;
+            },
+            /**根据id删除*/
+            deleteUser(row) {
+                const userIds = row.userId || this.ids;
+                this.$confirm('是否确认删除角色编号为"' + userIds + '"的数据项?', "警告", {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    type: "warning"
+                }).then(() => {
+                    return this.$http.delete(`/sysUser?idList=${userIds}`);
+                }).then((res) => {
+                    if (res.data.meta.errorCode !== 200) {
+                        return this.$message.error(res.data.meta.errorMsg);
+                    }
+                    this.getUserList();
+                    this.$message.success("删除成功");
+                })
+            },
+            /**关闭表单的方法*/
+            closeFrom() {
+                //清空验证
+                this.$refs['formData'].resetFields()
+            },
+            /** 分配角色操作 */
+            handleAuthRole: function (row) {
+                const userId = row.userId;
+                this.$router.push("/system/user-auth/role/" + userId);
+            },
+            /** 每页显示的条数 */
+            handleSizeChange(val) {
+                // 改变每页显示的条数
+                this.form.pageSize = val
+                // 注意：在改变每页显示的条数时，要将页码显示到第一页
+                this.form.pageNum = 1
+                this.getUserList()
+            },
+            /** 显示第几页 */
+            handleCurrentChange(val) {
+                // 改变默认的页数
+                this.form.pageNum = val
+                this.getUserList()
+            },
+            /**取消 */
+            cancel() {
+                this.$refs.formData.resetFields();
+                this.open = false;
+            },
+            /** 新增 */
+            handleAdd() {
+                this.title = '添加'
+                this.valueTitle = this.deptName
+                this.formData = {
+                    phonenumber: undefined,
+                    userId: undefined,
+                    nickName: undefined,
+                    email: undefined,
+                    sex: undefined,
+                    deptId: JSON.parse(JSON.stringify(this.form.deptId)),
+                    postIds: [],
+                    roleIds: [],
+                    userName: undefined,
+                    status: "0",
+                }
+                this.open = true
+                this.$refs.formData.resetFields();
+            },
+            /** 打开修改表单时 */
+            async updateForm(row) {
+                this.title = '修改'
+                this.open = true;
+                const {data: res} = await this.$http.get(`sysUser/getUserInfo?userId=` + row.userId);
+                this.formData.phonenumber = res.data.sysUser.phonenumber;
+                this.formData.userId = res.data.sysUser.userId;
+                this.formData.nickName = res.data.sysUser.nickName;
+                this.formData.userName = res.data.sysUser.userName;
+                this.formData.status = res.data.sysUser.status;
+                this.formData.email = res.data.sysUser.email;
+                this.formData.sex = res.data.sysUser.sex;
+                this.formData.deptId = res.data.sysUser.deptId;
+                this.formData.remark = res.data.sysUser.remark;
+                this.formData.postId = res.data.sysPost.postId;
+                this.formData.roleId = res.data.sysRole.roleId;
+            },
+            /**表单提交 */
+            submitForm() {
+                this.$refs["formData"].validate(async valid => {
+                    if (valid) {
+                        if (this.formData.userId === undefined) {
+                            console.log(this.formData)
+                            const {data: res} = await this.$http.post("sysUser/insertUser", this.formData)
+                            if (res.meta.errorCode !== 200) {
+                                return this.$message.error(res.meta.errorMsg)
+                            }
+                            await this.getUserList();
+                            this.$message.success("新增成功");
+                            this.open = false;
+                        } else {
+                            const {data: res} = await this.$http.put('sysUser/adminUpdateUser', {
+                                userId: this.formData.userId,
+                                phonenumber: this.formData.phonenumber,
+                                nickName: this.formData.nickName,
+                                email: this.formData.email,
+                                sex: this.formData.sex,
+                                remark: this.formData.remark,
+                                deptId: this.formData.deptId,
+                                postId: this.formData.postId,
+                                roleId: this.formData.roleId,
+                                userName: this.formData.userName,
+                                status: this.formData.status,
+                            });
+                            if (res.meta.errorCode !== 200) {
+                                return this.$message.error(res.meta.errorMsg)
+                            }
+                            await this.getUserList();
+                            this.$message.success("修改成功");
+                            this.open = false;
+                        }
+                    }
+                });
+            },
+            /** 重置密码 */
+            reLoadPwd(row) {
+                this.title = '重置密码';
+                this.dialogVisible = true;
+                this.user.userId = row.userId;
+                this.user.password = 888888;
+                this.user.username = row.nickName;
+                console.log(row, this.user)
+            },
+            /**修改密码 */
+            async changPwd() {
+                this.$refs.resetPwd.validate(async valid => {
+                    if (!valid) {
+                        return
+                    }
+                    const {data: res} = await this.$http.post("sysUser/resetPassword", {
+                        userId: this.user.userId,
+                        password: this.user.password
+                    });
+                    if (res.meta.errorCode !== 200) {
+                        return this.$message.error(res.meta.errorMsg)
+                    }
+                    this.dialogVisible = false;
+                    return this.$message.success("重置成功")
+                });
+            },
+            /**多选框选中 */
+            handleSelectionChange(selection) {
+                this.ids = selection.map(item => item.userId)
+                this.single = selection.length != 1
+                this.multiple = !selection.length
+            },
+            /** 导出按钮操作 */
+            handleExport() {
+                //设置全局配置信息
+                const config = {
+                    method: 'get',
+                    url: 'sysUser/getExcel?userIds=' + this.ids,
+                    responseType: 'blob'
+                };
+                //发送请求
+                // eslint-disable-next-line no-undef
+                this.$http(config).then(response => {
+                        const url = window.URL.createObjectURL(new Blob([response.data]));
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', '用户管理.xls');
+                        document.body.appendChild(link);
+                        link.click();
+                        if (response.data !== null) {
+                            this.$message.success("导出成功");
+                        }
+                    }
+                )
+            },
+            /** 下载模板 */
+            downloadExport() {
+                //设置全局配置信息
+                const config = {
+                    method: 'get',
+                    url: 'sysUser/uploadExcel',
+                    responseType: 'blob'
+                };
+                //发送请求
+                // eslint-disable-next-line no-undef
+                this.$http(config).then(response => {
+                        const url = window.URL.createObjectURL(new Blob([response.data]));
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', '用户管理模板.xls');
+                        document.body.appendChild(link);
+                        link.click();
+                        if (response.data !== null) {
+                            this.$message.success("下载成功");
+                        }
+                    }
+                )
+            },
+            /** 关闭导入报错有重复的弹窗 */
+            handleCloseUpload(done) {
+                this.$confirm('确认关闭？')
+                    .then(_ => {
+                        done();
+                    })
+                    .catch(_ => {
+                    });
+            },
+            /** 关闭导入的x */
+            handleClose(done) {
+                this.$confirm('确认关闭？')
+                    .then(_ => {
+                        done();
+                        this.fileList.splice(0, 1)
+                        this.visible = false
+                    })
+                    .catch(_ => {
+                    });
+            },
+            /** 判断文件类型 */
+            judgeFileType(file) {
+                let suffix = file.name.substring(file.name.lastIndexOf('.') + 1)
+                if (suffix !== 'xlsx' && suffix !== 'xls') {
+                    // warning('请选择正确的文件格式的文件')
+                    this.fileList.splice(0, 1)
+                }
+            },
+            /** 上传文件 */
+            async uploadFile(param) {
+                let fileObject = param.file
+                let formData = new FormData()
+                formData.append('file', fileObject)
+                const {data: res} = await this.$http.post('sysUser/import-data', formData)
+                if (res.meta.errorCode !== 200) {
+                    this.dialogVisibleUpload = true;
+                    this.uploadData = res.data;
+                } else {
+                    this.$message({
+                        message: '导入成功！',
+                        type: 'success'
+                    });
+                    this.getUserList();
+                }
+                this.fileList.splice(0, 1)
+                this.visible = false
 
-    },
-    /** 关闭上传窗口时 */
-    cancelUpload() {
-      this.fileList.splice(0, 1)
-      this.visible = false
-    },
-    /** 检查是否上传过多的Excel */
-    handleExceed() {
-      this.$message.warning('无法添加更多文件')
-    },
-    /** 点击上传 */
-    submitUpload() {
-      if (this.$refs.upload.uploadFiles.length === 1) {
-        this.$refs.upload.submit()
-        this.dialogVisible6 = false;
-      }
-    },
-  },
-  watch: {
-    // 根据名称筛选部门树
-    filterText(val) {
-      this.$refs.tree.filter(val);
+            },
+            /** 关闭上传窗口时 */
+            cancelUpload() {
+                this.fileList.splice(0, 1)
+                this.visible = false
+            },
+            /** 检查是否上传过多的Excel */
+            handleExceed() {
+                this.$message.warning('无法添加更多文件')
+            },
+            /** 点击上传 */
+            submitUpload() {
+                if (this.$refs.upload.uploadFiles.length === 1) {
+                    this.$refs.upload.submit()
+                    this.dialogVisible6 = false;
+                }
+            },
+        },
+        watch: {
+            // 根据名称筛选部门树
+            filterText(val) {
+                this.$refs.tree.filter(val);
+            }
+        },
     }
-  },
-}
 </script>
 
 <style scoped>
-li {
-  line-height: normal;
-  padding: 7px;
-}
+  li {
+    line-height: normal;
+    padding: 7px;
+  }
 
-.name {
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
+  .name {
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
 
-.el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
-  height: auto;
-  max-height: 274px;
-  padding: 0;
-  overflow: hidden;
-  overflow-y: auto;
-}
+  .el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
+    height: auto;
+    max-height: 274px;
+    padding: 0;
+    overflow: hidden;
+    overflow-y: auto;
+  }
 
-ul li >>> .el-tree .el-tree-node__content {
-  height: auto;
-  padding: 0 20px;
-}
+  ul li >>> .el-tree .el-tree-node__content {
+    height: auto;
+    padding: 0 20px;
+  }
 
-.el-tree >>> .is-current .el-tree-node__label {
-  color: #409EFF;
-  font-weight: 700;
-}
+  .el-tree >>> .is-current .el-tree-node__label {
+    color: #409EFF;
+    font-weight: 700;
+  }
 
-.el-tree >>> .is-current .el-tree-node__children .el-tree-node__label {
-  color: #606266;
-  font-weight: normal;
-}
+  .el-tree >>> .is-current .el-tree-node__children .el-tree-node__label {
+    color: #606266;
+    font-weight: normal;
+  }
 </style>
 
