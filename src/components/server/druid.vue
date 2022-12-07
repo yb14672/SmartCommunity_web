@@ -9,7 +9,7 @@ export default {
   name:"druid",
   data() {
     return {
-      src: "http://localhost:8080/druid",
+      src: "http://localhost:8080/druid/index.html",
       height: document.documentElement.clientHeight - 69.5 + "px;",
       loading: true
     };

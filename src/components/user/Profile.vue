@@ -119,11 +119,11 @@
               <span slot="label"><i class="el-icon-date"></i> 修改密码</span>
               <el-form :model="pwdForm" :rules="rules" ref="pwdForm" label-width="100px"
                        class="demo-ruleForm">
-                <el-form-item label="旧密码" prop="oldPassword">
-                  <el-input v-model="pwdForm.oldPassword" show-password type="password" placeholder="请输入旧密码"></el-input>
+                <el-form-item label="旧密码" prop="oldPwd">
+                  <el-input v-model="pwdForm.oldPwd" show-password type="password" placeholder="请输入旧密码"></el-input>
                 </el-form-item>
-                <el-form-item label="新密码" prop="newPassword">
-                  <el-input v-model="pwdForm.newPassword" show-password type="password" placeholder="请输入新密码"></el-input>
+                <el-form-item label="新密码" prop="password">
+                  <el-input v-model="pwdForm.password" show-password type="password" placeholder="请输入新密码"></el-input>
                 </el-form-item>
                 <el-form-item label="确认密码" prop="confirmPassword">
                   <el-input v-model="pwdForm.confirmPassword" show-password type="password" placeholder="请确认密码"></el-input>
@@ -146,7 +146,7 @@ export default {
   data() {
     //判断新密码和确认密码是否一致
     const equalToPassword = (rule, value, callback) => {
-      if (this.pwdForm.newPassword !== value) {
+      if (this.pwdForm.password !== value) {
         callback(new Error("两次输入的密码不一致"));
       } else {
         callback();
@@ -155,7 +155,7 @@ export default {
 
     //判断新旧密码是否一致
     const equalToOldPassword = (rule, value, callback) => {
-      if (this.pwdForm.oldPassword === value) {
+      if (this.pwdForm.oldPwd === value) {
         callback(new Error("新旧密码不能一致"));
       } else {
         callback();
@@ -185,8 +185,8 @@ export default {
       },
       pwdForm: {
         userId: '',
-        oldPassword: '',
-        newPassword: '',
+        oldPwd: '',
+        password: '',
         confirmPassword: '',
       },
       rules: {
@@ -210,10 +210,10 @@ export default {
             trigger: ["blur", "change"]
           }
         ],
-        oldPassword: [
+        oldPwd: [
           {required: true, message: "旧密码不能为空", trigger: "blur"}
         ],
-        newPassword: [
+        password: [
           {required: true, message: "新密码不能为空", trigger: "blur"},
           {min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"},
           {required: true, validator: equalToOldPassword, trigger: "blur"}
@@ -312,10 +312,7 @@ export default {
       this.$refs.pwdForm.validate(async (valid) => {
         if (valid) {
           //更新对应的信息
-          const {data: res} = await this.$http.put("sysUser/resetPwd", {
-            'userId':this.pwdForm.userId,
-            'password':this.pwdForm.newPassword
-          })
+          const {data: res} = await this.$http.put("sysUser/resetPwd/"+this.pwdForm.oldPwd, this.pwdForm)
           //检查是否成功
           if (res.meta.errorCode !== 200) {
             return this.$message.error(res.meta.errorMsg)
